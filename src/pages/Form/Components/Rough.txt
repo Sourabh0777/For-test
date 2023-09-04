@@ -1,0 +1,9 @@
+  const [userName, setUserName] = useState();
+  const [mobileNo, setMobileNo] = useState();
+  const [dateOfTraveling, setDateOfTraveling] = useState(dayjs());
+  const [departureTime, setDepartureTime] = useState("00:00");
+  const [destinationFrom, setDestinationFrom] = useState();
+  const [destinationTo, setDestinationTo] = useState();
+  const [noOfPassengers, setNoOfPassengers] = useState();
+  const [selectedAc, setSelectedAc] = useState("nonAc");
+  const [selectedSeater, setSelectedSeater] = useState();

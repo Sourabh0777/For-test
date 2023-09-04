@@ -53,26 +53,12 @@ import ProgressBars from "layouts/sections/elements/progress-bars";
 import Toggles from "layouts/sections/elements/toggles";
 import Typography from "layouts/sections/elements/typography";
 import Form from "pages/Form";
-import BusForm from "pages/BusForm";
-import PackageForm from "pages/PackageForm";
 
 const routes = [
   {
     name: "Taxi",
     route: "/pages/taxi",
     component: <Form />,
-    icon: <Icon>dashboard</Icon>,
-  },
-  {
-    name: "Bus",
-    route: "/pages/bus",
-    component: <BusForm />,
-    icon: <Icon>dashboard</Icon>,
-  },
-  {
-    name: "Package",
-    route: "/pages/package",
-    component: <PackageForm />,
     icon: <Icon>dashboard</Icon>,
   },
   {

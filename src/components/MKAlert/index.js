@@ -29,7 +29,6 @@ import MKAlertRoot from "components/MKAlert/MKAlertRoot";
 import MKAlertCloseIcon from "components/MKAlert/MKAlertCloseIcon";
 
 function MKAlert({ color, dismissible, children, closeAlert, ...rest }) {
-  console.log("🚀 ~ file: index.js:32 ~ MKAlert ~ closeAlert:", closeAlert);
   const [alertStatus, setAlertStatus] = useState("mount");
 
   const handleAlertStatus = () => {
