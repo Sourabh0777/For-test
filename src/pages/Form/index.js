@@ -78,7 +78,7 @@ function Form() {
           xl={5}
           ml={{ xs: "auto", lg: 6 }}
           mr={{ xs: "auto", lg: 6 }}
-          sx={{ height: "80vh" }}
+          sx={{ height: "70vh" }}
         >
           {formData && <UserForm />}
         </Grid>

@@ -1,3 +1,5 @@
+/* eslint-disable no-empty */
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
@@ -7,9 +9,9 @@ import MKInput from "components/MKInput";
 import MKButton from "components/MKButton";
 import MKTypography from "components/MKTypography";
 import dayjs from "dayjs";
-import { DateField, DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { DateField, DatePicker, LocalizationProvider, } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { Button, FormControlLabel, Radio, RadioGroup } from "@mui/material";
 import { useState } from "react";
 import Grid from "@mui/material/Grid";
@@ -21,37 +23,42 @@ import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Typography from "@mui/material/Typography";
+import { LegendToggle } from "@mui/icons-material";
+import TimePicker from 'react-time-picker';
+import { useHttpClient } from "hooks/http-hook";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 const UserForm = () => {
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const formData = useContext(FormContext);
   const [touched, setTouched] = useState(false);
-
+  // eslint-disable-next-line prettier/prettier
   const [showAlert, setShowAlert] = useState(false);
   //Format the time
-  const formatTime = (time) => {
-    const [hours, minutes] = time.split(":");
-    const formattedHours = parseInt(hours, 10) % 12 || 12;
-    const period = parseInt(hours, 10) < 12 ? "AM" : "PM";
-    const formattedMinutes = minutes ? minutes.padStart(2, "0") : "00";
-    return `${formattedHours}:${formattedMinutes} ${period}`;
-  };
+  const [departureTime, setDepartureTime] = useState("00:00");
+  const timeHandler = (e) => {
+    setDepartureTime(e.target.value)
+  }
   //Input field states
-
   const initialInputState = {
     firstName: "",
+    lastName: "",
     mobileNo: "",
-    destinationFrom: "",
+    destinationFrom: "Delhi",
     destinationTo: "",
     dateOfTraveling: dayjs(),
     noOfPassengers: 1,
     selectedAc: "nonAc",
-    selectedSeater: "",
+    selectedSeater: "6+1 Car (No Carrier)",
+    busBookingType: "complete",
+    completeBusBookingSeats: "35",
   };
   const [dateOfTraveling, setDateOfTraveling] = useState(dayjs());
-  const [departureTime, setDepartureTime] = useState("00:00");
+  const [isMobileValid, setIsMobileValid] = useState(true); // State to track mobile number validity
 
   const [inputState, setInputState] = useState(initialInputState);
-  // console.log("🚀 ~ file: UserForm.js:53 ~ UserForm ~ inputState:", inputState);
+  console.log("🚀 ~ file: UserForm.js:61 ~ UserForm ~ inputState:", inputState.mobileNo)
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setInputState({
@@ -62,6 +69,32 @@ const UserForm = () => {
       setTouched(true);
     }
   };
+  const mobileNOHandler = (e) => {
+    let inputValue = e.target.value;
+    inputValue = inputValue.replace(/\D/g, '');
+    if (inputValue.length === 10) {
+      setIsMobileValid(true);
+    } else {
+      setIsMobileValid(false);
+    }
+
+    setInputState({
+      ...inputState,
+      mobileNo: inputValue, // Update mobile number in state
+    });
+  }
+  const radioButtonHandler1 = (event) => {
+    setInputState({ ...inputState, selectedAc: event.target.value });
+  };
+  const radioButtonHandler2 = (event) => {
+    setInputState({ ...inputState, selectedSeater: event.target.value });
+  };
+  const radioButtonHandler3 = (event) => {
+    setInputState({ ...inputState, busBookingType: event.target.value });
+  };
+  const radioButtonHandler4 = (event) => {
+    setInputState({ ...inputState, completeBusBookingSeats: event.target.value });
+  };
 
   const getInputValidationState = (inputName) => {
     if (touched) {
@@ -69,6 +102,12 @@ const UserForm = () => {
       if (inputValue === "") {
         return "error";
       } else if (inputName === "mobileNo" && inputValue.length < 10) {
+        const mobileNoPattern = /^\d{10}$/;
+
+        if (!mobileNoPattern.test(inputValue)) {
+          return "error";
+        }
+
         return "error";
       } else {
         return "success";
@@ -81,7 +120,7 @@ const UserForm = () => {
   const [isNextDisabled, setIsNextDisabled] = useState(true);
   useEffect(() => {
     // Use this effect to check the conditions and update isNextDisabled.
-    if (inputState.mobileNo !== "" && inputState.firstName !== "" && activeStep === 0) {
+    if (inputState.mobileNo !== "" && inputState.lastName && inputState.firstName !== "" && activeStep === 0) {
       setIsNextDisabled(false);
     }
     if (dateOfTraveling !== "" && departureTime !== "" && activeStep === 1) {
@@ -98,24 +137,50 @@ const UserForm = () => {
     }
   }, [inputState, activeStep]);
 
-  console.log("🚀 ~ file: UserForm.js:80 ~ UserForm ~ isNextDisabled:", isNextDisabled);
-
   const submitHandler = async (e) => {
     e.preventDefault();
-    setShowAlert(true);
+    const formData = {
+      firstName: inputState.firstName,
+      lastName: inputState.lastName,
+      phoneNumber: inputState.mobileNo,
+      travelDate: dateOfTraveling,
+      travelTime: departureTime,
+      source: "Delhi",
+      destination: "64f3519c0ea234235f735941",
+      noOfPassengers: inputState.noOfPassengers,
+      texiType: "64f3338d70c79275caab2e0b",
+      fare: 2100,
+      paymentMode: "online",
+      additionalCharges: 250,
+      confirmed: "false",
+      bookingStatus: "pending",
+    };
+    try {
+      const responseData = await sendRequest(
+        `http://localhost:5000/api/v1/user/bookTaxi`,
+        "POST",
+        JSON.stringify(formData),
+        { "Content-Type": "application/json" }
+      );
+    } catch (error) {
+      console.log("🚀 ~ file: UserForm.js:165 ~ submitHandler ~ error:", error)
+    }
+
   };
   const closeAlert = () => {
+
     setShowAlert(false);
   };
 
   //Code for Stepper d'ont Change
-  const steps = [
+  const [steps, setSteps] = useState([
     "User Details",
     "Traveling Time",
     "Traveling Details",
-    "Vehicle Details",
+    "Transport Details",
     "Confirm Payment",
-  ];
+  ]);
+
   const [skipped, setSkipped] = React.useState(new Set());
   const isStepOptional = (step) => {
     return step === 1;
@@ -258,6 +323,21 @@ const UserForm = () => {
                   </Grid>
                   <Grid item xs={12} md={6}>
                     <MKInput
+                      type="text"
+                      InputLabelProps={{ shrink: true }}
+                      variant="standard"
+                      label="Last Name"
+                      fullWidth
+                      name="lastName"
+                      value={inputState.lastName}
+                      onChange={handleInputChange}
+                      required
+                      error={getInputValidationState("lastName") === "error"}
+                      success={getInputValidationState("lastName") === "success"}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <MKInput
                       type="tel"
                       variant="standard"
                       label="Mobile no"
@@ -265,11 +345,12 @@ const UserForm = () => {
                       fullWidth
                       name="mobileNo"
                       value={inputState.mobileNo}
-                      onChange={handleInputChange}
+                      onChange={mobileNOHandler}
                       required
                       error={getInputValidationState("mobileNo") === "error"}
                       success={getInputValidationState("mobileNo") === "success"}
                     />
+
                   </Grid>
                 </>
               )}
@@ -301,9 +382,10 @@ const UserForm = () => {
                       fullWidth
                       name="departureTime"
                       value={departureTime}
-                      onChange={(e) => setDepartureTime(formatTime(e.target.value))}
+                      onChange={timeHandler}
                       required
                     />
+
                   </Grid>
                 </>
               )}
@@ -321,7 +403,9 @@ const UserForm = () => {
                       fullWidth
                       name="destinationFrom"
                       value={inputState.destinationFrom}
-                      onChange={handleInputChange}
+                      default
+                      disabled
+                      // onChange={handleInputChange}
                       required
                       error={getInputValidationState("destinationFrom") === "error"}
                       success={getInputValidationState("destinationFrom") === "success"}
@@ -344,106 +428,167 @@ const UserForm = () => {
                   </Grid>
                 </>
               )}
-              {inputState.destinationFrom && inputState.destinationTo && activeStep == 3 && (
-                <>
-                  <Grid item xs={12} md={12}>
-                    <FormLabel id="demo-radio-buttons-group-label">
-                      Vehicle & Passanger Details
-                    </FormLabel>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <MKInput
-                      type="number"
-                      variant="standard"
-                      label="No of Passengers"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      name="noOfPassengers"
-                      value={inputState.noOfPassengers}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </Grid>
-                </>
-              )}
-              <Grid container spacing={2}>
-                {inputState.noOfPassengers && inputState.destinationFrom && activeStep == 3 && (
+              {formData.value === "taxi" &&
+                inputState.destinationTo &&
+                inputState.destinationFrom &&
+                activeStep == 3 && (
                   <>
-                    <Grid item xs={12}>
-                      <MKBox mx={2} mb={2} display="flex">
-                        <RadioGroup
-                          name="SelectAc"
-                          value={inputState.selectedAc}
-                          onChange={handleInputChange}
-                        >
-                          <FormControlLabel value="ac" control={<Radio />} label="AC" />
-                          <FormControlLabel value="nonAc" control={<Radio />} label="Non-AC" />
-                        </RadioGroup>
-                        <RadioGroup
-                          name="SelectSeater"
-                          value={inputState.selectedSeater}
-                          onChange={handleInputChange}
-                        >
-                          <FormControlLabel
-                            value="6+1 Car (No Carrier)"
-                            control={<Radio />}
-                            label="6+1 Car (No Carrier)"
-                          />
-                          <FormControlLabel
-                            value="3+1 Car (No Carrier)"
-                            control={<Radio />}
-                            label="3+1 Car (No Carrier)"
-                          />
-                        </RadioGroup>
-                      </MKBox>
+                    <Grid item xs={12} md={12}>
+                      <FormLabel id="demo-radio-buttons-group-label">Transport Details</FormLabel>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <MKInput
+                        type="number"
+                        variant="standard"
+                        label="No of Passengers"
+                        InputLabelProps={{ shrink: true }}
+                        fullWidth
+                        name="noOfPassengers"
+                        value={inputState.noOfPassengers}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </Grid>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <MKBox mx={2} mb={2} display="flex">
+                          <RadioGroup
+                            name="SelectAc"
+                            value={inputState.selectedAc}
+                            onChange={radioButtonHandler1}
+                          >
+                            <FormControlLabel value="ac" control={<Radio />} label="AC" />
+                            <FormControlLabel value="nonAc" control={<Radio />} label="Non-AC" />
+                          </RadioGroup>
+                          <RadioGroup
+                            name="SelectSeater"
+                            value={inputState.selectedSeater}
+                            onChange={radioButtonHandler2}
+                          >
+                            <FormControlLabel
+                              value="6+1 Car (No Carrier)"
+                              control={<Radio />}
+                              label="6+1 Car (No Carrier)"
+                            />
+                            <FormControlLabel
+                              value="3+1 Car (No Carrier)"
+                              control={<Radio />}
+                              label="3+1 Car (No Carrier)"
+                            />
+                          </RadioGroup>
+                        </MKBox>
+                      </Grid>
                     </Grid>
                   </>
                 )}
-              </Grid>
-              <Grid container spacing={2}>
-                {inputState.noOfPassengers && inputState.destinationFrom && activeStep == 4 && (
+              {formData.value === "bus" &&
+                inputState.noOfPassengers &&
+                inputState.destinationFrom &&
+                activeStep == 3 && (
                   <>
-                    <Grid item xs={12}>
-                      <MKBox
-                        mx={2}
-                        mb={2}
+                    <Grid item xs={12} md={12}>
+                      <FormLabel id="demo-radio-buttons-group-label">Transport Details</FormLabel>
+                    </Grid>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <MKBox mx={2} mb={2} display="flex">
+                          <RadioGroup
+                            name="Complete"
+                            value={inputState.busBookingType}
+                            onChange={radioButtonHandler3}
+                          >
+                            <FormControlLabel
+                              value="complete"
+                              control={<Radio />}
+                              label="Book Complete Bus"
+                            />
+                            <FormControlLabel
+                              value="bookSeats"
+                              control={<Radio />}
+                              label="Book Seats"
+                            />
+                          </RadioGroup>
+                        </MKBox>
+                      </Grid>
+                    </Grid>
+                    {inputState.busBookingType === "complete" && (
+                      <Grid item xs={12} md={6}>
+                        <MKBox mx={2} mb={0} mt={0} display="flex">
+                          <RadioGroup
+                            name="Select No of seats"
+                            value={inputState.completeBusBookingSeats}
+                            onChange={radioButtonHandler4}
+                            row
+                          >
+                            <FormControlLabel value="35" control={<Radio />} label="35 Seats" />
+                            <FormControlLabel value="40" control={<Radio />} label="40  Seats" />
+                            <FormControlLabel value="45" control={<Radio />} label="45 Seats" />
+                            <FormControlLabel value="50" control={<Radio />} label="50 Seats" />
+                          </RadioGroup>
+                        </MKBox>
+                      </Grid>
+                    )}
+                    {inputState.busBookingType === "bookSeats" && (
+                      <Grid item xs={12} md={6}>
+                        <MKInput
+                          type="number"
+                          variant="standard"
+                          label="No of Passengers"
+                          InputLabelProps={{ shrink: true }}
+                          fullWidth
+                          name="noOfPassengers"
+                          value={inputState.noOfPassengers}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </Grid>
+                    )}
+                  </>
+                )}
+            </Grid>
+            <Grid container spacing={2}>
+              {inputState.noOfPassengers && inputState.destinationFrom && activeStep == 4 && (
+                <>
+                  <Grid item xs={12}>
+                    <MKBox
+                      mx={2}
+                      mb={2}
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        textAlign: "center",
+                      }}
+                    >
+                      <FormLabel
+                        id="demo-radio-buttons-group-label"
                         sx={{
-                          display: "flex",
-                          flexDirection: "column",
-                          justifyContent: "center",
-                          alignItems: "center",
                           textAlign: "center",
                         }}
                       >
-                        <FormLabel
-                          id="demo-radio-buttons-group-label"
-                          sx={{
-                            textAlign: "center",
-                          }}
-                        >
-                          Toll Charges: $567
-                        </FormLabel>
-                        <FormLabel
-                          id="demo-radio-buttons-group-label"
-                          sx={{
-                            textAlign: "center",
-                          }}
-                        >
-                          Fair : $250
-                        </FormLabel>
-                        <FormLabel
-                          id="demo-radio-buttons-group-label"
-                          sx={{
-                            textAlign: "center",
-                          }}
-                        >
-                          Total fair : $250
-                        </FormLabel>
-                      </MKBox>
-                    </Grid>
-                  </>
-                )}
-              </Grid>
+                        Toll Charges: $567
+                      </FormLabel>
+                      <FormLabel
+                        id="demo-radio-buttons-group-label"
+                        sx={{
+                          textAlign: "center",
+                        }}
+                      >
+                        Fair : $250
+                      </FormLabel>
+                      <FormLabel
+                        id="demo-radio-buttons-group-label"
+                        sx={{
+                          textAlign: "center",
+                        }}
+                      >
+                        Total fair : $250
+                      </FormLabel>
+                    </MKBox>
+                  </Grid>
+                </>
+              )}
             </Grid>
             <Grid container item justifyContent="center" xs={12} mt={3} mb={2}>
               {activeStep === steps.length - 1 ? (
@@ -486,7 +631,7 @@ const UserForm = () => {
             </Grid>
           </MKBox>
         </MKBox>
-      </MKBox>
+      </MKBox >
     </>
   );
 };

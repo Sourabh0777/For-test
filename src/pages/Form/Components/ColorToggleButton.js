@@ -41,7 +41,7 @@ export default function ColorToggleButton({ onclick }) {
   };
 
   return (
-    <MKBox variant="gradient" bgColor="light" borderRadius="lg" mt={2}>
+    <MKBox variant="gradient" bgColor="light" borderRadius="lg" mt={10}>
       <ToggleButtonGroup
         color="dark"
         value={alignment}
