@@ -11,6 +11,7 @@ import UserForm from "./Components/UserForm";
 import ColorToggleButton from "./Components/ColorToggleButton";
 import { FormContext } from "./Components/FormContext";
 import { useEffect, useState } from "react";
+import BookingStatus from "./Components/BookingStatus";
 const options = [
   {
     bgImage: taxi,
@@ -37,6 +38,7 @@ const options = [
 function Form() {
   const [selectedOption, setSelectedOption] = useState("taxi");
   const [formData, setFormData] = useState();
+  const [bookingConfirmation, setBookingConfirmation] = useState();
   useEffect(() => {
     if (selectedOption == "taxi") {
       setFormData(options[0]);
@@ -48,7 +50,9 @@ function Form() {
       setFormData(options[2]);
     }
   }, [selectedOption]);
-
+  const changeFormHandler = (value) => {
+    setBookingConfirmation(value);
+  };
   const selectHandler = (value) => {
     setSelectedOption(value);
   };
@@ -80,7 +84,8 @@ function Form() {
           mr={{ xs: "auto", lg: 6 }}
           sx={{ height: "70vh" }}
         >
-          {formData && <UserForm />}
+          {formData && !bookingConfirmation && <UserForm changeForm={changeFormHandler} />}
+          {bookingConfirmation && <BookingStatus bookingConfirmationData={bookingConfirmation} />}
         </Grid>
       </Grid>
     </FormContext.Provider>

@@ -9,7 +9,7 @@ import MKInput from "components/MKInput";
 import MKButton from "components/MKButton";
 import MKTypography from "components/MKTypography";
 import dayjs from "dayjs";
-import { DateField, DatePicker, LocalizationProvider, } from "@mui/x-date-pickers";
+import { DateField, DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { Button, FormControlLabel, Radio, RadioGroup } from "@mui/material";
@@ -24,23 +24,49 @@ import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Typography from "@mui/material/Typography";
 import { LegendToggle } from "@mui/icons-material";
-import TimePicker from 'react-time-picker';
+import TimePicker from "react-time-picker";
 import { useHttpClient } from "hooks/http-hook";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import BookingStatus from "./BookingStatus";
 
-const UserForm = () => {
+const UserForm = ({ changeForm }) => {
+  //Completing Booking Form
+  // const bookingConfirmedResponse = {
+  //   additionalCharges: 250,
+  //   bookingStatus: "pending",
+  //   confirmed: false,
+  //   createdAt: "2023-09-09T03:02:40.647Z",
+  //   destination: "64f3519c0ea234235f735941",
+  //   fare: 2100,
+  //   firstName: "Sourabh",
+  //   lastName: "Verma",
+  //   noOfPassengers: 1,
+  //   paymentAccepted: false,
+  //   paymentMode: "online",
+  //   phoneNumber: "07042987761",
+  //   source: "Delhi",
+  //   texiType: "64f3338d70c79275caab2e0b",
+  //   token: "dc8d08a5-6d50-4180-b8f7-fe5ad6900ea6",
+  //   travelDate: "2023-09-09T03:01:42.463Z",
+  //   travelTime: "00:00",
+  //   updatedAt: "2023-09-09T03:02:40.647Z",
+  //   __v: 0,
+  //   _id: "64fbe050c663c089d8777efd",
+  // };
+  // changeForm(bookingConfirmedResponse);
+
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const formData = useContext(FormContext);
   const [touched, setTouched] = useState(false);
+  const [isMobileValid, setIsMobileValid] = useState(true);
+  const [bookingConfirmed, setBookingConfirmed] = useState();
   // eslint-disable-next-line prettier/prettier
   const [showAlert, setShowAlert] = useState(false);
-  //Format the time
   const [departureTime, setDepartureTime] = useState("00:00");
   const timeHandler = (e) => {
-    setDepartureTime(e.target.value)
-  }
-  //Input field states
+    setDepartureTime(e.target.value);
+  };
   const initialInputState = {
     firstName: "",
     lastName: "",
@@ -55,10 +81,7 @@ const UserForm = () => {
     completeBusBookingSeats: "35",
   };
   const [dateOfTraveling, setDateOfTraveling] = useState(dayjs());
-  const [isMobileValid, setIsMobileValid] = useState(true); // State to track mobile number validity
-
   const [inputState, setInputState] = useState(initialInputState);
-  console.log("🚀 ~ file: UserForm.js:61 ~ UserForm ~ inputState:", inputState.mobileNo)
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setInputState({
@@ -71,7 +94,7 @@ const UserForm = () => {
   };
   const mobileNOHandler = (e) => {
     let inputValue = e.target.value;
-    inputValue = inputValue.replace(/\D/g, '');
+    inputValue = inputValue.replace(/\D/g, "");
     if (inputValue.length === 10) {
       setIsMobileValid(true);
     } else {
@@ -82,7 +105,7 @@ const UserForm = () => {
       ...inputState,
       mobileNo: inputValue, // Update mobile number in state
     });
-  }
+  };
   const radioButtonHandler1 = (event) => {
     setInputState({ ...inputState, selectedAc: event.target.value });
   };
@@ -120,7 +143,12 @@ const UserForm = () => {
   const [isNextDisabled, setIsNextDisabled] = useState(true);
   useEffect(() => {
     // Use this effect to check the conditions and update isNextDisabled.
-    if (inputState.mobileNo !== "" && inputState.lastName && inputState.firstName !== "" && activeStep === 0) {
+    if (
+      inputState.mobileNo !== "" &&
+      inputState.lastName &&
+      inputState.firstName !== "" &&
+      activeStep === 0
+    ) {
       setIsNextDisabled(false);
     }
     if (dateOfTraveling !== "" && departureTime !== "" && activeStep === 1) {
@@ -157,18 +185,20 @@ const UserForm = () => {
     };
     try {
       const responseData = await sendRequest(
-        `http://localhost:5000/api/v1/user/bookTaxi`,
+        `${process.env.REACT_APP_BACKEND_URL}/user/bookTaxi`,
         "POST",
         JSON.stringify(formData),
         { "Content-Type": "application/json" }
       );
+
+      setBookingConfirmed(responseData);
+      changeForm(responseData.data);
     } catch (error) {
-      console.log("🚀 ~ file: UserForm.js:165 ~ submitHandler ~ error:", error)
+      console.log("🚀 ~ file: UserForm.js:165 ~ submitHandler ~ error:", error);
     }
-
   };
-  const closeAlert = () => {
 
+  const closeAlert = () => {
     setShowAlert(false);
   };
 
@@ -251,6 +281,7 @@ const UserForm = () => {
   }
   return (
     <>
+      {}
       {showAlert && (
         <MKAlert dismissible={showAlert} closeAlert={closeAlert} color="info">
           Form was submitted
@@ -350,7 +381,6 @@ const UserForm = () => {
                       error={getInputValidationState("mobileNo") === "error"}
                       success={getInputValidationState("mobileNo") === "success"}
                     />
-
                   </Grid>
                 </>
               )}
@@ -385,7 +415,6 @@ const UserForm = () => {
                       onChange={timeHandler}
                       required
                     />
-
                   </Grid>
                 </>
               )}
@@ -567,23 +596,7 @@ const UserForm = () => {
                           textAlign: "center",
                         }}
                       >
-                        Toll Charges: $567
-                      </FormLabel>
-                      <FormLabel
-                        id="demo-radio-buttons-group-label"
-                        sx={{
-                          textAlign: "center",
-                        }}
-                      >
-                        Fair : $250
-                      </FormLabel>
-                      <FormLabel
-                        id="demo-radio-buttons-group-label"
-                        sx={{
-                          textAlign: "center",
-                        }}
-                      >
-                        Total fair : $250
+                        You wish to confirm booking ?
                       </FormLabel>
                     </MKBox>
                   </Grid>
@@ -631,7 +644,7 @@ const UserForm = () => {
             </Grid>
           </MKBox>
         </MKBox>
-      </MKBox >
+      </MKBox>
     </>
   );
 };
