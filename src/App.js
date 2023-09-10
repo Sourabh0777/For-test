@@ -1,4 +1,6 @@
-import { useEffect } from "react";
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
+import { useEffect, useState } from "react";
 
 // react-router components
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
@@ -9,20 +11,24 @@ import CssBaseline from "@mui/material/CssBaseline";
 
 // Material Kit 2 React themes
 import theme from "assets/theme";
-import Presentation from "layouts/pages/presentation";
+import taxi from "assets/images/3644592.jpg";
 
 // Material Kit 2 React routes
 import routes from "routes";
+import Form from "pages/Form";
+import Navbar from "pages/Navbar/Navbar";
+import { Grid } from "@mui/material";
+import { FormContext } from "pages/Form/Components/FormContext";
 
 export default function App() {
+  const a = {
+    bgImage: taxi,
+    heading: "Taxi",
+    name: "Taxi",
+    value: "taxi",
+    icon: "local_taxi_icon",
+  };
   const { pathname } = useLocation();
-
-  // Setting page scroll to 0 when changing the route
-  useEffect(() => {
-    document.documentElement.scrollTop = 0;
-    document.scrollingElement.scrollTop = 0;
-  }, [pathname]);
-
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
       if (route.collapse) {
@@ -33,15 +39,23 @@ export default function App() {
       }
       return null;
     });
-
+  const [formData, setFormData] = useState(a);
+  const changeTypeHandler = (value) => {
+    setFormData(value);
+  };
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Routes>
-        {getRoutes(routes)}
-        <Route path="/presentation" element={<Presentation />} />
-        <Route path="*" element={<Navigate to="/presentation" />} />
-      </Routes>
+      <Grid container spacing={9} alignItems="center">
+        <FormContext.Provider value={formData}>
+          <Navbar changeTypeHandler={changeTypeHandler} />
+          <Routes>
+            {getRoutes(routes)}
+            <Route path="/taxi" element={<Form />} />
+            <Route path="*" element={<Navigate to="/taxi" />} />
+          </Routes>
+        </FormContext.Provider>
+      </Grid>
     </ThemeProvider>
   );
 }

@@ -12,8 +12,8 @@ const Image = ({ image }) => {
         height="calc(80vh - 1rem)"
         minHeight="calc(80vh - 1rem)"
         borderRadius="lg"
-        ml={5}
-        mt={10}
+        ml={0}
+        mt={0}
         sx={{
           backgroundImage: `url(${image})`,
           backgroundSize: "cover",

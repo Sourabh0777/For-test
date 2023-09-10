@@ -29,33 +29,9 @@ import { useHttpClient } from "hooks/http-hook";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import BookingStatus from "./BookingStatus";
-
-const UserForm = ({ changeForm }) => {
-  //Completing Booking Form
-  // const bookingConfirmedResponse = {
-  //   additionalCharges: 250,
-  //   bookingStatus: "pending",
-  //   confirmed: false,
-  //   createdAt: "2023-09-09T03:02:40.647Z",
-  //   destination: "64f3519c0ea234235f735941",
-  //   fare: 2100,
-  //   firstName: "Sourabh",
-  //   lastName: "Verma",
-  //   noOfPassengers: 1,
-  //   paymentAccepted: false,
-  //   paymentMode: "online",
-  //   phoneNumber: "07042987761",
-  //   source: "Delhi",
-  //   texiType: "64f3338d70c79275caab2e0b",
-  //   token: "dc8d08a5-6d50-4180-b8f7-fe5ad6900ea6",
-  //   travelDate: "2023-09-09T03:01:42.463Z",
-  //   travelTime: "00:00",
-  //   updatedAt: "2023-09-09T03:02:40.647Z",
-  //   __v: 0,
-  //   _id: "64fbe050c663c089d8777efd",
-  // };
-  // changeForm(bookingConfirmedResponse);
-
+import { useNavigate } from "react-router-dom";
+const UserForm = () => {
+  const navigate = useNavigate();
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const formData = useContext(FormContext);
   const [touched, setTouched] = useState(false);
@@ -183,6 +159,7 @@ const UserForm = ({ changeForm }) => {
       confirmed: "false",
       bookingStatus: inputState.busBookingType,
     };
+
     try {
       const responseData = await sendRequest(
         `${process.env.REACT_APP_BACKEND_URL}/user/bookTaxi`,
@@ -191,9 +168,9 @@ const UserForm = ({ changeForm }) => {
         { "Content-Type": "application/json" }
       );
       if (responseData) {
+        console.log("🚀 ~ file: UserForm.js:170 ~ submitHandler ~ responseData:", responseData);
         setBookingConfirmed(responseData);
-        changeForm(responseData.data);
-        localStorage.setItem("bookingId", responseData?.data?.token);
+        navigate(`/booking/${responseData?.data?.token}`);
       }
     } catch (error) {}
   };
@@ -280,7 +257,7 @@ const UserForm = ({ changeForm }) => {
     );
   }
   return (
-    <>
+    <Grid item xs={12} lg={10} mt={0}>
       {}
       {showAlert && (
         <MKAlert dismissible={showAlert} closeAlert={closeAlert} color="info">
@@ -348,8 +325,8 @@ const UserForm = ({ changeForm }) => {
                       value={inputState.firstName}
                       onChange={handleInputChange}
                       required
-                      error={getInputValidationState("firstname") === "error"}
-                      success={getInputValidationState("firstname") === "success"}
+                      error={getInputValidationState("firstName") === "error"}
+                      success={getInputValidationState("firstName") === "success"}
                     />
                   </Grid>
                   <Grid item xs={12} md={6}>
@@ -645,7 +622,7 @@ const UserForm = ({ changeForm }) => {
           </MKBox>
         </MKBox>
       </MKBox>
-    </>
+    </Grid>
   );
 };
 
