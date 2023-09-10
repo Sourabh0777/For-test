@@ -6,6 +6,7 @@ export const useHttpClient = () => {
     const [error, seterror] = useState();
     const activeHttpRequest = useRef([]);
     const sendRequest = useCallback(async (url, method = "GET", body = null, headers = {}) => {
+        console.log("🚀 ~ file: http-hook.js:9 ~ sendRequest ~ url:", url)
         console.log("🚀 ~ file: http-hook.js:9 ~ sendRequest ~ body:", body)
         setIsLoading(true);
         const httpAbortCtrl = new AbortController();

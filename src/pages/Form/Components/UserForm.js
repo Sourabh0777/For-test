@@ -77,7 +77,7 @@ const UserForm = ({ changeForm }) => {
     noOfPassengers: 1,
     selectedAc: "nonAc",
     selectedSeater: "6+1 Car (No Carrier)",
-    busBookingType: "complete",
+    busBookingType: "pending",
     completeBusBookingSeats: "35",
   };
   const [dateOfTraveling, setDateOfTraveling] = useState(dayjs());
@@ -181,7 +181,7 @@ const UserForm = ({ changeForm }) => {
       paymentMode: "online",
       additionalCharges: 250,
       confirmed: "false",
-      bookingStatus: "pending",
+      bookingStatus: inputState.busBookingType,
     };
     try {
       const responseData = await sendRequest(
@@ -190,12 +190,12 @@ const UserForm = ({ changeForm }) => {
         JSON.stringify(formData),
         { "Content-Type": "application/json" }
       );
-
-      setBookingConfirmed(responseData);
-      changeForm(responseData.data);
-    } catch (error) {
-      console.log("🚀 ~ file: UserForm.js:165 ~ submitHandler ~ error:", error);
-    }
+      if (responseData) {
+        setBookingConfirmed(responseData);
+        changeForm(responseData.data);
+        localStorage.setItem("bookingId", responseData?.data?.token);
+      }
+    } catch (error) {}
   };
 
   const closeAlert = () => {
@@ -287,8 +287,8 @@ const UserForm = ({ changeForm }) => {
           Form was submitted
         </MKAlert>
       )}
-      {HorizontalLinearStepper()}
 
+      {HorizontalLinearStepper()}
       <MKBox
         bgColor="white"
         borderRadius="xl"
@@ -348,8 +348,8 @@ const UserForm = ({ changeForm }) => {
                       value={inputState.firstName}
                       onChange={handleInputChange}
                       required
-                      error={getInputValidationState("firstName") === "error"}
-                      success={getInputValidationState("firstName") === "success"}
+                      error={getInputValidationState("firstname") === "error"}
+                      success={getInputValidationState("firstname") === "success"}
                     />
                   </Grid>
                   <Grid item xs={12} md={6}>

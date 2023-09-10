@@ -12,6 +12,7 @@ import ColorToggleButton from "./Components/ColorToggleButton";
 import { FormContext } from "./Components/FormContext";
 import { useEffect, useState } from "react";
 import BookingStatus from "./Components/BookingStatus";
+import SearchBooking from "./Components/SearchBooking";
 const options = [
   {
     bgImage: taxi,
@@ -39,7 +40,10 @@ function Form() {
   const [selectedOption, setSelectedOption] = useState("taxi");
   const [formData, setFormData] = useState();
   const [bookingConfirmation, setBookingConfirmation] = useState();
+  const [bookingId, setbookingId] = useState();
   useEffect(() => {
+    const fetchBookingId = localStorage.getItem("bookingId");
+    setbookingId(fetchBookingId);
     if (selectedOption == "taxi") {
       setFormData(options[0]);
     }
@@ -67,9 +71,11 @@ function Form() {
           sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
         >
           {" "}
+          <SearchBooking />
           <ColorToggleButton onclick={selectHandler} />
         </Grid>
       </Grid>
+
       <Grid container spacing={2} alignItems="center" sx={{ height: "90vh" }}>
         {formData && <Image image={formData.bgImage} />}
 
@@ -84,8 +90,10 @@ function Form() {
           mr={{ xs: "auto", lg: 6 }}
           sx={{ height: "70vh" }}
         >
-          {formData && !bookingConfirmation && <UserForm changeForm={changeFormHandler} />}
-          {bookingConfirmation && <BookingStatus bookingConfirmationData={bookingConfirmation} />}
+          {formData && !bookingId && !bookingConfirmation && (
+            <UserForm changeForm={changeFormHandler} />
+          )}
+          {bookingId && <BookingStatus bookingId={bookingId} />}
         </Grid>
       </Grid>
     </FormContext.Provider>
