@@ -11,10 +11,7 @@ import MKButton from "components/MKButton";
 import { useHttpClient } from "hooks/http-hook";
 
 const BookingConfirmationForm = ({ bookingId }) => {
-  console.log(
-    "🚀 ~ file: BookingConfirmationForm.js:14 ~ BookingConfirmationForm ~ bookingId:",
-    bookingId
-  );
+
   const [BookingData, setBookingData] = useState();
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [buttonStatus, setButtonStatus] = useState();
@@ -102,10 +99,20 @@ const BookingConfirmationForm = ({ bookingId }) => {
                 ))}
               <Grid item xs={12} md={6}>
                 <MKBox mb={1}>
-                  {BookingData && buttonStatus == "pending" && (
+                  {BookingData && buttonStatus == "pending" ? (
                     <>
                       <MKTypography variant="h6">
                         Wait for the payment status get changed.
+                      </MKTypography>
+
+                      <MKButton variant="gradient" color="info" fullWidth>
+                        {buttonStatus}
+                      </MKButton>
+                    </>
+                  ) : (
+                    <>
+                      <MKTypography variant="h6">
+                        Payment status is completed.
                       </MKTypography>
 
                       <MKButton variant="gradient" color="info" fullWidth>

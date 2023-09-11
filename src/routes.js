@@ -25,12 +25,18 @@
 // @mui material components
 import Icon from "@mui/material/Icon";
 import BookingsConfirmation from "pages/BookingConfirmation/BookingsConfirmation";
+import BusBookingConfirmation from "pages/BookingConfirmation/Component/BusBookingConfirmation";
 
 const routes = [
   {
     name: "Booking Confirmation",
     route: "/booking/:token",
     component: <BookingsConfirmation />,
+  },
+  {
+    name: "Bus Booking Confirmation",
+    route: "/bus/booking/:token",
+    component: <BusBookingConfirmation />,
   },
 ];
 

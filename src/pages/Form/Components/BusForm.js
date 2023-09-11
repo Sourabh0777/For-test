@@ -30,7 +30,7 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import BookingStatus from "./BookingStatus";
 import { useNavigate } from "react-router-dom";
-const UserForm = () => {
+const BusForm = () => {
   const navigate = useNavigate();
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const formData = useContext(FormContext);
@@ -51,10 +51,7 @@ const UserForm = () => {
     destinationTo: "",
     dateOfTraveling: dayjs(),
     noOfPassengers: 1,
-    selectedAc: "nonAc",
-    selectedSeater: "6+1 Car (No Carrier)",
-    busBookingType: "pending",
-    completeBusBookingSeats: "35",
+    busBookingType: "complete",
   };
   const [dateOfTraveling, setDateOfTraveling] = useState(dayjs());
   const [inputState, setInputState] = useState(initialInputState);
@@ -79,20 +76,15 @@ const UserForm = () => {
 
     setInputState({
       ...inputState,
-      mobileNo: inputValue, // Update mobile number in state
+      mobileNo: inputValue,
     });
   };
-  const radioButtonHandler1 = (event) => {
-    setInputState({ ...inputState, selectedAc: event.target.value });
-  };
-  const radioButtonHandler2 = (event) => {
-    setInputState({ ...inputState, selectedSeater: event.target.value });
-  };
+
   const radioButtonHandler3 = (event) => {
     setInputState({ ...inputState, busBookingType: event.target.value });
   };
   const radioButtonHandler4 = (event) => {
-    setInputState({ ...inputState, completeBusBookingSeats: event.target.value });
+    setInputState({ ...inputState, noOfPassengers: event.target.value });
   };
 
   const getInputValidationState = (inputName) => {
@@ -143,26 +135,20 @@ const UserForm = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+
     const formData = {
       firstName: inputState.firstName,
       lastName: inputState.lastName,
       phoneNumber: inputState.mobileNo,
       travelDate: dateOfTraveling,
       travelTime: departureTime,
-      source: "Delhi",
-      destination: "64f3519c0ea234235f735941",
-      noOfPassengers: inputState.noOfPassengers,
-      texiType: "64f3338d70c79275caab2e0b",
-      fare: 2100,
-      paymentMode: "online",
-      additionalCharges: 250,
-      confirmed: "false",
-      bookingStatus: inputState.busBookingType,
+      startingLocation: inputState.destinationFrom,
+      destination: inputState.destinationTo,
+      noOfPassengers: Number(inputState.noOfPassengers),
     };
-
     try {
       const responseData = await sendRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/user/bookTaxi`,
+        `${process.env.REACT_APP_BACKEND_URL}/user/bookBus`,
         "POST",
         JSON.stringify(formData),
         { "Content-Type": "application/json" }
@@ -170,7 +156,8 @@ const UserForm = () => {
       if (responseData) {
         console.log("🚀 ~ file: UserForm.js:170 ~ submitHandler ~ responseData:", responseData);
         setBookingConfirmed(responseData);
-        navigate(`/booking/${responseData?.data?.token}`);
+        navigate(`/bus/booking/${responseData?.data?.token}`);
+        localStorage.setItem("BusConfirmationInfo",JSON.stringify(responseData))
       }
     } catch (error) {}
   };
@@ -434,57 +421,68 @@ const UserForm = () => {
                   </Grid>
                 </>
               )}
-              {inputState.destinationTo && inputState.destinationFrom && activeStep == 3 && (
+
+              {inputState.destinationFrom && activeStep == 3 && (
                 <>
                   <Grid item xs={12} md={12}>
                     <FormLabel id="demo-radio-buttons-group-label">Transport Details</FormLabel>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <MKInput
-                      type="number"
-                      variant="standard"
-                      label="No of Passengers"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      name="noOfPassengers"
-                      value={inputState.noOfPassengers}
-                      onChange={handleInputChange}
-                      required
-                    />
                   </Grid>
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
                       <MKBox mx={2} mb={2} display="flex">
                         <RadioGroup
-                          name="SelectAc"
-                          value={inputState.selectedAc}
-                          onChange={radioButtonHandler1}
-                        >
-                          <FormControlLabel value="ac" control={<Radio />} label="AC" />
-                          <FormControlLabel value="nonAc" control={<Radio />} label="Non-AC" />
-                        </RadioGroup>
-                        <RadioGroup
-                          name="SelectSeater"
-                          value={inputState.selectedSeater}
-                          onChange={radioButtonHandler2}
+                          name="Complete"
+                          value={inputState.busBookingType}
+                          onChange={radioButtonHandler3}
                         >
                           <FormControlLabel
-                            value="6+1 Car (No Carrier)"
+                            value="complete"
                             control={<Radio />}
-                            label="6+1 Car (No Carrier)"
+                            label="Book Complete Bus"
                           />
                           <FormControlLabel
-                            value="3+1 Car (No Carrier)"
+                            value="bookSeats"
                             control={<Radio />}
-                            label="3+1 Car (No Carrier)"
+                            label="Book Seats"
                           />
                         </RadioGroup>
                       </MKBox>
                     </Grid>
                   </Grid>
+                  {inputState.busBookingType === "complete" && (
+                    <Grid item xs={12} md={6}>
+                      <MKBox mx={2} mb={0} mt={0} display="flex">
+                        <RadioGroup
+                          name="Select No of seats"
+                          value={inputState.noOfPassengers}
+                          onChange={radioButtonHandler4}
+                          row
+                        >
+                          <FormControlLabel value={35} control={<Radio />} label="35 Seats" />
+                          <FormControlLabel value={40} control={<Radio />} label="40  Seats" />
+                          <FormControlLabel value={45} control={<Radio />} label="45 Seats" />
+                          <FormControlLabel value={50} control={<Radio />} label="50 Seats" />
+                        </RadioGroup>
+                      </MKBox>
+                    </Grid>
+                  )}
+                  {inputState.busBookingType === "bookSeats" && (
+                    <Grid item xs={12} md={6}>
+                      <MKInput
+                        type="number"
+                        variant="standard"
+                        label="No of Passengers"
+                        InputLabelProps={{ shrink: true }}
+                        fullWidth
+                        name="noOfPassengers"
+                        value={inputState.noOfPassengers}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </Grid>
+                  )}
                 </>
               )}
-              
             </Grid>
             <Grid container spacing={2}>
               {inputState.noOfPassengers && inputState.destinationFrom && activeStep == 4 && (
@@ -560,4 +558,4 @@ const UserForm = () => {
   );
 };
 
-export default UserForm;
+export default BusForm;
