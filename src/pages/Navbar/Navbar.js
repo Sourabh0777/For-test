@@ -46,7 +46,7 @@ const Navbar = ({ changeTypeHandler }) => {
   return (
     <>
       {" "}
-      {/* <SearchBooking /> */}
+      <SearchBooking />
       <ColorToggleButton onclick={selectHandler} />
     </>
   );

@@ -23,17 +23,7 @@ const BusBookingConfirmation = () => {
       { label: "Destination", key: responseData.data?.destination },
       { label: "Travel Date", key: responseData.data?.travelDate },
       { label: "Travel Time", key: responseData.data?.travelTime },
-      // { label: "Fare", key: responseData.data[0]?.fare },
-      //   { label: "Additional Charges", key: responseData.data[0]?.additionalCharges },
-      //   { label: "Payment Mode", key: responseData.data[0]?.paymentMode },
-      //   { label: "Booking Status", key: responseData.data[0]?.bookingStatus },
-      //   { label: "Confirmed", key: responseData.data[0]?.confirmed },
-      //   //
-      //   { label: "Confirmed", key: responseData.data[0]?.confirmed },
-
       { label: "token", key: responseData.data?.token },
-      //   //
-      //   { label: "Payment Accepted", key: responseData.data[0]?.paymentAccepted },
     ];
     setBookingData(fields);
   }, []);

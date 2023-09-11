@@ -11,7 +11,6 @@ import MKButton from "components/MKButton";
 import { useHttpClient } from "hooks/http-hook";
 
 const BookingConfirmationForm = ({ bookingId }) => {
-
   const [BookingData, setBookingData] = useState();
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [buttonStatus, setButtonStatus] = useState();
@@ -22,7 +21,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
         const responseData = await sendRequest(
           `${process.env.REACT_APP_BACKEND_URL}/counter/bookingByToken?token=${bookingId}`
         );
-        if (responseData?.data) {
+        if (responseData?.data.bookingMode == "taxi") {
           const fields = [
             { label: "First Name", key: responseData?.data[0]?.firstName },
             { label: "Last Name", key: responseData.data[0]?.lastName },
@@ -36,12 +35,22 @@ const BookingConfirmationForm = ({ bookingId }) => {
             { label: "Payment Mode", key: responseData.data[0]?.paymentMode },
             { label: "Booking Status", key: responseData.data[0]?.bookingStatus },
             { label: "Confirmed", key: responseData.data[0]?.confirmed },
-            //
-            { label: "Confirmed", key: responseData.data[0]?.confirmed },
-
             { label: "token", key: responseData.data[0]?.token },
-            //
             { label: "Payment Accepted", key: responseData.data[0]?.paymentAccepted },
+          ];
+          setBookingData(fields);
+          setButtonStatus(responseData?.data[0]?.bookingStatus);
+        }
+        if (responseData?.data.bookingMode == "bus") {
+          const fields = [
+            { label: "First Name", key: responseData?.data[0]?.firstName },
+            { label: "Last Name", key: responseData.data[0]?.lastName },
+            { label: "Phone Number", key: responseData.data[0]?.phoneNumber },
+            { label: "From", key: responseData.data[0]?.startingLocation },
+            { label: "Destination", key: responseData.data[0]?.destination },
+            { label: "Travel Date", key: responseData.data[0]?.travelDate },
+            { label: "Travel Time", key: responseData.data[0]?.travelTime },
+            { label: "token", key: responseData.data[0]?.token },
           ];
           setBookingData(fields);
           setButtonStatus(responseData?.data[0]?.bookingStatus);
@@ -101,9 +110,9 @@ const BookingConfirmationForm = ({ bookingId }) => {
                 <MKBox mb={1}>
                   {BookingData && buttonStatus == "pending" ? (
                     <>
-                      <MKTypography variant="h6">
+                      {/* <MKTypography variant="h6">
                         Wait for the payment status get changed.
-                      </MKTypography>
+                      </MKTypography> */}
 
                       <MKButton variant="gradient" color="info" fullWidth>
                         {buttonStatus}
@@ -111,11 +120,9 @@ const BookingConfirmationForm = ({ bookingId }) => {
                     </>
                   ) : (
                     <>
-                      <MKTypography variant="h6">
-                        Payment status is completed.
-                      </MKTypography>
+                      <MKTypography variant="h6">Payment status is completed.</MKTypography>
 
-                      <MKButton variant="gradient" color="info" fullWidth>
+                      <MKButton variant="gradient" color="Success" fullWidth>
                         {buttonStatus}
                       </MKButton>
                     </>
