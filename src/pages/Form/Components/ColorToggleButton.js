@@ -9,6 +9,7 @@ import MKTypography from "components/MKTypography";
 import bus from "assets/images/20945950.jpg";
 import taxi from "assets/images/3644592.jpg";
 import packageImage from "assets/images/11291.jpg";
+import { useNavigate } from "react-router-dom";
 //Context Related
 const options = [
   {
@@ -34,10 +35,12 @@ const options = [
   },
 ];
 export default function ColorToggleButton({ onclick }) {
+  const navigate = useNavigate();
   const [alignment, setAlignment] = React.useState(options[0].value);
   const handleChange = (event, newAlignment) => {
     setAlignment(newAlignment);
     onclick(newAlignment);
+    navigate("/taxi");
   };
 
   return (

@@ -30,7 +30,10 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import BookingStatus from "./BookingStatus";
 import { useNavigate } from "react-router-dom";
+import BookingConfirmed from "pages/BookingConfirmation/BookingConfirmed";
 const UserForm = () => {
+  const [openModal, setOpenModal] = useState(false);
+  const [BookingToke, setBookingToken] = useState();
   const navigate = useNavigate();
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const formData = useContext(FormContext);
@@ -49,14 +52,18 @@ const UserForm = () => {
     mobileNo: "",
     destinationFrom: "Delhi",
     destinationTo: "",
-    dateOfTraveling: dayjs(),
     noOfPassengers: 1,
     selectedAc: "nonAc",
     selectedSeater: "6+1 Car (No Carrier)",
     busBookingType: "pending",
     completeBusBookingSeats: "35",
   };
+
   const [dateOfTraveling, setDateOfTraveling] = useState(dayjs());
+  const dateHandler = (value) => {
+    setDateOfTraveling(value);
+  };
+
   const [inputState, setInputState] = useState(initialInputState);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -127,19 +134,23 @@ const UserForm = () => {
     ) {
       setIsNextDisabled(false);
     }
-    if (dateOfTraveling !== "" && departureTime !== "" && activeStep === 1) {
+    if (
+      // dateOfTraveling &&
+      departureTime !== "" &&
+      inputState.destinationFrom &&
+      inputState.destinationTo &&
+      activeStep === 1
+    ) {
       setIsNextDisabled(false);
     }
-    if (inputState.destinationFrom && inputState.destinationTo && activeStep === 2) {
-      setIsNextDisabled(false);
-    }
-    if (inputState.noOfPassengers && activeStep === 3) {
+
+    if (inputState.noOfPassengers && activeStep === 2) {
       setIsNextDisabled(false);
     }
     if (inputState.noOfPassengers && activeStep === 4) {
       setIsNextDisabled(false);
     }
-  }, [inputState, activeStep]);
+  }, [inputState, activeStep, dateOfTraveling, departureTime]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -168,9 +179,11 @@ const UserForm = () => {
         { "Content-Type": "application/json" }
       );
       if (responseData) {
-        console.log("🚀 ~ file: UserForm.js:170 ~ submitHandler ~ responseData:", responseData);
-        setBookingConfirmed(responseData);
-        navigate(`/booking/${responseData?.data?.token}`);
+        setOpenModal(true);
+        setBookingToken(responseData?.data?.token);
+
+        // setBookingConfirmed(responseData);
+        // navigate(`/booking/${responseData?.data?.token}`);
       }
     } catch (error) {}
   };
@@ -182,7 +195,6 @@ const UserForm = () => {
   //Code for Stepper d'ont Change
   const [steps, setSteps] = useState([
     "User Details",
-    "Traveling Time",
     "Traveling Details",
     "Transport Details",
     "Confirm Payment",
@@ -227,6 +239,8 @@ const UserForm = () => {
   };
 
   const handleReset = () => {
+    setInputState(initialInputState);
+
     setActiveStep(0);
   };
   function HorizontalLinearStepper() {
@@ -256,8 +270,15 @@ const UserForm = () => {
       </Box>
     );
   }
+  const onClose = () => {
+    setOpenModal(false);
+    setInputState(initialInputState);
+
+    setActiveStep(0);
+  };
   return (
     <Grid item xs={12} lg={10} mt={0}>
+      {BookingToke && <BookingConfirmed open={openModal} onClose={onClose} data={BookingToke} />}
       {}
       {showAlert && (
         <MKAlert dismissible={showAlert} closeAlert={closeAlert} color="info">
@@ -302,18 +323,6 @@ const UserForm = () => {
             <Grid container spacing={3}>
               {activeStep == 0 && (
                 <>
-                  <Grid item xs={12} md={0} mt={-5}>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DemoContainer components={["DateField", "DateField"]}>
-                        <DateField
-                          variant="standard"
-                          label="Booking Date"
-                          defaultValue={dayjs()}
-                          disabled
-                        />
-                      </DemoContainer>
-                    </LocalizationProvider>
-                  </Grid>
                   <Grid item xs={12} md={6}>
                     <MKInput
                       type="text"
@@ -359,6 +368,18 @@ const UserForm = () => {
                       success={getInputValidationState("mobileNo") === "success"}
                     />
                   </Grid>
+                  <Grid item xs={12} md={6}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DemoContainer components={["DateField", "DateField"]}>
+                        <DateField
+                          variant="standard"
+                          label="Booking Date"
+                          defaultValue={dayjs()}
+                          disabled
+                        />
+                      </DemoContainer>
+                    </LocalizationProvider>
+                  </Grid>
                 </>
               )}
 
@@ -373,7 +394,7 @@ const UserForm = () => {
                           fullWidth
                           name="dateOfTraveling"
                           value={dateOfTraveling}
-                          onChange={(newValue) => setDateOfTraveling(newValue)}
+                          onChange={(newValue) => dateHandler(newValue)}
                           required
                         />
                       </DemoContainer>
@@ -392,13 +413,6 @@ const UserForm = () => {
                       onChange={timeHandler}
                       required
                     />
-                  </Grid>
-                </>
-              )}
-              {dateOfTraveling && departureTime && inputState.mobileNo && activeStep == 2 && (
-                <>
-                  <Grid item xs={12} md={12}>
-                    <FormLabel id="demo-radio-buttons-group-label">Traveling Details</FormLabel>
                   </Grid>
                   <Grid item xs={12} md={6}>
                     <MKInput
@@ -434,12 +448,9 @@ const UserForm = () => {
                   </Grid>
                 </>
               )}
-              {inputState.destinationTo && inputState.destinationFrom && activeStep == 3 && (
+              {activeStep == 2 && (
                 <>
-                  <Grid item xs={12} md={12}>
-                    <FormLabel id="demo-radio-buttons-group-label">Transport Details</FormLabel>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12} md={6} p={1.5}>
                     <MKInput
                       type="number"
                       variant="standard"
@@ -452,47 +463,47 @@ const UserForm = () => {
                       required
                     />
                   </Grid>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                      <MKBox mx={2} mb={2} display="flex">
-                        <RadioGroup
-                          name="SelectAc"
-                          value={inputState.selectedAc}
-                          onChange={radioButtonHandler1}
-                        >
-                          <FormControlLabel value="ac" control={<Radio />} label="AC" />
-                          <FormControlLabel value="nonAc" control={<Radio />} label="Non-AC" />
-                        </RadioGroup>
-                        <RadioGroup
-                          name="SelectSeater"
-                          value={inputState.selectedSeater}
-                          onChange={radioButtonHandler2}
-                        >
-                          <FormControlLabel
-                            value="6+1 Car (No Carrier)"
-                            control={<Radio />}
-                            label="6+1 Car (No Carrier)"
-                          />
-                          <FormControlLabel
-                            value="3+1 Car (No Carrier)"
-                            control={<Radio />}
-                            label="3+1 Car (No Carrier)"
-                          />
-                        </RadioGroup>
-                      </MKBox>
-                    </Grid>
+                  <Grid item xs={12} md={6}>
+                    <RadioGroup
+                      name="SelectAc"
+                      value={inputState.selectedAc}
+                      onChange={radioButtonHandler1}
+                      row
+                      mt={1}
+                    >
+                      <FormControlLabel value="ac" control={<Radio />} label="AC" />
+                      <FormControlLabel value="nonAc" control={<Radio />} label="Non-AC" />
+                    </RadioGroup>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <RadioGroup
+                      name="SelectSeater"
+                      value={inputState.selectedSeater}
+                      onChange={radioButtonHandler2}
+                      row
+                    >
+                      <FormControlLabel
+                        value="6+1 Car (No Carrier)"
+                        control={<Radio />}
+                        label="6+1 Car (No Carrier)"
+                      />
+                      <FormControlLabel
+                        value="3+1 Car (No Carrier)"
+                        control={<Radio />}
+                        label="3+1 Car (No Carrier)"
+                      />
+                    </RadioGroup>
                   </Grid>
                 </>
               )}
-              
             </Grid>
             <Grid container spacing={2}>
-              {inputState.noOfPassengers && inputState.destinationFrom && activeStep == 4 && (
+              {inputState.noOfPassengers && inputState.destinationFrom && activeStep == 3 && (
                 <>
-                  <Grid item xs={12}>
+                  {/* <Grid item xs={12}>
                     <MKBox
                       mx={2}
-                      mb={2}
+                      mb={0}
                       sx={{
                         display: "flex",
                         flexDirection: "column",
@@ -510,10 +521,66 @@ const UserForm = () => {
                         You wish to confirm booking ?
                       </FormLabel>
                     </MKBox>
+                  </Grid> */}
+                  <Grid item xs={12} md={4} p={2.7}>
+                    <MKInput
+                      type="name"
+                      label="Name"
+                      variant="standard"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={inputState.firstName}
+                      disabled
+                    />
+                  </Grid>{" "}
+                  <Grid item xs={12} md={4}>
+                    <MKInput
+                      type="text"
+                      label="Phone no"
+                      variant="standard"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={inputState.mobileNo}
+                      disabled
+                    />
+                  </Grid>{" "}
+                  <Grid item xs={12} md={4}>
+                    <MKInput
+                      type="time"
+                      label="Departure Time"
+                      variant="standard"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={departureTime}
+                      disabled
+                    />
+                  </Grid>{" "}
+                  <Grid item xs={12} md={4}>
+                    <MKInput
+                      type="text"
+                      label="From"
+                      variant="standard"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={inputState.destinationFrom}
+                      disabled
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <MKInput
+                      type="text"
+                      label="To"
+                      variant="standard"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={inputState.destinationTo}
+                      disabled
+                    />
                   </Grid>
                 </>
               )}
             </Grid>
+
             <Grid container item justifyContent="center" xs={12} mt={3} mb={2}>
               {activeStep === steps.length - 1 ? (
                 <React.Fragment>

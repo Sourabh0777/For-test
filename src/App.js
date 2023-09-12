@@ -46,7 +46,7 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Grid container spacing={9} alignItems="center">
+      <Grid container spacing={9} alignItems="center" justifyContent="center" mt={1}>
         <FormContext.Provider value={formData}>
           <Navbar changeTypeHandler={changeTypeHandler} />
           <Routes>

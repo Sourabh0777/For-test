@@ -46,7 +46,7 @@ const SearchBooking = () => {
         <Grid container spacing={2}>
           <Grid item xs={12} lg={14}>
             <MKInput
-              label="Enter Token or Phone Number"
+              label="Enter Token No"
               fullWidth
               value={input}
               onChange={(e) => setInput(e.target.value)}

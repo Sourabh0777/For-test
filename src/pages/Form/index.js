@@ -18,6 +18,7 @@ function Form() {
         {formData ? <Image image={formData.bgImage} /> : <Image image={taxi} />}
         {formData.value == "taxi" && <UserForm />}
         {formData.value == "bus" && <BusForm />}
+        {formData.value == "package" && <BusForm />}
       </Grid>
     </Grid>
   );
