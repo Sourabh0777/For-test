@@ -187,10 +187,11 @@ const TaxiBookingForm = () => {
       noOfPassengers: noOfPassengers,
       texiType: selectedTaxiType._id,
       fare: selectedTaxiType.fair + tollCost,
-      paymentMode: "online",
       additionalCharges: tollCost,
       confirmed: false,
       bookingStatus: "pending",
+      paymentAccepted: false,
+      landingLocationId: selectedLandingLocation,
     };
     if (checked) {
       formData.bookingType = "package";
@@ -210,6 +211,10 @@ const TaxiBookingForm = () => {
       console.log(error);
     }
   };
+  console.log(
+    "🚀 ~ file: TaxiBookingForm.js:56 ~ TaxiBookingForm ~ selectedLandingLocation:",
+    selectedLandingLocation
+  );
 
   return (
     <MKBox p={3}>
