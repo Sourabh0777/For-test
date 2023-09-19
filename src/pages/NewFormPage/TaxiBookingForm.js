@@ -3,11 +3,16 @@ import {
   Box,
   Button,
   FormControl,
+  FormControlLabel,
   FormHelperText,
+  FormLabel,
   Grid,
   InputLabel,
   MenuItem,
+  Radio,
+  RadioGroup,
   Select,
+  Switch,
 } from "@mui/material";
 import { DateField, DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
@@ -165,10 +170,15 @@ const TaxiBookingForm = () => {
     fullName,
     mobileNo,
   ]);
+  const [checked, setChecked] = React.useState(false);
+
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
+  };
   const submitHandler = async () => {
-    const formData = {
+    let formData = {
       firstName: firstName,
-      lastName: lastName,
+      lastName: lastName || " ",
       phoneNumber: mobileNo,
       travelDate: dateOfTraveling,
       travelTime: departureTime,
@@ -180,9 +190,11 @@ const TaxiBookingForm = () => {
       paymentMode: "online",
       additionalCharges: tollCost,
       confirmed: false,
-      // bookingType: "package",
       bookingStatus: "pending",
     };
+    if (checked) {
+      formData.bookingType = "package";
+    }
     try {
       const responseData = await sendRequest(
         // eslint-disable-next-line no-undef
@@ -198,6 +210,7 @@ const TaxiBookingForm = () => {
       console.log(error);
     }
   };
+
   return (
     <MKBox p={3}>
       <MKTypography variant="body2" color="text" mb={3}></MKTypography>
@@ -407,6 +420,35 @@ const TaxiBookingForm = () => {
                   />
                 </MKBox>
               </Grid>
+              <Grid item xs={12} sm={12} md={3}>
+                <MKBox mb={2}>
+                  <MKInput
+                    variant="standard"
+                    type="number"
+                    label="No of Passengers"
+                    InputLabelProps={{ shrink: true }}
+                    fullWidth
+                    name="noOfPassengers"
+                    value={noOfPassengers || 0}
+                    onChange={(e) => setNoOfPassengers(e.target.value)}
+                    required
+                  />
+                </MKBox>
+              </Grid>
+              {/* <Grid item xs={12} sm={12} md={3}>
+                <MKBox mb={2}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={checked}
+                        onChange={handleChange}
+                        inputProps={{ "aria-label": "controlled" }}
+                      />
+                    }
+                    label="Package"
+                  />
+                </MKBox>
+              </Grid> */}
             </Grid>
           ) : null}
           {activeStep == 2 && (
@@ -495,6 +537,20 @@ const TaxiBookingForm = () => {
                       selectedTaxiType.typeName +
                       (selectedTaxiType.hasAc === true ? " - Ac" : " - Non - Ac")
                     }
+                    disabled
+                  />
+                </MKBox>
+              </Grid>
+              <Grid item xs={12} sm={12} md={3}>
+                <MKBox mb={2}>
+                  <MKInput
+                    variant="standard"
+                    type="number"
+                    label="No of Passengers"
+                    InputLabelProps={{ shrink: true }}
+                    fullWidth
+                    name="noOfPassengers"
+                    value={noOfPassengers || 0}
                     disabled
                   />
                 </MKBox>

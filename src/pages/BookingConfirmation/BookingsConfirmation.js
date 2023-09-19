@@ -21,15 +21,36 @@ import { Card } from "@mui/material";
 import ColorToggleButton from "pages/Form/Components/ColorToggleButton";
 import BookingConfirmationForm from "./Component/BookingConfirmationForm";
 import { useParams } from "react-router-dom";
+import bgImage from "assets/images/bg-sign-in-basic.jpeg";
+
 const BookingsConfirmation = () => {
   let { token } = useParams();
   return (
-    <Grid container spacing={8} alignItems="center" mx={2}>
-      <Grid item xs={6} lg={12} p={0} sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
-        <Image image={image} />
-        <BookingConfirmationForm bookingId={token} />
-      </Grid>
-    </Grid>
+    <>
+      <MKBox
+        position="absolute"
+        top={0}
+        left={0}
+        zIndex={1}
+        width="100%"
+        minHeight="100vh"
+        sx={{
+          backgroundImage: ({ functions: { linearGradient, rgba }, palette: { gradients } }) =>
+            `${linearGradient(
+              rgba(gradients.dark.main, 0.6),
+              rgba(gradients.dark.state, 0.6)
+            )}, url(${bgImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      />
+      <MKBox px={1} width="100%" height="100vh" mx="auto" position="relative" zIndex={2}>
+        <Grid container spacing={1} justifyContent="center" alignItems="center" height="100%">
+          <BookingConfirmationForm bookingId={token} />
+        </Grid>
+      </MKBox>
+    </>
   );
 };
 

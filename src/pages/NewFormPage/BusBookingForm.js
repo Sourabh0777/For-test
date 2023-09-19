@@ -9,14 +9,16 @@ import MKInput from "components/MKInput";
 import MKTypography from "components/MKTypography";
 import { useHttpClient } from "hooks/http-hook";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const BusBookingForm = () => {
+  const navigate = useNavigate();
   const [activeStep, setActiveStep] = React.useState(0);
-  const [isNextDisabled, setIsNextDisabled] = useState(false);
+  const [isNextDisabled, setIsNextDisabled] = useState(true);
   // eslint-disable-next-line no-unused-vars
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const handleNext = () => {
-    setIsNextDisabled(false);
+    setIsNextDisabled(true);
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
   const handleBack = () => {
@@ -79,16 +81,40 @@ const BusBookingForm = () => {
 
     fetchLocation();
   }, []);
+  useEffect(() => {
+    if (
+      activeStep == 0 &&
+      startingLocation &&
+      selectedLocation &&
+      selectedBusType &&
+      noOfPassengers
+    ) {
+      setIsNextDisabled(false);
+    }
+
+    if (activeStep == 1 && dateOfTraveling && departureTime && fullName && mobileNo) {
+      setIsNextDisabled(false);
+    }
+  }, [
+    startingLocation,
+    selectedLocation,
+    selectedBusType,
+    noOfPassengers,
+    dateOfTraveling,
+    departureTime,
+    firstName,
+    mobileNo,
+  ]);
   const submitHandler = async () => {
     const formData = {
       firstName: firstName,
-      lastName: lastName,
+      lastName: lastName || " ",
       phoneNumber: mobileNo,
       travelDate: dateOfTraveling,
       travelTime: departureTime,
       startingLocation: startingLocation,
       destination: selectedLocationName,
-      noOfPassengers: noOfPassengers,
+      noOfPassengers: Number(noOfPassengers),
       fare: 2000,
     };
     try {
@@ -100,15 +126,14 @@ const BusBookingForm = () => {
         { "Content-Type": "application/json" }
       );
       if (responseData) {
-        console.log(
-          "🚀 ~ file: BusBookingForm.js:102 ~ submitHandler ~ responseData:",
-          responseData
-        );
+        navigate(`/booking/${responseData?.data?.token}`);
       }
     } catch (error) {
       console.log(error);
     }
   };
+  console.log("🚀 ~ file: BusBookingForm.js:33 ~ BusBookingForm ~ noOfPassengers:", noOfPassengers);
+
   return (
     <MKBox p={3}>
       <MKTypography variant="body2" color="text" mb={3}>
@@ -196,11 +221,11 @@ const BusBookingForm = () => {
                           onChange={selectedSeatHandler}
                           sx={{ minHeight: 45, minWidth: 270 }}
                         >
-                          <MenuItem value="0">0 Seats</MenuItem>
-                          <MenuItem value="35">35 Seater Bus</MenuItem>
-                          <MenuItem value="40">40 Seater Bus</MenuItem>
-                          <MenuItem value="45">45 Seater Bus</MenuItem>{" "}
-                          <MenuItem value="50">50 Seater Bus</MenuItem>
+                          <MenuItem value={0}>0 Seats</MenuItem>
+                          <MenuItem value={35}>35 Seater Bus</MenuItem>
+                          <MenuItem value={40}>40 Seater Bus</MenuItem>
+                          <MenuItem value={45}>45 Seater Bus</MenuItem>{" "}
+                          <MenuItem value={50}>50 Seater Bus</MenuItem>
                         </Select>
                       </FormControl>
                     </MKBox>
