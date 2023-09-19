@@ -142,19 +142,6 @@ const TaxiBookingForm = () => {
     setDateOfTraveling(newValue);
   };
   const [noOfPassengers, setNoOfPassengers] = useState(0);
-  // console.log(
-  //   "dateOfTraveling:",
-  //   dateOfTraveling,
-  //   "departureTime",
-  //   departureTime,
-  //   "firstName",
-  //   firstName,
-  //   "lastName:",
-  //   lastName,
-  //   mobileNo
-  // );
-
-  // activeStep === 2 Code
   useEffect(() => {
     if (
       activeStep == 0 &&
@@ -417,21 +404,6 @@ const TaxiBookingForm = () => {
                     fullWidth
                     value={selectedTaxiType.fair + tollCost || 0}
                     disabled
-                  />
-                </MKBox>
-              </Grid>
-              <Grid item xs={12} sm={12} md={4}>
-                <MKBox mb={2}>
-                  <MKInput
-                    type="number"
-                    variant="standard"
-                    label="No of Passengers"
-                    InputLabelProps={{ shrink: true }}
-                    fullWidth
-                    name="noOfPassengers"
-                    value={noOfPassengers || 0}
-                    onChange={(e) => setNoOfPassengers(e.target.value)}
-                    required
                   />
                 </MKBox>
               </Grid>
