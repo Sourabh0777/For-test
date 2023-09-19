@@ -21,13 +21,6 @@ import { Grid } from "@mui/material";
 import { FormContext } from "pages/Form/Components/FormContext";
 
 export default function App() {
-  const a = {
-    bgImage: taxi,
-    heading: "Taxi",
-    name: "Taxi",
-    value: "taxi",
-    icon: "local_taxi_icon",
-  };
   const { pathname } = useLocation();
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
@@ -39,22 +32,17 @@ export default function App() {
       }
       return null;
     });
-  const [formData, setFormData] = useState(a);
-  const changeTypeHandler = (value) => {
-    setFormData(value);
-  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Grid container spacing={9} alignItems="center" justifyContent="center" mt={1}>
-        <FormContext.Provider value={formData}>
-          <Navbar changeTypeHandler={changeTypeHandler} />
-          <Routes>
-            {getRoutes(routes)}
-            <Route path="/taxi" element={<Form />} />
-            <Route path="*" element={<Navigate to="/taxi" />} />
-          </Routes>
-        </FormContext.Provider>
+        {/* <Navbar changeTypeHandler={changeTypeHandler} /> */}
+        <Routes>
+          {getRoutes(routes)}
+          <Route path="/taxi" element={<Form />} />
+          <Route path="*" element={<Navigate to="/BookingPage" />} />
+        </Routes>
       </Grid>
     </ThemeProvider>
   );

@@ -32,10 +32,9 @@ import BookingStatus from "./BookingStatus";
 import { useNavigate } from "react-router-dom";
 import BookingConfirmed from "pages/BookingConfirmation/BookingConfirmed";
 import Navbar from "pages/Navbar/Navbar";
-const BusForm = ({ changeTypeHandler }) => {
+const PackageForm = ({ changeTypeHandler }) => {
   const [openModal, setOpenModal] = useState(false);
   const [BookingToke, setBookingToken] = useState();
-
   const navigate = useNavigate();
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const formData = useContext(FormContext);
@@ -55,12 +54,19 @@ const BusForm = ({ changeTypeHandler }) => {
     destinationFrom: "Delhi",
     destinationTo: "",
     noOfPassengers: 1,
-    busBookingType: "complete",
+    texiType: "65055e9012a928bd7509270b",
+    selectedAc: "nonAc",
+    selectedSeater: "6+1 Car (No Carrier)",
+    bookingStatus: "pending",
+    bookingType: "package",
+    packageId: "650577071ac28d5508697a44",
   };
+
   const [dateOfTraveling, setDateOfTraveling] = useState(dayjs());
   const dateHandler = (value) => {
     setDateOfTraveling(value);
   };
+
   const [inputState, setInputState] = useState(initialInputState);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -83,15 +89,14 @@ const BusForm = ({ changeTypeHandler }) => {
 
     setInputState({
       ...inputState,
-      mobileNo: inputValue,
+      mobileNo: inputValue, // Update mobile number in state
     });
   };
-
-  const radioButtonHandler3 = (event) => {
-    setInputState({ ...inputState, busBookingType: event.target.value });
+  const radioButtonHandler1 = (event) => {
+    setInputState({ ...inputState, selectedAc: event.target.value });
   };
-  const radioButtonHandler4 = (event) => {
-    setInputState({ ...inputState, noOfPassengers: event.target.value });
+  const radioButtonHandler2 = (event) => {
+    setInputState({ ...inputState, selectedSeater: event.target.value });
   };
 
   const getInputValidationState = (inputName) => {
@@ -120,15 +125,14 @@ const BusForm = ({ changeTypeHandler }) => {
     // Use this effect to check the conditions and update isNextDisabled.
     if (
       inputState.mobileNo !== "" &&
-      inputState.lastName &&
+      inputState.lastName !== "" &&
       inputState.firstName !== "" &&
       activeStep === 0
     ) {
       setIsNextDisabled(false);
     }
-
-
     if (
+      // dateOfTraveling &&
       departureTime !== "" &&
       inputState.destinationFrom &&
       inputState.destinationTo &&
@@ -136,40 +140,49 @@ const BusForm = ({ changeTypeHandler }) => {
     ) {
       setIsNextDisabled(false);
     }
-    if (activeStep === 2) {
-      setIsNextDisabled(false);
-    }
-    if (inputState.noOfPassengers && activeStep === 3) {
+
+    if (inputState.noOfPassengers && activeStep === 2) {
       setIsNextDisabled(false);
     }
     if (inputState.noOfPassengers && activeStep === 4) {
       setIsNextDisabled(false);
     }
-  }, [inputState, activeStep, dateOfTraveling]);
+  }, [inputState, activeStep, dateOfTraveling, departureTime]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
-
     const formData = {
       firstName: inputState.firstName,
       lastName: inputState.lastName,
       phoneNumber: inputState.mobileNo,
       travelDate: dateOfTraveling,
       travelTime: departureTime,
-      startingLocation: inputState.destinationFrom,
-      destination: inputState.destinationTo,
-      noOfPassengers: Number(inputState.noOfPassengers),
+      source: "Delhi",
+      destination: "64f3519c0ea234235f735941",
+      noOfPassengers: inputState.noOfPassengers,
+      texiType: "64f3338d70c79275caab2e0b",
+      fare: 2100,
+      paymentMode: "online",
+      additionalCharges: 250,
+      confirmed: "false",
+      bookingType: inputState.bookingType,
+      bookingStatus: inputState.bookingStatus,
+      packageId: inputState.packageId,
     };
+
     try {
       const responseData = await sendRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/user/bookBus`,
+        `${process.env.REACT_APP_BACKEND_URL}/user/bookTaxi`,
         "POST",
         JSON.stringify(formData),
         { "Content-Type": "application/json" }
       );
       if (responseData) {
-        setBookingToken(responseData?.data?.token);
         setOpenModal(true);
+        setBookingToken(responseData?.data?.token);
+
+        // setBookingConfirmed(responseData);
+        // navigate(`/booking/${responseData?.data?.token}`);
       }
     } catch (error) {}
   };
@@ -225,8 +238,9 @@ const BusForm = ({ changeTypeHandler }) => {
   };
 
   const handleReset = () => {
-    setActiveStep(0);
     setInputState(initialInputState);
+
+    setActiveStep(0);
   };
   function HorizontalLinearStepper() {
     return (
@@ -255,7 +269,6 @@ const BusForm = ({ changeTypeHandler }) => {
       </Box>
     );
   }
-
   const onClose = () => {
     setOpenModal(false);
     setInputState(initialInputState);
@@ -264,8 +277,7 @@ const BusForm = ({ changeTypeHandler }) => {
   };
   return (
     <Grid item xs={12} lg={10} mt={0}>
-      <BookingConfirmed open={openModal} onClose={onClose} data={BookingToke} />
-
+      {BookingToke && <BookingConfirmed open={openModal} onClose={onClose} data={BookingToke} />}
       {}
       {showAlert && (
         <MKAlert dismissible={showAlert} closeAlert={closeAlert} color="info">
@@ -275,7 +287,6 @@ const BusForm = ({ changeTypeHandler }) => {
 
       {HorizontalLinearStepper()}
       <Navbar changeTypeHandler={changeTypeHandler} />
-
       <MKBox
         bgColor="white"
         borderRadius="xl"
@@ -283,8 +294,8 @@ const BusForm = ({ changeTypeHandler }) => {
         display="flex"
         flexDirection="column"
         justifyContent="center"
-        mt={{ xs: 5, sm: 10, md: 5 }}
-        mb={{ xs: 5, sm: 10, md: 5 }}
+        mt={{ xs: 10, sm: 10, md: 5 }}
+        mb={{ xs: 10, sm: 10, md: 5 }}
         mx={0}
       >
         <MKBox
@@ -358,7 +369,6 @@ const BusForm = ({ changeTypeHandler }) => {
                     />
                   </Grid>
                   <Grid item xs={12} md={6}>
-                    {" "}
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DemoContainer components={["DateField", "DateField"]}>
                         <DateField
@@ -390,6 +400,7 @@ const BusForm = ({ changeTypeHandler }) => {
                       </DemoContainer>
                     </LocalizationProvider>
                   </Grid>
+
                   <Grid item xs={12} md={6}>
                     <MKInput
                       type="time"
@@ -437,70 +448,80 @@ const BusForm = ({ changeTypeHandler }) => {
                   </Grid>
                 </>
               )}
-
-              {inputState.destinationFrom && activeStep == 2 && (
+              {activeStep == 2 && (
                 <>
-                  <Grid item xs={12}>
-                    <MKBox mx={2} display="flex">
-                      <RadioGroup
-                        name="Complete"
-                        value={inputState.busBookingType}
-                        onChange={radioButtonHandler3}
-                        row
-                      >
-                        <FormControlLabel
-                          value="complete"
-                          control={<Radio />}
-                          label="Book Complete Bus"
-                        />
-                        <FormControlLabel
-                          value="bookSeats"
-                          control={<Radio />}
-                          label="Book Seats"
-                        />
-                      </RadioGroup>
-                    </MKBox>
+                  <Grid item xs={12} md={6} p={1.5}>
+                    <MKInput
+                      type="number"
+                      variant="standard"
+                      label="No of Passengers"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      name="noOfPassengers"
+                      value={inputState.noOfPassengers}
+                      onChange={handleInputChange}
+                      required
+                    />
                   </Grid>
-                  {inputState.busBookingType === "complete" && (
-                    <Grid item xs={12} md={12} mb={1.2}>
-                      <MKBox mx={2} mb={0} mt={0} display="flex">
-                        <RadioGroup
-                          name="Select No of seats"
-                          value={inputState.noOfPassengers}
-                          onChange={radioButtonHandler4}
-                          row
-                        >
-                          <FormControlLabel value={35} control={<Radio />} label="35 Seats" />
-                          <FormControlLabel value={40} control={<Radio />} label="40  Seats" />
-                          <FormControlLabel value={45} control={<Radio />} label="45 Seats" />
-                          <FormControlLabel value={50} control={<Radio />} label="50 Seats" />
-                        </RadioGroup>
-                      </MKBox>
-                    </Grid>
-                  )}
-                  {inputState.busBookingType === "bookSeats" && (
-                    <Grid item xs={12} md={6} mb={0} mt={0}>
-                      <MKInput
-                        type="number"
-                        variant="standard"
-                        label="No of Passengers"
-                        InputLabelProps={{ shrink: true }}
-                        fullWidth
-                        name="noOfPassengers"
-                        value={inputState.noOfPassengers}
-                        onChange={handleInputChange}
-                        required
-                        mb={0}
-                        mt={0}
+                  <Grid item xs={12} md={6}>
+                    <RadioGroup
+                      name="SelectAc"
+                      value={inputState.selectedAc}
+                      onChange={radioButtonHandler1}
+                      row
+                      mt={1}
+                    >
+                      <FormControlLabel value="ac" control={<Radio />} label="AC" />
+                      <FormControlLabel value="nonAc" control={<Radio />} label="Non-AC" />
+                    </RadioGroup>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <RadioGroup
+                      name="SelectSeater"
+                      value={inputState.selectedSeater}
+                      onChange={radioButtonHandler2}
+                      row
+                    >
+                      <FormControlLabel
+                        value="6+1 Car (No Carrier)"
+                        control={<Radio />}
+                        label="6+1 Car (No Carrier)"
                       />
-                    </Grid>
-                  )}
+                      <FormControlLabel
+                        value="3+1 Car (No Carrier)"
+                        control={<Radio />}
+                        label="3+1 Car (No Carrier)"
+                      />
+                    </RadioGroup>
+                  </Grid>
                 </>
               )}
             </Grid>
             <Grid container spacing={2}>
               {inputState.noOfPassengers && inputState.destinationFrom && activeStep == 3 && (
                 <>
+                  {/* <Grid item xs={12}>
+                    <MKBox
+                      mx={2}
+                      mb={0}
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        textAlign: "center",
+                      }}
+                    >
+                      <FormLabel
+                        id="demo-radio-buttons-group-label"
+                        sx={{
+                          textAlign: "center",
+                        }}
+                      >
+                        You wish to confirm booking ?
+                      </FormLabel>
+                    </MKBox>
+                  </Grid> */}
                   <Grid item xs={12} md={4} p={2.7}>
                     <MKInput
                       type="name"
@@ -559,6 +580,7 @@ const BusForm = ({ changeTypeHandler }) => {
                 </>
               )}
             </Grid>
+
             <Grid container item justifyContent="center" xs={12} mt={3} mb={2}>
               {activeStep === steps.length - 1 ? (
                 <React.Fragment>
@@ -605,4 +627,4 @@ const BusForm = ({ changeTypeHandler }) => {
   );
 };
 
-export default BusForm;
+export default PackageForm;

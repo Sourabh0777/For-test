@@ -31,7 +31,8 @@ import "react-phone-input-2/lib/style.css";
 import BookingStatus from "./BookingStatus";
 import { useNavigate } from "react-router-dom";
 import BookingConfirmed from "pages/BookingConfirmation/BookingConfirmed";
-const UserForm = () => {
+import Navbar from "pages/Navbar/Navbar";
+const UserForm = ({ changeTypeHandler }) => {
   const [openModal, setOpenModal] = useState(false);
   const [BookingToke, setBookingToken] = useState();
   const navigate = useNavigate();
@@ -53,10 +54,10 @@ const UserForm = () => {
     destinationFrom: "Delhi",
     destinationTo: "",
     noOfPassengers: 1,
+    texiType: "65055e9012a928bd7509270b",
     selectedAc: "nonAc",
     selectedSeater: "6+1 Car (No Carrier)",
-    busBookingType: "pending",
-    completeBusBookingSeats: "35",
+    bookingStatus: "pending",
   };
 
   const [dateOfTraveling, setDateOfTraveling] = useState(dayjs());
@@ -95,12 +96,6 @@ const UserForm = () => {
   const radioButtonHandler2 = (event) => {
     setInputState({ ...inputState, selectedSeater: event.target.value });
   };
-  const radioButtonHandler3 = (event) => {
-    setInputState({ ...inputState, busBookingType: event.target.value });
-  };
-  const radioButtonHandler4 = (event) => {
-    setInputState({ ...inputState, completeBusBookingSeats: event.target.value });
-  };
 
   const getInputValidationState = (inputName) => {
     if (touched) {
@@ -128,7 +123,7 @@ const UserForm = () => {
     // Use this effect to check the conditions and update isNextDisabled.
     if (
       inputState.mobileNo !== "" &&
-      inputState.lastName &&
+      inputState.lastName !== "" &&
       inputState.firstName !== "" &&
       activeStep === 0
     ) {
@@ -168,7 +163,8 @@ const UserForm = () => {
       paymentMode: "online",
       additionalCharges: 250,
       confirmed: "false",
-      bookingStatus: inputState.busBookingType,
+      // bookingType: "package",
+      bookingStatus: "pending",
     };
 
     try {
@@ -287,6 +283,7 @@ const UserForm = () => {
       )}
 
       {HorizontalLinearStepper()}
+      <Navbar changeTypeHandler={changeTypeHandler} />
       <MKBox
         bgColor="white"
         borderRadius="xl"
@@ -294,8 +291,8 @@ const UserForm = () => {
         display="flex"
         flexDirection="column"
         justifyContent="center"
-        mt={{ xs: 5, sm: 10, md: 5 }}
-        mb={{ xs: 5, sm: 10, md: 5 }}
+        mt={{ xs: 10, sm: 10, md: 5 }}
+        mb={{ xs: 10, sm: 10, md: 5 }}
         mx={0}
       >
         <MKBox

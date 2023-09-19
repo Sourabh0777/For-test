@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid";
 // eslint-disable-next-line react/prop-types
 const Image = ({ image }) => {
   return (
-    <Grid item xs={12} lg={10}>
+    <Grid item xs={16} lg={10} sm={16} md={16}>
       <MKBox
         display={{ xs: "none", lg: "flex" }}
         width="calc(90% - 1rem)"

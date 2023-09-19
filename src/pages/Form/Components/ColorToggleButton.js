@@ -3,7 +3,8 @@ import * as React from "react";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import MKBox from "components/MKBox";
-import { Icon } from "@mui/material";
+import { Grid, Icon } from "@mui/material";
+//Icon
 import MKTypography from "components/MKTypography";
 //Images
 import bus from "assets/images/20945950.jpg";
@@ -36,67 +37,84 @@ const options = [
 ];
 export default function ColorToggleButton({ onclick }) {
   const navigate = useNavigate();
+
   const [alignment, setAlignment] = React.useState(options[0].value);
   const handleChange = (event, newAlignment) => {
     setAlignment(newAlignment);
     onclick(newAlignment);
     navigate("/taxi");
   };
+  const screenSize = window.innerWidth <= 768 ? "xs" : "lg";
 
   return (
-    <MKBox variant="gradient" bgColor="light" borderRadius="lg" mt={10}>
-      <ToggleButtonGroup
-        color="dark"
-        value={alignment}
-        exclusive
-        onChange={handleChange}
-        aria-label="Platform"
-        sx={{ color: "black" }}
+    <Grid item xs={6} sm={6} md={8} lg={12} mt={4}>
+      <MKBox
+        variant="gradient"
+        bgColor="light"
+        borderRadius="lg"
+        sx={{
+          width: screenSize === "xs" ? "200%" : "100%",
+        }}
       >
-        {options.map((option, idx) => {
-          return (
-            <ToggleButton
-              value={option.value}
-              sx={{ border: "none", px: 5, background: "#3089EC", borderRadius: "5px" }}
-              key={idx}
-            >
-              <MKBox display="flex">
-                <MKBox
-                  variant="gradient"
-                  bgColor={"dark"}
-                  color={"dark"}
-                  coloredShadow="dark"
-                  borderRadius="xl"
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                  width="4rem"
-                  height="4rem"
-                >
-                  <Icon
-                    fontSize="large"
-                    color="inherit"
-                    sx={{
-                      color: ({ palette: { info } }) => info.main,
-                    }}
-                  >
-                    {option.icon}
-                  </Icon>
-                </MKBox>
-                <MKBox ml={2} m={2}>
-                  <MKTypography variant="h4" gutterBottom>
-                    {option.name}
-                  </MKTypography>
-                </MKBox>
-              </MKBox>
-            </ToggleButton>
-          );
-        })}
-        {/* <ToggleButton value="web">Web</ToggleButton>
+        <ToggleButtonGroup
+          color="light"
+          value={alignment}
+          exclusive
+          onChange={handleChange}
+          aria-label="Platform"
+          sx={{ color: "black" }}
+        >
+          {options.map((option, idx) => {
+            return (
+              <ToggleButton
+                value={option.value}
+                sx={{ border: "none", borderRadius: "5px" }}
+                key={idx}
+              >
+                <Grid container>
+                  <Grid item xs={6} lg={12}>
+                    <MKBox display="flex">
+                      {screenSize === "lg" && (
+                        <MKBox
+                          variant="gradient"
+                          bgColor={"info"}
+                          color={"dark"}
+                          coloredShadow="dark"
+                          borderRadius="xl"
+                          display="flex"
+                          justifyContent="center"
+                          alignItems="center"
+                          width="4rem"
+                          height="4rem"
+                        >
+                          <Icon
+                            fontSize="large"
+                            color="inherit"
+                            sx={{
+                              color: "dark",
+                            }}
+                          >
+                            {option.icon}
+                          </Icon>
+                        </MKBox>
+                      )}
+                      <MKBox ml={2} m={2}>
+                        <MKTypography variant="h4" gutterBottom>
+                          {option.name}
+                        </MKTypography>
+                      </MKBox>
+                    </MKBox>
+                  </Grid>
+                </Grid>
+              </ToggleButton>
+            );
+          })}
+          {/* <ToggleButton value="web">Web</ToggleButton>
         <ToggleButton value="android">Android</ToggleButton>
         <ToggleButton value="ios">iOS</ToggleButton> */}
-      </ToggleButtonGroup>
-    </MKBox>
+        </ToggleButtonGroup>
+      </MKBox>
+    </Grid>
   );
 }
 // coloredShadow="info"

@@ -33,6 +33,7 @@ const options = [
 ];
 const Navbar = ({ changeTypeHandler }) => {
   const selectHandler = (value) => {
+    console.log("🚀 ~ file: Navbar.js:36 ~ selectHandler ~ value:", value);
     if (value == "taxi") {
       changeTypeHandler(options[0]);
     }
