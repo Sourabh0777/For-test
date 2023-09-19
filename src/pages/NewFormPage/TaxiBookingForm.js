@@ -187,6 +187,7 @@ const TaxiBookingForm = () => {
       noOfPassengers: noOfPassengers,
       texiType: selectedTaxiType._id,
       fare: selectedTaxiType.fair + tollCost,
+      paymentMode: "online",
       additionalCharges: tollCost,
       confirmed: false,
       bookingStatus: "pending",
