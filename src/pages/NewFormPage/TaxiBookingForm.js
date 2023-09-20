@@ -154,7 +154,7 @@ const TaxiBookingForm = () => {
   const [packageTaxiList, setPackageTaxiList] = useState();
   const [selectedPackageData, setSelectedPackageData] = useState();
   //Values
-  const [checked, setChecked] = React.useState(true);
+  const [checked, setChecked] = React.useState(false);
   const [selectedPackage, setSelectedPackage] = useState();
   const [selectedPackageID, setselectedPackageID] = useState();
   const [pickupLocation, setPickupLocation] = useState();
@@ -324,13 +324,6 @@ const TaxiBookingForm = () => {
       console.log(error);
     }
   };
-  console.log("🚀 ~ file::", pickupLocation);
-  console.log("🚀 ~ file: :", selectedDrop.id);
-  console.log("🚀 ~ file: TaxiBookingForm.js:162 ~ TaxiBookingForm ~ destination:", destinationId);
-  console.log(
-    "🚀 ~ file: TaxiBookingForm.js:160 ~ TaxiBookingForm ~ selectedPackageID:",
-    selectedPackageID
-  );
 
   return (
     <MKBox p={3}>
