@@ -95,9 +95,11 @@ const TaxiBookingForm = () => {
         );
         setLocationData(responseData.data);
 
-        const locationNames = responseData.data.map((item) => {
-          return { name: item.locationName, id: item._id };
-        });
+        const locationNames = responseData.data
+          .filter((location) => (!checked ? location.type === "taxi" : location.type === "package"))
+          .map((item) => {
+            return { name: item.locationName, id: item._id };
+          });
 
         setLocations(locationNames);
       } catch (error) {
@@ -145,7 +147,7 @@ const TaxiBookingForm = () => {
   const handleDateChange = (newValue) => {
     setDateOfTraveling(newValue);
   };
-  const [noOfPassengers, setNoOfPassengers] = useState(0);
+  const [noOfPassengers, setNoOfPassengers] = useState(1);
 
   //Packages Code
   const [packageData, setPackageData] = useState();
@@ -665,16 +667,20 @@ const TaxiBookingForm = () => {
         )}
         {!checked && (
           <Grid container spacing={2}>
+            {/* {activeStep === 1 || activeStep === 0 ? ( */}
             {activeStep === 1 || activeStep === 0 ? (
-              <Grid
-                container
-                spacing={2}
-                display="flex"
-                justifyContent="flex-start"
-                alignItems="self-start"
-                sx={{ mx: 1, mt: 0.5 }}
-              >
-                <Grid item xs={12} sm={12} md={1}>
+              <Grid container>
+                {activeStep === 0 ? (
+                  <Grid item xs={12} md={10}>
+                    <Grid
+                      container
+                      spacing={2}
+                      // display="flex"
+                      // justifyContent="flex-start"
+                      // alignItems="self-start"
+                      sx={{ mx: 1, mt: 0.5 }}
+                    >
+                      {/* <Grid item xs={12} sm={12} md={1}>
                   <MKBox mb={2}>
                     <MKInput
                       variant="standard"
@@ -712,34 +718,74 @@ const TaxiBookingForm = () => {
                       disabled
                     />
                   </MKBox>
-                </Grid>
-                <Grid item xs={12} sm={12} md={3}>
-                  <MKBox mb={2}>
-                    <MKInput
-                      variant="standard"
-                      type="number"
-                      label="No of Passengers"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      name="noOfPassengers"
-                      value={noOfPassengers || 0}
-                      onChange={(e) => setNoOfPassengers(e.target.value)}
-                      required
-                    />
+                </Grid> */}
+                      <Grid item xs={12} sm={12} md={3}>
+                        <MKBox>
+                          <MKInput
+                            variant="standard"
+                            type="number"
+                            label="No of Passengers"
+                            InputLabelProps={{ shrink: true }}
+                            fullWidth
+                            name="noOfPassengers"
+                            value={noOfPassengers || 0}
+                            onChange={(e) => setNoOfPassengers(e.target.value)}
+                            required
+                          />
+                        </MKBox>
+                      </Grid>
+                      <Grid item xs={12} sm={12} md={3}>
+                        <MKBox>
+                          <FormControlLabel
+                            control={
+                              <Switch
+                                checked={checked}
+                                onChange={handleChange}
+                                inputProps={{ "aria-label": "controlled" }}
+                              />
+                            }
+                            label="Package"
+                          />
+                        </MKBox>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                ) : (
+                  <Grid item xs={12} md={10}></Grid>
+                )}
+                <Grid item xs={12} md={2} justifyContent={"end"}>
+                  <MKBox>
+                    {tollCost ? (
+                      <MKTypography variant="caption" color="text" fontWeight="medium">
+                        Toll Cost: &#8377; {tollCost}
+                      </MKTypography>
+                    ) : (
+                      <MKTypography variant="caption" color="text" fontWeight="medium">
+                        Toll Cost: NA
+                      </MKTypography>
+                    )}
                   </MKBox>
-                </Grid>
-                <Grid item xs={12} sm={12} md={3}>
-                  <MKBox mb={2}>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={checked}
-                          onChange={handleChange}
-                          inputProps={{ "aria-label": "controlled" }}
-                        />
-                      }
-                      label="Package"
-                    />
+                  <MKBox>
+                    {selectedTaxiType?.fair ? (
+                      <MKTypography variant="caption" color="text" fontWeight="medium">
+                        Fare: &#8377; {selectedTaxiType?.fair * noOfPassengers}
+                      </MKTypography>
+                    ) : (
+                      <MKTypography variant="caption" color="text" fontWeight="medium">
+                        Fare: NA
+                      </MKTypography>
+                    )}
+                  </MKBox>
+                  <MKBox>
+                    {selectedTaxiType?.fair && tollCost ? (
+                      <MKTypography variant="caption" color="text" fontWeight="medium">
+                        Total Cost: &#8377; {selectedTaxiType.fair * noOfPassengers + tollCost}
+                      </MKTypography>
+                    ) : (
+                      <MKTypography variant="caption" color="text" fontWeight="medium">
+                        Totall Cost: NA
+                      </MKTypography>
+                    )}
                   </MKBox>
                 </Grid>
               </Grid>
@@ -800,7 +846,7 @@ const TaxiBookingForm = () => {
                       label="Fair"
                       InputLabelProps={{ shrink: true }}
                       fullWidth
-                      value={selectedTaxiType.fair || 0}
+                      value={selectedTaxiType.fair * noOfPassengers || 0}
                       disabled
                     />
                   </MKBox>
@@ -813,7 +859,7 @@ const TaxiBookingForm = () => {
                       label="Total Fair"
                       InputLabelProps={{ shrink: true }}
                       fullWidth
-                      value={selectedTaxiType.fair + tollCost || 0}
+                      value={selectedTaxiType.fair * noOfPassengers + tollCost || 0}
                       disabled
                     />
                   </MKBox>
@@ -893,16 +939,20 @@ const TaxiBookingForm = () => {
         )}
         {checked && (
           <Grid container spacing={2}>
+            {/* {activeStep === 0 ? ( */}
             {activeStep === 1 || activeStep === 0 ? (
-              <Grid
-                container
-                spacing={2}
-                display="flex"
-                justifyContent="flex-start"
-                alignItems="self-start"
-                sx={{ mx: 1, mt: 0.5 }}
-              >
-                <Grid item xs={12} sm={12} md={1}>
+              <Grid container>
+                {activeStep === 0 ? (
+                  <Grid item xs={12} md={10}>
+                    <Grid
+                      container
+                      spacing={2}
+                      // display="flex"
+                      // justifyContent="flex-start"
+                      // alignItems="self-start"
+                      sx={{ mx: 1, mt: 0.5 }}
+                    >
+                      {/* <Grid item xs={12} sm={12} md={1}>
                   <MKBox mb={2}>
                     <MKInput
                       variant="standard"
@@ -940,34 +990,74 @@ const TaxiBookingForm = () => {
                       disabled
                     />
                   </MKBox>
-                </Grid>
-                <Grid item xs={12} sm={12} md={3}>
-                  <MKBox mb={2}>
-                    <MKInput
-                      variant="standard"
-                      type="number"
-                      label="No of Passengers"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      name="noOfPassengers"
-                      value={noOfPassengers || 0}
-                      onChange={(e) => setNoOfPassengers(e.target.value)}
-                      required
-                    />
+                </Grid> */}
+                      <Grid item xs={12} sm={12} md={3}>
+                        <MKBox>
+                          <MKInput
+                            variant="standard"
+                            type="number"
+                            label="No of Passengers"
+                            InputLabelProps={{ shrink: true }}
+                            fullWidth
+                            name="noOfPassengers"
+                            value={noOfPassengers || 0}
+                            onChange={(e) => setNoOfPassengers(e.target.value)}
+                            required
+                          />
+                        </MKBox>
+                      </Grid>
+                      <Grid item xs={12} sm={12} md={3}>
+                        <MKBox>
+                          <FormControlLabel
+                            control={
+                              <Switch
+                                checked={checked}
+                                onChange={handleChange}
+                                inputProps={{ "aria-label": "controlled" }}
+                              />
+                            }
+                            label="Package"
+                          />
+                        </MKBox>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                ) : (
+                  <Grid item xs={12} md={10}></Grid>
+                )}
+                <Grid item xs={12} md={2} justifyContent={"end"}>
+                  <MKBox>
+                    {tollCost ? (
+                      <MKTypography variant="caption" color="text" fontWeight="medium">
+                        Toll Cost: &#8377; {tollCost}
+                      </MKTypography>
+                    ) : (
+                      <MKTypography variant="caption" color="text" fontWeight="medium">
+                        Toll Cost: NA
+                      </MKTypography>
+                    )}
                   </MKBox>
-                </Grid>
-                <Grid item xs={12} sm={12} md={3}>
-                  <MKBox mb={2}>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={checked}
-                          onChange={handleChange}
-                          inputProps={{ "aria-label": "controlled" }}
-                        />
-                      }
-                      label="Package"
-                    />
+                  <MKBox>
+                    {selectedTaxiType?.fair ? (
+                      <MKTypography variant="caption" color="text" fontWeight="medium">
+                        Fare: &#8377; {selectedTaxiType?.fair * noOfPassengers}
+                      </MKTypography>
+                    ) : (
+                      <MKTypography variant="caption" color="text" fontWeight="medium">
+                        Fare: NA
+                      </MKTypography>
+                    )}
+                  </MKBox>
+                  <MKBox>
+                    {selectedTaxiType?.fair && tollCost ? (
+                      <MKTypography variant="caption" color="text" fontWeight="medium">
+                        Total Cost: &#8377; {selectedTaxiType.fair * noOfPassengers + tollCost}
+                      </MKTypography>
+                    ) : (
+                      <MKTypography variant="caption" color="text" fontWeight="medium">
+                        Totall Cost: NA
+                      </MKTypography>
+                    )}
                   </MKBox>
                 </Grid>
               </Grid>

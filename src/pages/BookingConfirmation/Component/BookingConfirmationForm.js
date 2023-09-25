@@ -36,8 +36,8 @@ const BookingConfirmationForm = ({ bookingId }) => {
             { label: "Token", key: responseData.data[0]?.token },
             { label: "Travel Date", key: responseData.data[0]?.travelDate },
             { label: "Travel Time", key: responseData.data[0]?.travelTime },
-            { label: "Payment Mode", key: responseData.data[0]?.paymentMode },
-            { label: "Booking Status", key: responseData.data[0]?.bookingStatus },
+            // { label: "Payment Mode", key: responseData.data[0]?.paymentMode },
+            // { label: "Booking Status", key: responseData.data[0]?.bookingStatus },
           ];
 
           setBookingData(fields);
@@ -54,8 +54,8 @@ const BookingConfirmationForm = ({ bookingId }) => {
             { label: "Token", key: responseData.data[0]?.token },
             { label: "Travel Date", key: responseData.data[0]?.travelDate },
             { label: "Travel Time", key: responseData.data[0]?.travelTime },
-            { label: "Payment Mode", key: responseData.data[0]?.paymentMode },
-            { label: "Booking Status", key: responseData.data[0]?.bookingStatus },
+            // { label: "Payment Mode", key: responseData.data[0]?.paymentMode },
+            // { label: "Booking Status", key: responseData.data[0]?.bookingStatus },
           ];
           setBookingData(fields);
           setButtonStatus(responseData?.data[0]?.bookingStatus);
@@ -71,8 +71,8 @@ const BookingConfirmationForm = ({ bookingId }) => {
             { label: "Token", key: responseData.data[0]?.token },
             { label: "Travel Date", key: responseData.data[0]?.travelDate },
             { label: "Travel Time", key: responseData.data[0]?.travelTime },
-            { label: "Payment Mode", key: responseData.data[0]?.paymentMode },
-            { label: "Booking Status", key: responseData.data[0]?.bookingStatus },
+            // { label: "Payment Mode", key: responseData.data[0]?.paymentMode },
+            // { label: "Booking Status", key: responseData.data[0]?.bookingStatus },
           ];
           setBookingData(fields);
           setButtonStatus(responseData?.data[0]?.bookingStatus);
