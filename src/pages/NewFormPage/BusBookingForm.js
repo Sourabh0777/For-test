@@ -33,11 +33,44 @@ const BusBookingForm = () => {
   const [selectedBusType, setSelectedBusType] = useState("Book Complete Bus");
   const [noOfPassengers, setNoOfPassengers] = useState(0);
   const [dateOfTraveling, setDateOfTraveling] = useState(null);
-  const [departureTime, setDepartureTime] = useState("00:00");
+  // const [departureTime, setDepartureTime] = useState("00:00");
+  const [departureTime, setDepartureTime] = useState("");
   const [fullName, setFullName] = useState();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState();
   const [mobileNo, setMobileNo] = useState();
+
+  const [selectedSourceLocation, setSelectedSourceLocation] = React.useState("");
+
+  const handleSourceLocationChange = (event) => {
+    setSelectedSourceLocation(event.target.value);
+  };
+
+  const [sourcseLocation, setSourceLocation] = useState([]);
+  const [sourcseLocationData, setSourceLocationData] = useState();
+
+  useEffect(() => {
+    const fetchSourceLocation = async () => {
+      try {
+        const responseData = await sendRequest(
+          // eslint-disable-next-line no-undef
+          `${process.env.REACT_APP_BACKEND_URL}/admin/source`
+        );
+        setSourceLocationData(responseData.data);
+
+        const locationNames = responseData.data?.map((item) => {
+          return { name: item.sourceName, id: item._id };
+        });
+
+        setSourceLocation(locationNames);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchSourceLocation();
+  }, []);
+
   const selectedSeatHandler = (e) => {
     setNoOfPassengers(e.target.value);
   };
@@ -48,9 +81,34 @@ const BusBookingForm = () => {
   const handleDateChange = (newValue) => {
     setDateOfTraveling(newValue);
   };
+  // const timeHandler = (e) => {
+  //   setDepartureTime(e.target.value);
+  // };
+
+  const [formattedTime, setFormattedTime] = useState("");
+
   const timeHandler = (e) => {
+    console.log("time", e.target.value);
     setDepartureTime(e.target.value);
+    const inputTime = e.target.value; // Assuming e.target.value contains the time in 24-hour format (e.g., "15:30")
+
+    // Split the input time into hours and minutes
+    const [hours, minutes] = inputTime.split(":");
+
+    // Create a Date object with the input time
+    const date = new Date();
+    date.setHours(hours);
+    date.setMinutes(minutes);
+
+    // Format the time in 12-hour format with AM/PM
+    const options = { hour: "numeric", minute: "numeric", hour12: true };
+    const formatted = date.toLocaleTimeString(undefined, options);
+
+    // Set the formatted time in state
+    setFormattedTime(formatted);
+    console.log("formatted", formattedTime);
   };
+
   const handleFullName = (e) => {
     const a = e.target.value.split(" ");
     setFullName(e.target.value);
@@ -111,8 +169,9 @@ const BusBookingForm = () => {
       lastName: lastName || " ",
       phoneNumber: mobileNo,
       travelDate: dateOfTraveling,
-      travelTime: departureTime,
-      startingLocation: startingLocation,
+      // travelTime: departureTime,
+      travelTime: formattedTime,
+      startingLocation: selectedSourceLocation,
       destination: selectedLocationName,
       noOfPassengers: Number(noOfPassengers),
       fare: 2000,
@@ -153,7 +212,7 @@ const BusBookingForm = () => {
                 justifyContent="center"
                 alignItems="center"
               >
-                <Grid item xs={12} sm={12} md={3}>
+                {/* <Grid item xs={12} sm={12} md={3}>
                   <MKBox mb={2}>
                     <MKInput
                       name="source"
@@ -166,6 +225,28 @@ const BusBookingForm = () => {
                       disabled
                       required
                     />
+                  </MKBox>
+                </Grid> */}
+                <Grid item xs={12} sm={12} md={3}>
+                  <MKBox mb={2}>
+                    <FormControl required sx={{ m: 1, minWidth: 120 }}>
+                      <InputLabel id="destination">From</InputLabel>
+                      <Select
+                        name="source"
+                        labelId="source"
+                        id="source"
+                        value={selectedSourceLocation}
+                        onChange={handleSourceLocationChange}
+                        sx={{ minHeight: 45, minWidth: 270 }}
+                      >
+                        {sourcseLocation &&
+                          sourcseLocation.map((item, idx) => (
+                            <MenuItem key={idx} value={item.id}>
+                              {item.name}
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    </FormControl>
                   </MKBox>
                 </Grid>
                 <Grid item xs={12} sm={12} md={3}>

@@ -9,19 +9,22 @@ import MKInput from "components/MKInput";
 import MKButton from "components/MKButton";
 import image from "assets/images/bookingImage.jpg";
 import Image from "pages/Form/Components/Image";
+import dayjs from "dayjs";
 
 const BusBookingConfirmation = () => {
   const [BookingData, setBookingData] = useState();
   useEffect(() => {
     const responseData = JSON.parse(localStorage.getItem("BusConfirmationInfo"));
+    const formattedTravelDate = dayjs(responseData?.data?.travelDate).format("DD MMM, YYYY");
     console.log("🚀 ~ file: BusBookingConfirmation.js:14 ~ useEffect ~ response:", responseData);
     const fields = [
       { label: "First Name", key: responseData?.data?.firstName },
       { label: "Last Name", key: responseData.data?.lastName },
       { label: "Phone Number", key: responseData.data?.phoneNumber },
-      { label: "From", key: responseData.data?.startingLocation },
+      { label: "From", key: responseData.data?.startingLocation?.sourceName },
       { label: "Destination", key: responseData.data?.destination },
-      { label: "Travel Date", key: responseData.data?.travelDate },
+      // { label: "Travel Date", key: responseData.data?.travelDate },
+      { label: "Travel Date", key: formattedTravelDate },
       { label: "Travel Time", key: responseData.data?.travelTime },
       { label: "token", key: responseData.data?.token },
     ];

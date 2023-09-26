@@ -153,7 +153,8 @@ const TaxiBookingForm = () => {
     fetchTaxiType();
   }, []);
   const [dateOfTraveling, setDateOfTraveling] = useState(null);
-  const [departureTime, setDepartureTime] = useState("00:00");
+  // const [departureTime, setDepartureTime] = useState("00:00");
+  const [departureTime, setDepartureTime] = useState("");
   const [fullName, setFullName] = useState();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState();
@@ -164,8 +165,31 @@ const TaxiBookingForm = () => {
     setFirstName(a[0]);
     setLastName(a[1]);
   };
+  const [formattedTime, setFormattedTime] = useState("");
+  // const timeHandler = (e) => {
+  //   console.log("time", e.target.value);
+  //   setDepartureTime(e.target.value);
+  // };
   const timeHandler = (e) => {
+    console.log("time", e.target.value);
     setDepartureTime(e.target.value);
+    const inputTime = e.target.value; // Assuming e.target.value contains the time in 24-hour format (e.g., "15:30")
+
+    // Split the input time into hours and minutes
+    const [hours, minutes] = inputTime.split(":");
+
+    // Create a Date object with the input time
+    const date = new Date();
+    date.setHours(hours);
+    date.setMinutes(minutes);
+
+    // Format the time in 12-hour format with AM/PM
+    const options = { hour: "numeric", minute: "numeric", hour12: true };
+    const formatted = date.toLocaleTimeString(undefined, options);
+
+    // Set the formatted time in state
+    setFormattedTime(formatted);
+    console.log("formatted", formattedTime);
   };
   const mobileNOHandler = (e) => {
     let inputValue = e.target.value;
@@ -206,6 +230,7 @@ const TaxiBookingForm = () => {
   useEffect(() => {
     if (selectedPackageData && selectedPackage) {
       setPickupLocation(selectedPackageData[0].location.locationName);
+      setTollCost(selectedPackageData[0]?.location?.tollCost);
       setDestinationId(selectedPackageData[0].location._id);
       const landingLocationList = selectedPackageData[0].location?.landingLocations?.map((item) => {
         return { name: item.place, id: item._id };
@@ -222,7 +247,7 @@ const TaxiBookingForm = () => {
         }
       });
       setPackageTaxiList(taxiTypes);
-      setTollCost(0);
+      // setTollCost(0);
     }
   }, [selectedPackage, selectedPackageData]);
 
@@ -260,7 +285,8 @@ const TaxiBookingForm = () => {
         selectedLocation &&
         selectedLandingLocation &&
         selectedTaxiType.fair) ||
-      (checked && selectedPackage && pickupLocation && selectedDrop && selectedTaxiType.fair)
+      (checked && selectedPackage && pickupLocation && selectedTaxiType.fair)
+      // (checked && selectedPackage && pickupLocation && selectedDrop && selectedTaxiType.fair)
     ) {
       setIsNextDisabled(false);
     }
@@ -288,9 +314,10 @@ const TaxiBookingForm = () => {
       lastName: lastName || " ",
       phoneNumber: mobileNo,
       travelDate: dateOfTraveling,
-      travelTime: departureTime,
+      // travelTime: departureTime,
+      travelTime: formattedTime,
       // source: "Delhi",
-      source: selectedSourceLocation,
+      source: !checked ? selectedSourceLocation : "Delhi",
       destination: selectedLocation,
       noOfPassengers: noOfPassengers,
       texiType: selectedTaxiType._id,
@@ -326,8 +353,9 @@ const TaxiBookingForm = () => {
       lastName: lastName || " ",
       phoneNumber: mobileNo,
       travelDate: dateOfTraveling,
-      travelTime: departureTime,
-      source: selectedPackage,
+      // travelTime: departureTime,
+      travelTime: formattedTime,
+      source: selectedSourceLocation,
       destination: destinationId,
       noOfPassengers: noOfPassengers,
       texiType: selectedTaxiType._id,
@@ -337,7 +365,8 @@ const TaxiBookingForm = () => {
       confirmed: false,
       bookingStatus: "pending",
       paymentAccepted: false,
-      landingLocationId: selectedDrop.id,
+      landingLocationId: selectedPackage?.location?._id,
+      // landingLocationId: selectedDrop.id,
       bookingType: "package",
       packageId: selectedPackageID,
     };
@@ -353,7 +382,7 @@ const TaxiBookingForm = () => {
         navigate(`/booking/${responseData?.data?.token}`);
       }
     } catch (error) {
-      console.log(error);
+      console.log(error, "here");
     }
   };
 
@@ -566,6 +595,28 @@ const TaxiBookingForm = () => {
                 <Grid item xs={12} sm={12} md={3}>
                   <MKBox mb={2}>
                     <FormControl required sx={{ m: 1, minWidth: 120 }}>
+                      <InputLabel id="destination">Pick Up</InputLabel>
+                      <Select
+                        name="source"
+                        labelId="source"
+                        id="source"
+                        value={selectedSourceLocation}
+                        onChange={handleSourceLocationChange}
+                        sx={{ minHeight: 45, minWidth: 270 }}
+                      >
+                        {sourcseLocation &&
+                          sourcseLocation.map((item, idx) => (
+                            <MenuItem key={idx} value={item.id}>
+                              {item.name}
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    </FormControl>
+                  </MKBox>
+                </Grid>
+                <Grid item xs={12} sm={12} md={3}>
+                  <MKBox mb={2}>
+                    <FormControl required sx={{ m: 1, minWidth: 120 }}>
                       <InputLabel id="Package">Select Package</InputLabel>
                       <Select
                         name="Package"
@@ -590,7 +641,7 @@ const TaxiBookingForm = () => {
                     <MKInput
                       name="source"
                       type="text"
-                      label="Pickup"
+                      label="Location"
                       InputLabelProps={{ shrink: true }}
                       fullWidth
                       value={pickupLocation}
@@ -600,7 +651,7 @@ const TaxiBookingForm = () => {
                     />
                   </MKBox>
                 </Grid>
-                <Grid item xs={12} sm={12} md={3}>
+                {/* <Grid item xs={12} sm={12} md={3}>
                   <MKBox mb={2}>
                     <FormControl required sx={{ m: 1, minWidth: 120 }}>
                       <InputLabel id="drop">Drop</InputLabel>
@@ -621,7 +672,7 @@ const TaxiBookingForm = () => {
                       </Select>
                     </FormControl>
                   </MKBox>
-                </Grid>
+                </Grid> */}
                 <Grid item xs={12} sm={12} md={3}>
                   <MKBox mb={2}>
                     <FormControl required sx={{ m: 1, minWidth: 120 }}>
