@@ -768,7 +768,7 @@ const TaxiBookingForm = () => {
                   <MKBox>
                     {selectedTaxiType?.fair ? (
                       <MKTypography variant="caption" color="text" fontWeight="medium">
-                        Fare: &#8377; {selectedTaxiType?.fair * noOfPassengers}
+                        Fare: &#8377; {selectedTaxiType?.fair}
                       </MKTypography>
                     ) : (
                       <MKTypography variant="caption" color="text" fontWeight="medium">
@@ -779,7 +779,7 @@ const TaxiBookingForm = () => {
                   <MKBox>
                     {selectedTaxiType?.fair && tollCost ? (
                       <MKTypography variant="caption" color="text" fontWeight="medium">
-                        Total Cost: &#8377; {selectedTaxiType.fair * noOfPassengers + tollCost}
+                        Total Cost: &#8377; {selectedTaxiType.fair + tollCost}
                       </MKTypography>
                     ) : (
                       <MKTypography variant="caption" color="text" fontWeight="medium">
@@ -846,7 +846,7 @@ const TaxiBookingForm = () => {
                       label="Fair"
                       InputLabelProps={{ shrink: true }}
                       fullWidth
-                      value={selectedTaxiType.fair * noOfPassengers || 0}
+                      value={selectedTaxiType.fair || 0}
                       disabled
                     />
                   </MKBox>
@@ -859,7 +859,7 @@ const TaxiBookingForm = () => {
                       label="Total Fair"
                       InputLabelProps={{ shrink: true }}
                       fullWidth
-                      value={selectedTaxiType.fair * noOfPassengers + tollCost || 0}
+                      value={selectedTaxiType.fair + tollCost || 0}
                       disabled
                     />
                   </MKBox>
@@ -1040,7 +1040,7 @@ const TaxiBookingForm = () => {
                   <MKBox>
                     {selectedTaxiType?.fair ? (
                       <MKTypography variant="caption" color="text" fontWeight="medium">
-                        Fare: &#8377; {selectedTaxiType?.fair * noOfPassengers}
+                        Fare: &#8377; {selectedTaxiType?.fair}
                       </MKTypography>
                     ) : (
                       <MKTypography variant="caption" color="text" fontWeight="medium">
@@ -1051,7 +1051,7 @@ const TaxiBookingForm = () => {
                   <MKBox>
                     {selectedTaxiType?.fair && tollCost ? (
                       <MKTypography variant="caption" color="text" fontWeight="medium">
-                        Total Cost: &#8377; {selectedTaxiType.fair * noOfPassengers + tollCost}
+                        Total Cost: &#8377; {selectedTaxiType.fair + tollCost}
                       </MKTypography>
                     ) : (
                       <MKTypography variant="caption" color="text" fontWeight="medium">
