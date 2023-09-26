@@ -51,10 +51,14 @@ const TaxiBookingForm = () => {
   const [filteredTaxiTypeList, setFilteredTaxiTypeList] = useState();
   //Values
   const [selectedLocation, setLocation] = React.useState("");
+  const [selectedSourceLocation, setSelectedSourceLocation] = React.useState("");
   const [selectedLandingLocation, setSelectedLandingLocation] = useState("");
   const [tollCost, setTollCost] = useState();
   const [selectedTaxiType, setSelectedTaxiType] = useState({});
   //
+  const handleSourceLocationChange = (event) => {
+    setSelectedSourceLocation(event.target.value);
+  };
   const handleLocationChange = (event) => {
     setLocation(event.target.value);
     const landingLocationList = LocationData.filter((item) => item._id == event.target.value);
@@ -85,6 +89,31 @@ const TaxiBookingForm = () => {
     const value = e.target.value;
     setSelectedTaxiType(value);
   };
+
+  const [sourcseLocation, setSourceLocation] = useState([]);
+  const [sourcseLocationData, setSourceLocationData] = useState();
+
+  useEffect(() => {
+    const fetchSourceLocation = async () => {
+      try {
+        const responseData = await sendRequest(
+          // eslint-disable-next-line no-undef
+          `${process.env.REACT_APP_BACKEND_URL}/admin/source`
+        );
+        setSourceLocationData(responseData.data);
+
+        const locationNames = responseData.data?.map((item) => {
+          return { name: item.sourceName, id: item._id };
+        });
+
+        setSourceLocation(locationNames);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchSourceLocation();
+  }, []);
 
   useEffect(() => {
     const fetchLocation = async () => {
@@ -260,7 +289,8 @@ const TaxiBookingForm = () => {
       phoneNumber: mobileNo,
       travelDate: dateOfTraveling,
       travelTime: departureTime,
-      source: "Delhi",
+      // source: "Delhi",
+      source: selectedSourceLocation,
       destination: selectedLocation,
       noOfPassengers: noOfPassengers,
       texiType: selectedTaxiType._id,
@@ -347,7 +377,7 @@ const TaxiBookingForm = () => {
                 justifyContent="center"
                 alignItems="center"
               >
-                <Grid item xs={12} sm={12} md={3}>
+                {/* <Grid item xs={12} sm={12} md={3}>
                   <MKBox mb={2}>
                     <MKInput
                       name="source"
@@ -360,6 +390,28 @@ const TaxiBookingForm = () => {
                       disabled
                       required
                     />
+                  </MKBox>
+                </Grid> */}
+                <Grid item xs={12} sm={12} md={3}>
+                  <MKBox mb={2}>
+                    <FormControl required sx={{ m: 1, minWidth: 120 }}>
+                      <InputLabel id="destination">From</InputLabel>
+                      <Select
+                        name="source"
+                        labelId="source"
+                        id="source"
+                        value={selectedSourceLocation}
+                        onChange={handleSourceLocationChange}
+                        sx={{ minHeight: 45, minWidth: 270 }}
+                      >
+                        {sourcseLocation &&
+                          sourcseLocation.map((item, idx) => (
+                            <MenuItem key={idx} value={item.id}>
+                              {item.name}
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    </FormControl>
                   </MKBox>
                 </Grid>
                 <Grid item xs={12} sm={12} md={3}>
@@ -671,7 +723,7 @@ const TaxiBookingForm = () => {
             {activeStep === 1 || activeStep === 0 ? (
               <Grid container>
                 {activeStep === 0 ? (
-                  <Grid item xs={12} md={10}>
+                  <Grid item xs={12} md={9}>
                     <Grid
                       container
                       spacing={2}
@@ -751,32 +803,63 @@ const TaxiBookingForm = () => {
                     </Grid>
                   </Grid>
                 ) : (
-                  <Grid item xs={12} md={10}></Grid>
+                  <Grid item xs={12} md={9}></Grid>
                 )}
-                <Grid item xs={12} md={2} justifyContent={"end"}>
+                <Grid
+                  item
+                  xs={12}
+                  md={3}
+                  mt={2}
+                  display={"flex"}
+                  gap={2}
+                  justifyContent={"end"}
+                  alignItems={"center"}
+                >
                   <MKBox>
                     {tollCost ? (
-                      <MKTypography variant="caption" color="text" fontWeight="medium">
-                        Toll Cost: &#8377; {tollCost}
-                      </MKTypography>
+                      <MKBox display="flex" alignItems="center" gap={1}>
+                        <MKBox height="10px" width="10px" borderRadius="50%" bgColor="info"></MKBox>
+                        <MKTypography variant="caption" color="text" fontWeight="medium">
+                          Toll Cost: &#8377; {tollCost}
+                        </MKTypography>
+                      </MKBox>
                     ) : (
-                      <MKTypography variant="caption" color="text" fontWeight="medium">
-                        Toll Cost: NA
-                      </MKTypography>
+                      <MKBox display="flex" alignItems="center" gap={1}>
+                        <MKBox height="10px" width="10px" borderRadius="50%" bgColor="info"></MKBox>
+                        <MKTypography variant="caption" color="text" fontWeight="medium">
+                          Toll Cost: NA
+                        </MKTypography>
+                      </MKBox>
                     )}
                   </MKBox>
                   <MKBox>
                     {selectedTaxiType?.fair ? (
-                      <MKTypography variant="caption" color="text" fontWeight="medium">
-                        Fare: &#8377; {selectedTaxiType?.fair}
-                      </MKTypography>
+                      <MKBox display="flex" alignItems="center" gap={1}>
+                        <MKBox
+                          height="10px"
+                          width="10px"
+                          borderRadius="50%"
+                          bgColor="success"
+                        ></MKBox>
+                        <MKTypography variant="caption" color="text" fontWeight="medium">
+                          Fare: &#8377; {selectedTaxiType?.fair}
+                        </MKTypography>
+                      </MKBox>
                     ) : (
-                      <MKTypography variant="caption" color="text" fontWeight="medium">
-                        Fare: NA
-                      </MKTypography>
+                      <MKBox display="flex" alignItems="center" gap={1}>
+                        <MKBox
+                          height="10px"
+                          width="10px"
+                          borderRadius="50%"
+                          bgColor="success"
+                        ></MKBox>
+                        <MKTypography variant="caption" color="text" fontWeight="medium">
+                          Fare: NA
+                        </MKTypography>
+                      </MKBox>
                     )}
                   </MKBox>
-                  <MKBox>
+                  {/* <MKBox>
                     {selectedTaxiType?.fair && tollCost ? (
                       <MKTypography variant="caption" color="text" fontWeight="medium">
                         Total Cost: &#8377; {selectedTaxiType.fair + tollCost}
@@ -786,7 +869,7 @@ const TaxiBookingForm = () => {
                         Totall Cost: NA
                       </MKTypography>
                     )}
-                  </MKBox>
+                  </MKBox> */}
                 </Grid>
               </Grid>
             ) : null}
@@ -943,7 +1026,7 @@ const TaxiBookingForm = () => {
             {activeStep === 1 || activeStep === 0 ? (
               <Grid container>
                 {activeStep === 0 ? (
-                  <Grid item xs={12} md={10}>
+                  <Grid item xs={12} md={9}>
                     <Grid
                       container
                       spacing={2}
@@ -1023,32 +1106,63 @@ const TaxiBookingForm = () => {
                     </Grid>
                   </Grid>
                 ) : (
-                  <Grid item xs={12} md={10}></Grid>
+                  <Grid item xs={12} md={9}></Grid>
                 )}
-                <Grid item xs={12} md={2} justifyContent={"end"}>
+                <Grid
+                  item
+                  xs={12}
+                  md={3}
+                  mt={2}
+                  display={"flex"}
+                  gap={2}
+                  justifyContent={"end"}
+                  alignItems={"center"}
+                >
                   <MKBox>
                     {tollCost ? (
-                      <MKTypography variant="caption" color="text" fontWeight="medium">
-                        Toll Cost: &#8377; {tollCost}
-                      </MKTypography>
+                      <MKBox display="flex" alignItems="center" gap={1}>
+                        <MKBox height="10px" width="10px" borderRadius="50%" bgColor="info"></MKBox>
+                        <MKTypography variant="caption" color="text" fontWeight="medium">
+                          Toll Cost: &#8377; {tollCost}
+                        </MKTypography>
+                      </MKBox>
                     ) : (
-                      <MKTypography variant="caption" color="text" fontWeight="medium">
-                        Toll Cost: NA
-                      </MKTypography>
+                      <MKBox display="flex" alignItems="center" gap={1}>
+                        <MKBox height="10px" width="10px" borderRadius="50%" bgColor="info"></MKBox>
+                        <MKTypography variant="caption" color="text" fontWeight="medium">
+                          Toll Cost: NA
+                        </MKTypography>
+                      </MKBox>
                     )}
                   </MKBox>
                   <MKBox>
                     {selectedTaxiType?.fair ? (
-                      <MKTypography variant="caption" color="text" fontWeight="medium">
-                        Fare: &#8377; {selectedTaxiType?.fair}
-                      </MKTypography>
+                      <MKBox display="flex" alignItems="center" gap={1}>
+                        <MKBox
+                          height="10px"
+                          width="10px"
+                          borderRadius="50%"
+                          bgColor="success"
+                        ></MKBox>
+                        <MKTypography variant="caption" color="text" fontWeight="medium">
+                          Fare: &#8377; {selectedTaxiType?.fair}
+                        </MKTypography>
+                      </MKBox>
                     ) : (
-                      <MKTypography variant="caption" color="text" fontWeight="medium">
-                        Fare: NA
-                      </MKTypography>
+                      <MKBox display="flex" alignItems="center" gap={1}>
+                        <MKBox
+                          height="10px"
+                          width="10px"
+                          borderRadius="50%"
+                          bgColor="success"
+                        ></MKBox>
+                        <MKTypography variant="caption" color="text" fontWeight="medium">
+                          Fare: NA
+                        </MKTypography>
+                      </MKBox>
                     )}
                   </MKBox>
-                  <MKBox>
+                  {/* <MKBox>
                     {selectedTaxiType?.fair && tollCost ? (
                       <MKTypography variant="caption" color="text" fontWeight="medium">
                         Total Cost: &#8377; {selectedTaxiType.fair + tollCost}
@@ -1058,7 +1172,7 @@ const TaxiBookingForm = () => {
                         Totall Cost: NA
                       </MKTypography>
                     )}
-                  </MKBox>
+                  </MKBox> */}
                 </Grid>
               </Grid>
             ) : null}
