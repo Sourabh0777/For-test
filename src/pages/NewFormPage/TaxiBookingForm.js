@@ -66,6 +66,8 @@ const TaxiBookingForm = () => {
   const [selectedLandingLocation, setSelectedLandingLocation] = useState("");
   const [tollCost, setTollCost] = useState();
   const [selectedTaxiType, setSelectedTaxiType] = useState({});
+  const [noOfPassengers, setNoOfPassengers] = useState(1);
+
   //
   const handleSourceLocationChange = (event) => {
     setSelectedSourceLocation(event.target.value);
@@ -102,6 +104,7 @@ const TaxiBookingForm = () => {
   const handleTaxiChange = (e) => {
     const value = e.target.value;
     setSelectedTaxiType(value);
+    setNoOfPassengers(1);
   };
 
   const [sourcseLocation, setSourceLocation] = useState([]);
@@ -212,8 +215,24 @@ const TaxiBookingForm = () => {
     const formattedDate = `${day}-${month}-${year}`;
     setFormateDate(formattedDate);
   };
-
-  const [noOfPassengers, setNoOfPassengers] = useState(1);
+  const handlePassengerChange = (e) => {
+    const newValue = parseInt(e.target.value, 10);
+    if (selectedTaxiType.typeName === "Innova") {
+      if (!isNaN(newValue) && newValue >= 0 && newValue <= 9) {
+        setNoOfPassengers(newValue);
+      }
+    } else if (selectedTaxiType.typeName === "3+1") {
+      if (!isNaN(newValue) && newValue >= 0 && newValue <= 4) {
+        setNoOfPassengers(newValue);
+      }
+    } else if (selectedTaxiType.typeName === "6+1") {
+      if (!isNaN(newValue) && newValue >= 0 && newValue <= 9) {
+        setNoOfPassengers(newValue);
+      }
+    } else {
+      setNoOfPassengers(newValue);
+    }
+  };
 
   //Packages Code
   const [packageData, setPackageData] = useState();
@@ -654,28 +673,6 @@ const TaxiBookingForm = () => {
                     />
                   </MKBox>
                 </Grid>
-                {/* <Grid item xs={12} sm={12} md={3}>
-                  <MKBox mb={2}>
-                    <FormControl required sx={{ m: 1, minWidth: 120 }}>
-                      <InputLabel id="drop">Drop</InputLabel>
-                      <Select
-                        labelId="drop"
-                        id="drop"
-                        value={selectedDrop}
-                        label="drop"
-                        onChange={(e) => setSelectedDrop(e.target.value)}
-                        sx={{ minHeight: 45, minWidth: 270 }}
-                      >
-                        {dropLocationList &&
-                          dropLocationList.map((item, idx) => (
-                            <MenuItem key={idx} value={item}>
-                              {item.name}
-                            </MenuItem>
-                          ))}
-                      </Select>
-                    </FormControl>
-                  </MKBox>
-                </Grid> */}
                 <Grid item xs={12} sm={12} md={3}>
                   <MKBox mb={2}>
                     <FormControl required sx={{ m: 1, minWidth: 120 }}>
@@ -787,8 +784,8 @@ const TaxiBookingForm = () => {
                             InputLabelProps={{ shrink: true }}
                             fullWidth
                             name="noOfPassengers"
-                            value={noOfPassengers || 0}
-                            onChange={(e) => setNoOfPassengers(e.target.value)}
+                            value={noOfPassengers}
+                            onChange={handlePassengerChange}
                             required
                           />
                         </MKBox>
@@ -1076,8 +1073,8 @@ const TaxiBookingForm = () => {
                             InputLabelProps={{ shrink: true }}
                             fullWidth
                             name="noOfPassengers"
-                            value={noOfPassengers || 0}
-                            onChange={(e) => setNoOfPassengers(e.target.value)}
+                            value={noOfPassengers}
+                            onChange={handlePassengerChange}
                             required
                           />
                         </MKBox>
