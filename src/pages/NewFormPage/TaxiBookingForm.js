@@ -204,7 +204,9 @@ const TaxiBookingForm = () => {
   const mobileNOHandler = (e) => {
     let inputValue = e.target.value;
     inputValue = inputValue.replace(/\D/g, "");
-    setMobileNo(inputValue);
+    if (inputValue.length <= 10) {
+      setMobileNo(inputValue);
+    }
   };
 
   const handleDateChange = (newValue) => {

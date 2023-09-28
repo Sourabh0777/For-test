@@ -475,7 +475,7 @@ const BusBookingForm = () => {
                   alignItems="self-start"
                   sx={{ mx: 1, mt: 0.5 }}
                 >
-                  <Grid item xs={12} sm={12} md={3}>
+                  <Grid item xs={12} sm={12} md={6}>
                     <MKBox mb={2}>
                       <MKInput
                         variant="standard"
@@ -488,7 +488,7 @@ const BusBookingForm = () => {
                       />
                     </MKBox>
                   </Grid>
-                  <Grid item xs={12} sm={12} md={3}>
+                  <Grid item xs={12} sm={12} md={6}>
                     <MKBox mb={2}>
                       <MKInput
                         variant="standard"
@@ -501,7 +501,7 @@ const BusBookingForm = () => {
                       />
                     </MKBox>
                   </Grid>
-                  <Grid item xs={12} sm={12} md={3}>
+                  <Grid item xs={12} sm={12} md={6}>
                     <MKBox mb={2}>
                       <MKInput
                         variant="standard"
@@ -514,7 +514,7 @@ const BusBookingForm = () => {
                       />
                     </MKBox>
                   </Grid>
-                  <Grid item xs={12} sm={12} md={3}>
+                  <Grid item xs={12} sm={12} md={6}>
                     <MKBox mb={2}>
                       <MKInput
                         variant="standard"
@@ -527,7 +527,7 @@ const BusBookingForm = () => {
                       />
                     </MKBox>
                   </Grid>
-                  <Grid item xs={12} sm={12} md={3}>
+                  <Grid item xs={12} sm={12} md={6}>
                     <MKBox mb={2}>
                       <MKInput
                         variant="standard"
@@ -540,7 +540,7 @@ const BusBookingForm = () => {
                       />
                     </MKBox>
                   </Grid>
-                  <Grid item xs={12} sm={12} md={3}>
+                  <Grid item xs={12} sm={12} md={6}>
                     <MKBox mb={2}>
                       <MKInput
                         variant="standard"
@@ -553,7 +553,7 @@ const BusBookingForm = () => {
                       />
                     </MKBox>
                   </Grid>
-                  <Grid item xs={12} sm={12} md={3}>
+                  <Grid item xs={12} sm={12} md={6}>
                     <MKBox mb={2}>
                       <MKInput
                         variant="standard"
@@ -566,7 +566,7 @@ const BusBookingForm = () => {
                       />
                     </MKBox>
                   </Grid>
-                  <Grid item xs={12} sm={12} md={3}>
+                  <Grid item xs={12} sm={12} md={6}>
                     <MKBox mb={2}>
                       <MKInput
                         variant="standard"
