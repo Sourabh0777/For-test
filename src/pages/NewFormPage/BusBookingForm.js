@@ -1,5 +1,15 @@
 /* eslint-disable no-unused-vars */
-import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select } from "@mui/material";
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
@@ -15,6 +25,13 @@ const BusBookingForm = () => {
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = React.useState(0);
   const [isNextDisabled, setIsNextDisabled] = useState(true);
+  const [termsChecked, setTermsChecked] = useState(true);
+  const handleTermsChange = (event) => {
+    setTermsChecked(event.target.checked);
+    if (event.target.checked == false) {
+      setIsNextDisabled(true);
+    }
+  };
   // eslint-disable-next-line no-unused-vars
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const handleNext = () => {
@@ -23,6 +40,7 @@ const BusBookingForm = () => {
   };
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    setIsNextDisabled(false);
   };
   const [Locations, setLocations] = useState();
   const [LocationData, setLocationData] = useState();
@@ -48,7 +66,7 @@ const BusBookingForm = () => {
 
   const [sourcseLocation, setSourceLocation] = useState([]);
   const [sourcseLocationData, setSourceLocationData] = useState();
-
+  const [formateDate, setFormateDate] = useState();
   useEffect(() => {
     const fetchSourceLocation = async () => {
       try {
@@ -80,10 +98,12 @@ const BusBookingForm = () => {
   };
   const handleDateChange = (newValue) => {
     setDateOfTraveling(newValue);
+    const day = newValue.$d.getDate().toString().padStart(2, "0");
+    const month = (newValue.$d.getMonth() + 1).toString().padStart(2, "0"); // Note: Months are 0-based, so we add 1.
+    const year = newValue.$d.getFullYear();
+    const formattedDate = `${day}-${month}-${year}`;
+    setFormateDate(formattedDate);
   };
-  // const timeHandler = (e) => {
-  //   setDepartureTime(e.target.value);
-  // };
 
   const [formattedTime, setFormattedTime] = useState("");
 
@@ -145,13 +165,25 @@ const BusBookingForm = () => {
       startingLocation &&
       selectedLocation &&
       selectedBusType &&
-      noOfPassengers
+      noOfPassengers &&
+      termsChecked
     ) {
       setIsNextDisabled(false);
     }
 
-    if (activeStep == 1 && dateOfTraveling && departureTime && fullName && mobileNo) {
+    if (
+      activeStep == 1 &&
+      dateOfTraveling &&
+      departureTime &&
+      fullName &&
+      mobileNo &&
+      mobileNo.length > 9 &&
+      termsChecked
+    ) {
       setIsNextDisabled(false);
+    }
+    if (mobileNo && mobileNo.length < 10) {
+      setIsNextDisabled(true);
     }
   }, [
     startingLocation,
@@ -162,6 +194,7 @@ const BusBookingForm = () => {
     departureTime,
     firstName,
     mobileNo,
+    termsChecked,
   ]);
   const submitHandler = async () => {
     const formData = {
@@ -191,7 +224,6 @@ const BusBookingForm = () => {
       console.log(error);
     }
   };
-  console.log("🚀 ~ file: BusBookingForm.js:33 ~ BusBookingForm ~ noOfPassengers:", noOfPassengers);
 
   return (
     <MKBox p={3}>
@@ -212,21 +244,6 @@ const BusBookingForm = () => {
                 justifyContent="center"
                 alignItems="center"
               >
-                {/* <Grid item xs={12} sm={12} md={3}>
-                  <MKBox mb={2}>
-                    <MKInput
-                      name="source"
-                      type="text"
-                      label="From"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      value={startingLocation}
-                      default
-                      disabled
-                      required
-                    />
-                  </MKBox>
-                </Grid> */}
                 <Grid item xs={12} sm={12} md={3}>
                   <MKBox mb={2}>
                     <FormControl required sx={{ m: 1, minWidth: 120 }}>
@@ -435,6 +452,18 @@ const BusBookingForm = () => {
                       />
                     </MKBox>
                   </Grid>
+                  <Grid item xs={12} sm={12} md={6}>
+                    <MKBox>
+                      <FormControlLabel
+                        required
+                        control={<Checkbox />}
+                        sx={{ display: "flex" }}
+                        label="Accept terms and conditions"
+                        checked={termsChecked}
+                        onChange={handleTermsChange}
+                      />
+                    </MKBox>
+                  </Grid>
                 </Grid>
               ) : null}
               {activeStep == 2 && (
@@ -477,7 +506,7 @@ const BusBookingForm = () => {
                       <MKInput
                         variant="standard"
                         type="text"
-                        label="bookingType"
+                        label="Booking Type"
                         InputLabelProps={{ shrink: true }}
                         fullWidth
                         value={selectedBusType}
@@ -520,6 +549,32 @@ const BusBookingForm = () => {
                         InputLabelProps={{ shrink: true }}
                         fullWidth
                         value={selectedLocationName}
+                        disabled
+                      />
+                    </MKBox>
+                  </Grid>
+                  <Grid item xs={12} sm={12} md={3}>
+                    <MKBox mb={2}>
+                      <MKInput
+                        variant="standard"
+                        type="text"
+                        label="Date"
+                        InputLabelProps={{ shrink: true }}
+                        fullWidth
+                        value={formateDate}
+                        disabled
+                      />
+                    </MKBox>
+                  </Grid>
+                  <Grid item xs={12} sm={12} md={3}>
+                    <MKBox mb={2}>
+                      <MKInput
+                        variant="standard"
+                        type="text"
+                        label="Time"
+                        InputLabelProps={{ shrink: true }}
+                        fullWidth
+                        value={formattedTime}
                         disabled
                       />
                     </MKBox>

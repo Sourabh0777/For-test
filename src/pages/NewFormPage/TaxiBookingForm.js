@@ -2,6 +2,7 @@
 import {
   Box,
   Button,
+  Checkbox,
   FormControl,
   FormControlLabel,
   FormHelperText,
@@ -29,16 +30,24 @@ import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 const TaxiBookingForm = () => {
   const navigate = useNavigate();
+  const [termsChecked, setTermsChecked] = useState(true);
 
   const [activeStep, setActiveStep] = React.useState(0);
   const [isNextDisabled, setIsNextDisabled] = useState(true);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const handleTermsChange = (event) => {
+    setTermsChecked(event.target.checked);
+    if (event.target.checked == false) {
+      setIsNextDisabled(true);
+    }
+  };
   const handleNext = () => {
     setIsNextDisabled(true);
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    setIsNextDisabled(false);
   };
   const handleReset = () => {
     setActiveStep(0);
@@ -49,9 +58,11 @@ const TaxiBookingForm = () => {
   const [taxiTypeList, setTaxiTypeList] = useState();
   const [landingLocationsData, setLandingLocationsData] = useState();
   const [filteredTaxiTypeList, setFilteredTaxiTypeList] = useState();
+  const [selectedDestinationName, setSelectedDestinationName] = useState();
+
   //Values
-  const [selectedLocation, setLocation] = React.useState("");
-  const [selectedSourceLocation, setSelectedSourceLocation] = React.useState("");
+  const [selectedLocation, setLocation] = useState("");
+  const [selectedSourceLocation, setSelectedSourceLocation] = useState("");
   const [selectedLandingLocation, setSelectedLandingLocation] = useState("");
   const [tollCost, setTollCost] = useState();
   const [selectedTaxiType, setSelectedTaxiType] = useState({});
@@ -59,9 +70,12 @@ const TaxiBookingForm = () => {
   const handleSourceLocationChange = (event) => {
     setSelectedSourceLocation(event.target.value);
   };
+
   const handleLocationChange = (event) => {
     setLocation(event.target.value);
+
     const landingLocationList = LocationData.filter((item) => item._id == event.target.value);
+    setSelectedDestinationName(landingLocationList[0].locationName);
     setTollCost(landingLocationList[0].tollCost);
     setLandingLocationsData(landingLocationList[0].landingLocations);
     const landList = landingLocationList[0].landingLocations.map((item) => {
@@ -152,8 +166,10 @@ const TaxiBookingForm = () => {
     };
     fetchTaxiType();
   }, []);
+
+  const [formateDate, setFormateDate] = useState("");
+  //Values
   const [dateOfTraveling, setDateOfTraveling] = useState(null);
-  // const [departureTime, setDepartureTime] = useState("00:00");
   const [departureTime, setDepartureTime] = useState("");
   const [fullName, setFullName] = useState();
   const [firstName, setFirstName] = useState("");
@@ -166,30 +182,21 @@ const TaxiBookingForm = () => {
     setLastName(a[1]);
   };
   const [formattedTime, setFormattedTime] = useState("");
-  // const timeHandler = (e) => {
-  //   console.log("time", e.target.value);
-  //   setDepartureTime(e.target.value);
-  // };
-  const timeHandler = (e) => {
-    console.log("time", e.target.value);
-    setDepartureTime(e.target.value);
-    const inputTime = e.target.value; // Assuming e.target.value contains the time in 24-hour format (e.g., "15:30")
 
-    // Split the input time into hours and minutes
+  const timeHandler = (e) => {
+    setDepartureTime(e.target.value);
+    const inputTime = e.target.value;
+
     const [hours, minutes] = inputTime.split(":");
 
-    // Create a Date object with the input time
     const date = new Date();
     date.setHours(hours);
     date.setMinutes(minutes);
 
-    // Format the time in 12-hour format with AM/PM
     const options = { hour: "numeric", minute: "numeric", hour12: true };
     const formatted = date.toLocaleTimeString(undefined, options);
 
-    // Set the formatted time in state
     setFormattedTime(formatted);
-    console.log("formatted", formattedTime);
   };
   const mobileNOHandler = (e) => {
     let inputValue = e.target.value;
@@ -199,7 +206,13 @@ const TaxiBookingForm = () => {
 
   const handleDateChange = (newValue) => {
     setDateOfTraveling(newValue);
+    const day = newValue.$d.getDate().toString().padStart(2, "0");
+    const month = (newValue.$d.getMonth() + 1).toString().padStart(2, "0"); // Note: Months are 0-based, so we add 1.
+    const year = newValue.$d.getFullYear();
+    const formattedDate = `${day}-${month}-${year}`;
+    setFormateDate(formattedDate);
   };
+
   const [noOfPassengers, setNoOfPassengers] = useState(1);
 
   //Packages Code
@@ -264,11 +277,7 @@ const TaxiBookingForm = () => {
             return { name: item.packageName, _id: item._id };
           });
           setPackagesList(packagesData);
-          // const dropLocations = responseData.data.map((item) => {
-          //   const a = item.landingLocations.map((landingLocation) => {});
-          // });
         }
-        // setLocations(locationNames);
       } catch (error) {
         console.log(error);
       }
@@ -281,17 +290,27 @@ const TaxiBookingForm = () => {
   useEffect(() => {
     if (
       (activeStep == 0 &&
+        termsChecked &&
         tollCost &&
         selectedLocation &&
         selectedLandingLocation &&
         selectedTaxiType.fair) ||
-      (checked && selectedPackage && pickupLocation && selectedTaxiType.fair)
-      // (checked && selectedPackage && pickupLocation && selectedDrop && selectedTaxiType.fair)
+      (checked && selectedPackage && pickupLocation && selectedTaxiType.fair && termsChecked)
     ) {
       setIsNextDisabled(false);
     }
-    if (activeStep == 1 && dateOfTraveling && departureTime && fullName && mobileNo) {
+    if (
+      activeStep == 1 &&
+      dateOfTraveling &&
+      departureTime &&
+      fullName &&
+      mobileNo &&
+      mobileNo.length > 9
+    ) {
       setIsNextDisabled(false);
+    }
+    if (mobileNo && mobileNo.length < 10) {
+      setIsNextDisabled(true);
     }
   }, [
     activeStep,
@@ -306,6 +325,7 @@ const TaxiBookingForm = () => {
     selectedPackage,
     pickupLocation,
     selectedDrop,
+    termsChecked,
   ]);
   //
   const submitHandler = async () => {
@@ -314,10 +334,8 @@ const TaxiBookingForm = () => {
       lastName: lastName || " ",
       phoneNumber: mobileNo,
       travelDate: dateOfTraveling,
-      // travelTime: departureTime,
       travelTime: formattedTime,
-      // source: "Delhi",
-      source: !checked ? selectedSourceLocation : "Delhi",
+      source: selectedSourceLocation.id,
       destination: selectedLocation,
       noOfPassengers: noOfPassengers,
       texiType: selectedTaxiType._id,
@@ -355,7 +373,7 @@ const TaxiBookingForm = () => {
       travelDate: dateOfTraveling,
       // travelTime: departureTime,
       travelTime: formattedTime,
-      source: selectedSourceLocation,
+      source: selectedSourceLocation.id,
       destination: destinationId,
       noOfPassengers: noOfPassengers,
       texiType: selectedTaxiType._id,
@@ -406,21 +424,6 @@ const TaxiBookingForm = () => {
                 justifyContent="center"
                 alignItems="center"
               >
-                {/* <Grid item xs={12} sm={12} md={3}>
-                  <MKBox mb={2}>
-                    <MKInput
-                      name="source"
-                      type="text"
-                      label="From"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      value="Delhi"
-                      default
-                      disabled
-                      required
-                    />
-                  </MKBox>
-                </Grid> */}
                 <Grid item xs={12} sm={12} md={3}>
                   <MKBox mb={2}>
                     <FormControl required sx={{ m: 1, minWidth: 120 }}>
@@ -429,13 +432,13 @@ const TaxiBookingForm = () => {
                         name="source"
                         labelId="source"
                         id="source"
-                        value={selectedSourceLocation}
+                        value={selectedSourceLocation.name}
                         onChange={handleSourceLocationChange}
                         sx={{ minHeight: 45, minWidth: 270 }}
                       >
                         {sourcseLocation &&
                           sourcseLocation.map((item, idx) => (
-                            <MenuItem key={idx} value={item.id}>
+                            <MenuItem key={idx} value={item}>
                               {item.name}
                             </MenuItem>
                           ))}
@@ -770,58 +773,11 @@ const TaxiBookingForm = () => {
         )}
         {!checked && (
           <Grid container spacing={2}>
-            {/* {activeStep === 1 || activeStep === 0 ? ( */}
             {activeStep === 1 || activeStep === 0 ? (
               <Grid container>
-                {activeStep === 0 ? (
+                {activeStep === 0 && (
                   <Grid item xs={12} md={9}>
-                    <Grid
-                      container
-                      spacing={2}
-                      // display="flex"
-                      // justifyContent="flex-start"
-                      // alignItems="self-start"
-                      sx={{ mx: 1, mt: 0.5 }}
-                    >
-                      {/* <Grid item xs={12} sm={12} md={1}>
-                  <MKBox mb={2}>
-                    <MKInput
-                      variant="standard"
-                      type="text"
-                      label="Toll"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      value={tollCost || 0}
-                      disabled
-                    />
-                  </MKBox>
-                </Grid>
-                <Grid item xs={12} sm={12} md={1}>
-                  <MKBox mb={2}>
-                    <MKInput
-                      variant="standard"
-                      type="text"
-                      label="Fair"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      value={selectedTaxiType.fair || 0}
-                      disabled
-                    />
-                  </MKBox>
-                </Grid>
-                <Grid item xs={12} sm={12} md={1}>
-                  <MKBox mb={2}>
-                    <MKInput
-                      variant="standard"
-                      type="text"
-                      label="Total Fair"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      value={selectedTaxiType.fair + tollCost || 0}
-                      disabled
-                    />
-                  </MKBox>
-                </Grid> */}
+                    <Grid container spacing={2} sx={{ mx: 1, mt: 0.5 }}>
                       <Grid item xs={12} sm={12} md={3}>
                         <MKBox>
                           <MKInput
@@ -851,10 +807,20 @@ const TaxiBookingForm = () => {
                           />
                         </MKBox>
                       </Grid>
+                      <Grid item xs={12} sm={12} md={6}>
+                        <MKBox>
+                          <FormControlLabel
+                            required
+                            control={<Checkbox />}
+                            sx={{ display: "flex" }}
+                            label="Accept terms and conditions"
+                            checked={termsChecked}
+                            onChange={handleTermsChange}
+                          />
+                        </MKBox>
+                      </Grid>
                     </Grid>
                   </Grid>
-                ) : (
-                  <Grid item xs={12} md={9}></Grid>
                 )}
                 <Grid
                   item
@@ -866,6 +832,7 @@ const TaxiBookingForm = () => {
                   justifyContent={"end"}
                   alignItems={"center"}
                 >
+                  {/* Total Cost and fair */}
                   <MKBox>
                     {tollCost ? (
                       <MKBox display="flex" alignItems="center" gap={1}>
@@ -910,17 +877,6 @@ const TaxiBookingForm = () => {
                       </MKBox>
                     )}
                   </MKBox>
-                  {/* <MKBox>
-                    {selectedTaxiType?.fair && tollCost ? (
-                      <MKTypography variant="caption" color="text" fontWeight="medium">
-                        Total Cost: &#8377; {selectedTaxiType.fair + tollCost}
-                      </MKTypography>
-                    ) : (
-                      <MKTypography variant="caption" color="text" fontWeight="medium">
-                        Totall Cost: NA
-                      </MKTypography>
-                    )}
-                  </MKBox> */}
                 </Grid>
               </Grid>
             ) : null}
@@ -933,7 +889,7 @@ const TaxiBookingForm = () => {
                 alignItems="self-start"
                 sx={{ mx: 1, mt: 0.5 }}
               >
-                <Grid item xs={12} sm={12} md={3}>
+                <Grid item xs={12} sm={12} md={6}>
                   <MKBox mb={2}>
                     <MKInput
                       variant="standard"
@@ -946,7 +902,7 @@ const TaxiBookingForm = () => {
                     />
                   </MKBox>
                 </Grid>
-                <Grid item xs={12} sm={12} md={3}>
+                <Grid item xs={12} sm={12} md={6}>
                   <MKBox mb={2}>
                     <MKInput
                       variant="standard"
@@ -959,33 +915,7 @@ const TaxiBookingForm = () => {
                     />
                   </MKBox>
                 </Grid>
-                <Grid item xs={12} sm={12} md={3}>
-                  <MKBox mb={2}>
-                    <MKInput
-                      variant="standard"
-                      type="text"
-                      label="Toll"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      value={tollCost || 0}
-                      disabled
-                    />
-                  </MKBox>
-                </Grid>
-                <Grid item xs={12} sm={12} md={3}>
-                  <MKBox mb={2}>
-                    <MKInput
-                      variant="standard"
-                      type="text"
-                      label="Fair"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      value={selectedTaxiType.fair || 0}
-                      disabled
-                    />
-                  </MKBox>
-                </Grid>
-                <Grid item xs={12} sm={12} md={3}>
+                <Grid item xs={12} sm={12} md={6}>
                   <MKBox mb={2}>
                     <MKInput
                       variant="standard"
@@ -998,7 +928,7 @@ const TaxiBookingForm = () => {
                     />
                   </MKBox>
                 </Grid>
-                <Grid item xs={12} sm={12} md={3}>
+                <Grid item xs={12} sm={12} md={6}>
                   <MKBox mb={2}>
                     <MKInput
                       type="text"
@@ -1014,7 +944,60 @@ const TaxiBookingForm = () => {
                     />
                   </MKBox>
                 </Grid>
-                <Grid item xs={12} sm={12} md={3}>
+                <Grid item xs={12} sm={12} md={6}>
+                  <MKBox mb={2}>
+                    <MKInput
+                      type="text"
+                      variant="standard"
+                      label="From"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={selectedSourceLocation.name}
+                      disabled
+                    />
+                  </MKBox>
+                </Grid>
+                <Grid item xs={12} sm={12} md={6}>
+                  <MKBox mb={2}>
+                    <MKInput
+                      type="text"
+                      variant="standard"
+                      label="To"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={selectedDestinationName}
+                      disabled
+                    />
+                  </MKBox>
+                </Grid>
+                <Grid item xs={12} sm={12} md={6}>
+                  <MKBox mb={2}>
+                    <MKInput
+                      type="text"
+                      variant="standard"
+                      label="Date"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={formateDate}
+                      disabled
+                    />
+                  </MKBox>
+                </Grid>
+                <Grid item xs={12} sm={12} md={6}>
+                  <MKBox mb={2}>
+                    <MKInput
+                      type="text"
+                      variant="standard"
+                      label="Time"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={formattedTime}
+                      disabled
+                    />
+                  </MKBox>
+                </Grid>
+
+                <Grid item xs={12} sm={12} md={6}>
                   <MKBox mb={2}>
                     <MKInput
                       variant="standard"
@@ -1043,7 +1026,12 @@ const TaxiBookingForm = () => {
                       Back
                     </Button>
                   </Box>{" "}
-                  <MKButton onClick={submitHandler} variant="gradient" color="info">
+                  <MKButton
+                    onClick={submitHandler}
+                    disabled={!termsChecked}
+                    variant="gradient"
+                    color="info"
+                  >
                     Confirm Booking{" "}
                   </MKButton>
                   <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
@@ -1078,53 +1066,7 @@ const TaxiBookingForm = () => {
               <Grid container>
                 {activeStep === 0 ? (
                   <Grid item xs={12} md={9}>
-                    <Grid
-                      container
-                      spacing={2}
-                      // display="flex"
-                      // justifyContent="flex-start"
-                      // alignItems="self-start"
-                      sx={{ mx: 1, mt: 0.5 }}
-                    >
-                      {/* <Grid item xs={12} sm={12} md={1}>
-                  <MKBox mb={2}>
-                    <MKInput
-                      variant="standard"
-                      type="text"
-                      label="Toll"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      value={tollCost || 0}
-                      disabled
-                    />
-                  </MKBox>
-                </Grid>
-                <Grid item xs={12} sm={12} md={1}>
-                  <MKBox mb={2}>
-                    <MKInput
-                      variant="standard"
-                      type="text"
-                      label="Fair"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      value={selectedTaxiType.fair || 0}
-                      disabled
-                    />
-                  </MKBox>
-                </Grid>
-                <Grid item xs={12} sm={12} md={1}>
-                  <MKBox mb={2}>
-                    <MKInput
-                      variant="standard"
-                      type="text"
-                      label="Total Fair"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      value={selectedTaxiType.fair + tollCost || 0}
-                      disabled
-                    />
-                  </MKBox>
-                </Grid> */}
+                    <Grid container spacing={2} sx={{ mx: 1, mt: 0.5 }}>
                       <Grid item xs={12} sm={12} md={3}>
                         <MKBox>
                           <MKInput
@@ -1151,6 +1093,18 @@ const TaxiBookingForm = () => {
                               />
                             }
                             label="Package"
+                          />
+                        </MKBox>
+                      </Grid>
+                      <Grid item xs={12} sm={12} md={6}>
+                        <MKBox>
+                          <FormControlLabel
+                            required
+                            control={<Checkbox />}
+                            sx={{ display: "flex" }}
+                            label="Accept terms and conditions"
+                            checked={termsChecked}
+                            onChange={handleTermsChange}
                           />
                         </MKBox>
                       </Grid>
@@ -1213,17 +1167,6 @@ const TaxiBookingForm = () => {
                       </MKBox>
                     )}
                   </MKBox>
-                  {/* <MKBox>
-                    {selectedTaxiType?.fair && tollCost ? (
-                      <MKTypography variant="caption" color="text" fontWeight="medium">
-                        Total Cost: &#8377; {selectedTaxiType.fair + tollCost}
-                      </MKTypography>
-                    ) : (
-                      <MKTypography variant="caption" color="text" fontWeight="medium">
-                        Totall Cost: NA
-                      </MKTypography>
-                    )}
-                  </MKBox> */}
                 </Grid>
               </Grid>
             ) : null}
@@ -1258,32 +1201,6 @@ const TaxiBookingForm = () => {
                       InputLabelProps={{ shrink: true }}
                       fullWidth
                       value={mobileNo}
-                      disabled
-                    />
-                  </MKBox>
-                </Grid>
-                <Grid item xs={12} sm={12} md={3}>
-                  <MKBox mb={2}>
-                    <MKInput
-                      variant="standard"
-                      type="text"
-                      label="Toll"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      value={tollCost || 0}
-                      disabled
-                    />
-                  </MKBox>
-                </Grid>
-                <Grid item xs={12} sm={12} md={3}>
-                  <MKBox mb={2}>
-                    <MKInput
-                      variant="standard"
-                      type="text"
-                      label="Fair"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      value={selectedTaxiType.fair || 0}
                       disabled
                     />
                   </MKBox>
@@ -1331,6 +1248,58 @@ const TaxiBookingForm = () => {
                     />
                   </MKBox>
                 </Grid>
+                <Grid item xs={12} sm={12} md={3}>
+                  <MKBox mb={2}>
+                    <MKInput
+                      variant="standard"
+                      type="From"
+                      label="Total Fair"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={selectedSourceLocation.name}
+                      disabled
+                    />
+                  </MKBox>
+                </Grid>
+                <Grid item xs={12} sm={12} md={3}>
+                  <MKBox mb={2}>
+                    <MKInput
+                      variant="standard"
+                      type="From"
+                      label="Total Fair"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={selectedDestinationName}
+                      disabled
+                    />
+                  </MKBox>
+                </Grid>
+                <Grid item xs={12} sm={12} md={3}>
+                  <MKBox mb={2}>
+                    <MKInput
+                      variant="standard"
+                      type="Date"
+                      label="Total Fair"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={formateDate}
+                      disabled
+                    />
+                  </MKBox>
+                </Grid>
+                <Grid item xs={12} sm={12} md={3}>
+                  <MKBox mb={2}>
+                    <MKInput
+                      variant="standard"
+                      type="Time"
+                      label="Total Fair"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={formattedTime}
+                      disabled
+                    />
+                  </MKBox>
+                </Grid>
               </Grid>
             )}
             <Grid container item justifyContent="center" xs={12} mt={0} mb={2}>
@@ -1346,7 +1315,12 @@ const TaxiBookingForm = () => {
                       Back
                     </Button>
                   </Box>{" "}
-                  <MKButton onClick={packageSubmitHandler} variant="gradient" color="info">
+                  <MKButton
+                    onClick={packageSubmitHandler}
+                    disabled={!termsChecked}
+                    variant="gradient"
+                    color="info"
+                  >
                     Confirm Booking{" "}
                   </MKButton>
                   <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
