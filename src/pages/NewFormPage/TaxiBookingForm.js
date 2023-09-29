@@ -52,6 +52,31 @@ const TaxiBookingForm = () => {
   const handleReset = () => {
     setActiveStep(0);
   };
+
+  const [sourcseLocation, setSourceLocation] = useState([]);
+  const [sourcseLocationData, setSourceLocationData] = useState();
+
+  useEffect(() => {
+    const fetchSourceLocation = async () => {
+      try {
+        const responseData = await sendRequest(
+          // eslint-disable-next-line no-undef
+          `${process.env.REACT_APP_BACKEND_URL}/admin/source`
+        );
+        setSourceLocationData(responseData.data);
+
+        const locationNames = responseData.data?.map((item) => {
+          return { name: item.sourceName, id: item._id };
+        });
+
+        setSourceLocation(locationNames);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchSourceLocation();
+  }, []);
   const [Locations, setLocations] = useState();
   const [LocationData, setLocationData] = useState();
   const [landingLocationList, setLandingLocationList] = useState();
@@ -67,10 +92,10 @@ const TaxiBookingForm = () => {
   const [tollCost, setTollCost] = useState();
   const [selectedTaxiType, setSelectedTaxiType] = useState({});
   const [noOfPassengers, setNoOfPassengers] = useState(1);
-
   //
   const handleSourceLocationChange = (event) => {
-    setSelectedSourceLocation(event.target.value);
+    const a = sourcseLocation.filter((item) => item.name == event.target.value);
+    setSelectedSourceLocation(a[0]);
   };
 
   const handleLocationChange = (event) => {
@@ -106,31 +131,6 @@ const TaxiBookingForm = () => {
     setSelectedTaxiType(value);
     setNoOfPassengers(1);
   };
-
-  const [sourcseLocation, setSourceLocation] = useState([]);
-  const [sourcseLocationData, setSourceLocationData] = useState();
-
-  useEffect(() => {
-    const fetchSourceLocation = async () => {
-      try {
-        const responseData = await sendRequest(
-          // eslint-disable-next-line no-undef
-          `${process.env.REACT_APP_BACKEND_URL}/admin/source`
-        );
-        setSourceLocationData(responseData.data);
-
-        const locationNames = responseData.data?.map((item) => {
-          return { name: item.sourceName, id: item._id };
-        });
-
-        setSourceLocation(locationNames);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchSourceLocation();
-  }, []);
 
   useEffect(() => {
     const fetchLocation = async () => {
@@ -247,17 +247,26 @@ const TaxiBookingForm = () => {
   const [selectedPackage, setSelectedPackage] = useState();
   const [selectedPackageID, setselectedPackageID] = useState();
   const [pickupLocation, setPickupLocation] = useState();
-  const [selectedDrop, setSelectedDrop] = useState();
   const [destinationId, setDestinationId] = useState();
-  const [packageLandingLocationId, setPackageLandingLocationId] = useState();
+  const [selectedPackageSourceLocation, setSelectedPackageSourceLocation] = useState("");
+  const handlePackageSourceLocationChange = (e) => {
+    const a = sourcseLocation.filter((item) => item.name == e.target.value);
+    setSelectedPackageSourceLocation(a[0]);
+  };
+  console.log(
+    "🚀 ~ file: TaxiBookingForm.js:252 ~ selectedPackageSourceLocation:",
+    selectedPackageSourceLocation
+  );
+
   const handleChange = (event) => {
     setChecked(event.target.checked);
+    setSelectedPackageSourceLocation("");
+    setSelectedSourceLocation("");
   };
   const handlePackageChange = (e) => {
     setSelectedPackage(e.target.value.name);
     setselectedPackageID(e.target.value._id);
     const selectedPackage = packageData.filter((item) => item._id == e.target.value._id);
-
     setSelectedPackageData(selectedPackage);
   };
 
@@ -345,7 +354,6 @@ const TaxiBookingForm = () => {
     checked,
     selectedPackage,
     pickupLocation,
-    selectedDrop,
     termsChecked,
   ]);
   //
@@ -392,7 +400,6 @@ const TaxiBookingForm = () => {
       lastName: lastName || " ",
       phoneNumber: mobileNo,
       travelDate: dateOfTraveling,
-      // travelTime: departureTime,
       travelTime: formattedTime,
       source: selectedSourceLocation.id,
       destination: destinationId,
@@ -405,7 +412,6 @@ const TaxiBookingForm = () => {
       bookingStatus: "pending",
       paymentAccepted: false,
       landingLocationId: selectedPackage?.location?._id,
-      // landingLocationId: selectedDrop.id,
       bookingType: "package",
       packageId: selectedPackageID,
     };
@@ -451,15 +457,14 @@ const TaxiBookingForm = () => {
                       <InputLabel id="destination">From</InputLabel>
                       <Select
                         name="source"
-                        labelId="source"
                         id="source"
-                        value={selectedSourceLocation.name}
+                        value={selectedSourceLocation.name || ""}
                         onChange={handleSourceLocationChange}
                         sx={{ minHeight: 45, minWidth: 270 }}
                       >
                         {sourcseLocation &&
                           sourcseLocation.map((item, idx) => (
-                            <MenuItem key={idx} value={item}>
+                            <MenuItem key={idx} value={item.name}>
                               {item.name}
                             </MenuItem>
                           ))}
@@ -619,18 +624,20 @@ const TaxiBookingForm = () => {
                 <Grid item xs={12} sm={12} md={3}>
                   <MKBox mb={2}>
                     <FormControl required sx={{ m: 1, minWidth: 120 }}>
-                      <InputLabel id="destination">Pick Up</InputLabel>
+                      <InputLabel id="packageSource">Pick Up</InputLabel>
                       <Select
-                        name="source"
+                        name="packageSource"
                         labelId="source"
-                        id="source"
-                        value={selectedSourceLocation}
-                        onChange={handleSourceLocationChange}
+                        id="packageSource"
+                        value={
+                          selectedPackageSourceLocation ? selectedPackageSourceLocation.name : ""
+                        }
+                        onChange={handlePackageSourceLocationChange}
                         sx={{ minHeight: 45, minWidth: 270 }}
                       >
                         {sourcseLocation &&
                           sourcseLocation.map((item, idx) => (
-                            <MenuItem key={idx} value={item.id}>
+                            <MenuItem key={idx} value={item.name}>
                               {item.name}
                             </MenuItem>
                           ))}
@@ -1209,6 +1216,32 @@ const TaxiBookingForm = () => {
                     <MKInput
                       variant="standard"
                       type="text"
+                      label="Date"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={formateDate}
+                      disabled
+                    />
+                  </MKBox>
+                </Grid>
+                <Grid item xs={12} sm={12} md={3}>
+                  <MKBox mb={2}>
+                    <MKInput
+                      variant="standard"
+                      type="text"
+                      label="Time"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={formattedTime}
+                      disabled
+                    />
+                  </MKBox>
+                </Grid>
+                <Grid item xs={12} sm={12} md={3}>
+                  <MKBox mb={2}>
+                    <MKInput
+                      variant="standard"
+                      type="text"
                       label="Total Fair"
                       InputLabelProps={{ shrink: true }}
                       fullWidth
@@ -1251,11 +1284,11 @@ const TaxiBookingForm = () => {
                   <MKBox mb={2}>
                     <MKInput
                       variant="standard"
-                      type="From"
-                      label="Total Fair"
+                      type="text"
+                      label="From"
                       InputLabelProps={{ shrink: true }}
                       fullWidth
-                      value={selectedSourceLocation.name}
+                      value={selectedPackageSourceLocation.name}
                       disabled
                     />
                   </MKBox>
@@ -1264,11 +1297,11 @@ const TaxiBookingForm = () => {
                   <MKBox mb={2}>
                     <MKInput
                       variant="standard"
-                      type="From"
-                      label="Total Fair"
+                      type="text"
+                      label="To"
                       InputLabelProps={{ shrink: true }}
                       fullWidth
-                      value={selectedDestinationName}
+                      value={pickupLocation}
                       disabled
                     />
                   </MKBox>
@@ -1277,24 +1310,11 @@ const TaxiBookingForm = () => {
                   <MKBox mb={2}>
                     <MKInput
                       variant="standard"
-                      type="Date"
+                      type="text"
                       label="Total Fair"
                       InputLabelProps={{ shrink: true }}
                       fullWidth
-                      value={formateDate}
-                      disabled
-                    />
-                  </MKBox>
-                </Grid>
-                <Grid item xs={12} sm={12} md={3}>
-                  <MKBox mb={2}>
-                    <MKInput
-                      variant="standard"
-                      type="Time"
-                      label="Total Fair"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      value={formattedTime}
+                      value={selectedTaxiType.fair + tollCost || 0}
                       disabled
                     />
                   </MKBox>

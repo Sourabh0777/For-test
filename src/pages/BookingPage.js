@@ -55,7 +55,7 @@ function BookingPage() {
         left={0}
         zIndex={1}
         width="100%"
-        minHeight="100vh"
+        minHeight="110vh"
         sx={{
           backgroundImage: ({ functions: { linearGradient, rgba }, palette: { gradients } }) =>
             `${linearGradient(
@@ -102,9 +102,6 @@ function BookingPage() {
             </Card>
           </Grid>
         </Grid>
-      </MKBox>
-      <MKBox width="100%" position="absolute" zIndex={2} bottom="1.625rem">
-        <SimpleFooter light />
       </MKBox>
     </>
   );

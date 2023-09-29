@@ -138,7 +138,9 @@ const BusBookingForm = () => {
   const mobileNOHandler = (e) => {
     let inputValue = e.target.value;
     inputValue = inputValue.replace(/\D/g, "");
-    setMobileNo(inputValue);
+    if (inputValue.length <= 10) {
+      setMobileNo(inputValue);
+    }
   };
   useEffect(() => {
     const fetchLocation = async () => {
@@ -417,47 +419,25 @@ const BusBookingForm = () => {
               </Grid>
             )}
             <Grid container spacing={2}>
-              {activeStep === 1 || activeStep === 0 ? (
+              {activeStep === 0 ? (
                 <Grid
                   container
                   spacing={2}
                   display="flex"
-                  justifyContent="flex-start"
-                  alignItems="self-start"
+                  justifyContent="center"
+                  alignItems="center"
                   sx={{ mx: 1, mt: 0.5 }}
                 >
-                  <Grid item xs={12} sm={12} md={2}>
-                    <MKBox mb={2}>
-                      <MKInput
-                        variant="standard"
-                        type="text"
-                        label="bookingType"
-                        InputLabelProps={{ shrink: true }}
-                        fullWidth
-                        value={selectedBusType}
-                        disabled
-                      />
-                    </MKBox>
-                  </Grid>
-                  <Grid item xs={12} sm={12} md={2}>
-                    <MKBox mb={2}>
-                      <MKInput
-                        variant="standard"
-                        type="number"
-                        label="No of Seats Booked"
-                        InputLabelProps={{ shrink: true }}
-                        fullWidth
-                        value={noOfPassengers}
-                        disabled
-                      />
-                    </MKBox>
-                  </Grid>
-                  <Grid item xs={12} sm={12} md={6}>
+                  <Grid item xs={12} sm={12} md={12}>
                     <MKBox>
                       <FormControlLabel
                         required
                         control={<Checkbox />}
-                        sx={{ display: "flex" }}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
                         label="Accept terms and conditions"
                         checked={termsChecked}
                         onChange={handleTermsChange}
