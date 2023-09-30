@@ -21,6 +21,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
   const [BookingData, setBookingData] = useState();
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [buttonStatus, setButtonStatus] = useState();
+  const [_id, set_id] = useState();
   useEffect(() => {
     const currentDate = new Date();
     const day = String(currentDate.getDate()).padStart(2, "0");
@@ -52,13 +53,17 @@ const BookingConfirmationForm = ({ bookingId }) => {
         const responseData = await sendRequest(
           `${process.env.REACT_APP_BACKEND_URL}/counter/bookingByToken?token=${bookingId}`
         );
-        console.log("🚀 ~~ responseData:", responseData?.data);
+        if (responseData.data) {
+          set_id(responseData.data[0]._id);
+        }
+        console.log("🚀 ~~ responseData:", responseData.data[0]);
         const formattedTravelDate = dayjs(responseData?.data[0]?.travelDate).format("DD-MM-YYYY");
         if (formattedTravelDate == todaysDate) {
           setMessage(messages.m1);
         } else {
           setMessage(messages.m2);
         }
+
         if (responseData?.data.bookingMode == "PK") {
           const fields = [
             {
@@ -119,6 +124,32 @@ const BookingConfirmationForm = ({ bookingId }) => {
   const handleNewBookingClick = () => {
     navigate("/BookingPage");
   };
+  const [feedback, setFeedback] = useState();
+  const submitHandler = async () => {
+    if (feedback == "") {
+      console.log("worked1");
+      return;
+    } else {
+      console.log("worked");
+      const formData = { _id: _id, remark: feedback };
+      try {
+        const responseData = await sendRequest(
+          // eslint-disable-next-line no-undef
+          `${process.env.REACT_APP_BACKEND_URL}/user/update-remark`,
+          "PUT",
+          JSON.stringify(formData),
+          { "Content-Type": "application/json" }
+        );
+        if (responseData) {
+          navigate(`/booking/${responseData?.data?.token}`);
+        }
+      } catch (error) {
+        console.log(error, "here");
+      }
+      setFeedback("");
+      return;
+    }
+  };
   return (
     <Grid item xs={8} lg={8} mt={0}>
       {isLoading && <Animations />}
@@ -168,14 +199,44 @@ const BookingConfirmationForm = ({ bookingId }) => {
                     );
                   })}
               </Grid>
-              <MKTypography variant="h6">{message}</MKTypography>
+              {message && <MKTypography variant="h6">{message}</MKTypography>}
             </MKBox>
-            <Box sx={{ display: "flex", flexDirection: "row", pt: 3 }}>
-              {" "}
-              <MKButton variant="gradient" color="info" onClick={handleNewBookingClick}>
-                New Booking{" "}
-              </MKButton>
-            </Box>
+            <Grid container spacing={3} mt={2}>
+              <Grid item xs={12} md={8}>
+                <MKTypography variant="h6" fontWeight="medium" color="text" mb={1}>
+                  Any remarks for the ride?
+                </MKTypography>
+                <MKBox mb={2}>
+                  <textarea
+                    rows="2"
+                    style={{
+                      width: "100%",
+                      padding: "10px",
+                      overflowY: "auto",
+                      resize: "none",
+                    }}
+                    value={feedback}
+                    onChange={(e) => setFeedback(e.target.value)}
+                  />
+                </MKBox>
+                <MKBox mb={2} mt={2} display="flex">
+                  <MKButton variant="gradient" color="info" onClick={submitHandler}>
+                    Submit Remark
+                  </MKButton>
+                  <MKButton
+                    variant="gradient"
+                    color="info"
+                    onClick={handleNewBookingClick}
+                    sx={{ ml: 5 }}
+                  >
+                    Create a new Booking{" "}
+                  </MKButton>
+                </MKBox>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <MKBox mb={2} mt={2}></MKBox>
+              </Grid>
+            </Grid>
           </MKBox>
         </MKBox>
       )}

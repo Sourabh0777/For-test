@@ -7,6 +7,9 @@ import React, { useState } from "react";
 const FeedBackForm = () => {
   const [feedback, setFeedback] = useState();
   console.log("🚀 ~ file: FeedBackForm.js:9 ~ FeedBackForm ~ feedback:", feedback);
+  const submitHandler = async () => {
+    console.log("working");
+  };
   return (
     <MKBox p={3}>
       <MKTypography variant="h6" fontWeight="medium" color="text" mb={1}>
@@ -31,7 +34,7 @@ const FeedBackForm = () => {
             </MKBox>
             <MKBox mb={2}>
               {" "}
-              <MKButton variant="gradient" color="info">
+              <MKButton variant="gradient" color="info" onClick={submitHandler}>
                 Submit
               </MKButton>
             </MKBox>

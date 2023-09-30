@@ -14,10 +14,6 @@ const GroupButton = ({ onClick }) => {
       title: "Bus",
       component: <h1>Bus</h1>,
     },
-    {
-      title: "Feedback",
-      component: <h1>Bus</h1>,
-    },
   ];
   const [tabOpen, setTabOpen] = useState(tabs[0]?.title);
   useEffect(() => {
@@ -42,14 +38,6 @@ const GroupButton = ({ onClick }) => {
           style={{ color: tabOpen === "Bus" ? "white" : "inherit" }}
         >
           Bus
-        </MKButton>
-        <MKButton
-          onClick={() => setTabOpen("Feedback")}
-          variant="gradient"
-          color={tabOpen === "Feedback" ? "info" : "white"}
-          style={{ color: tabOpen === "Feedback" ? "white" : "inherit" }}
-        >
-          FeedBack
         </MKButton>
       </ButtonGroup>
     </MKBox>
