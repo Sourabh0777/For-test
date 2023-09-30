@@ -14,22 +14,51 @@ import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 
 const BookingConfirmationForm = ({ bookingId }) => {
+  const [todaysDate, setTodaysDate] = useState();
+  const [messages, setMessages] = useState();
+  const [message, setMessage] = useState();
   const navigate = useNavigate();
-
   const [BookingData, setBookingData] = useState();
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [buttonStatus, setButtonStatus] = useState();
+  useEffect(() => {
+    const currentDate = new Date();
+    const day = String(currentDate.getDate()).padStart(2, "0");
+    const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+    const year = currentDate.getFullYear();
+    const formattedDate = `${day}-${month}-${year}`;
+    setTodaysDate(formattedDate);
+  }, []);
+
+  useEffect(() => {
+    const fetchMessage = async () => {
+      try {
+        const responseData = await sendRequest(
+          `${process.env.REACT_APP_BACKEND_URL}/admin/message`
+        );
+        if (responseData) {
+          setMessages(responseData);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchMessage();
+  }, []);
+
   useEffect(() => {
     const fetchBooking = async () => {
       try {
         const responseData = await sendRequest(
           `${process.env.REACT_APP_BACKEND_URL}/counter/bookingByToken?token=${bookingId}`
         );
-        console.log(
-          "🚀 ~ file: BookingConfirmationForm.js:25 ~ fetchBooking ~ responseData:",
-          responseData
-        );
-        const formattedTravelDate = dayjs(responseData?.data?.travelDate).format("DD MMM, YYYY");
+        console.log("🚀 ~~ responseData:", responseData?.data);
+        const formattedTravelDate = dayjs(responseData?.data[0]?.travelDate).format("DD-MM-YYYY");
+        if (formattedTravelDate == todaysDate) {
+          setMessage(messages.m1);
+        } else {
+          setMessage(messages.m2);
+        }
         if (responseData?.data.bookingMode == "PK") {
           const fields = [
             {
@@ -39,7 +68,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
             { label: "Phone Number", key: responseData.data[0]?.phoneNumber },
             { label: "From", key: responseData.data[0]?.source?.sourceName },
             { label: "Token", key: responseData.data[0]?.token },
-            // { label: "Travel Date", key: responseData.data[0]?.travelDate },
+            { label: "Travel Date", key: responseData.data[0]?.travelDate },
             { label: "Travel Date", key: formattedTravelDate },
             { label: "Travel Time", key: responseData.data[0]?.travelTime },
             // { label: "Payment Mode", key: responseData.data[0]?.paymentMode },
@@ -61,8 +90,6 @@ const BookingConfirmationForm = ({ bookingId }) => {
             { label: "Token", key: responseData.data[0]?.token },
             { label: "Travel Date", key: formattedTravelDate },
             { label: "Travel Time", key: responseData.data[0]?.travelTime },
-            // { label: "Payment Mode", key: responseData.data[0]?.paymentMode },
-            // { label: "Booking Status", key: responseData.data[0]?.bookingStatus },
           ];
           setBookingData(fields);
           setButtonStatus(responseData?.data[0]?.bookingStatus);
@@ -84,11 +111,11 @@ const BookingConfirmationForm = ({ bookingId }) => {
           setButtonStatus(responseData?.data[0]?.bookingStatus);
         }
       } catch (error) {
-        console.log("🚀 ~ file: BookingStatus.js:29 ~ fetchBooking ~ error:", error);
+        console.log("🚀 ~ file: BookingStatus.js:118 ~ fetchBooking ~ error:", error);
       }
     };
     fetchBooking();
-  }, [bookingId]);
+  }, [bookingId, messages]);
   const handleNewBookingClick = () => {
     navigate("/BookingPage");
   };
@@ -124,26 +151,24 @@ const BookingConfirmationForm = ({ bookingId }) => {
             <MKBox component="form" role="form">
               <Grid container spacing={3}>
                 {BookingData &&
-                  BookingData.map((field, index) => (
-                    <Grid item xs={12} md={4} key={index}>
-                      <MKBox mb={2}>
-                        <MKInput
-                          type="text"
-                          label={field.label}
-                          fullWidth
-                          InputLabelProps={{ shrink: true }}
-                          value={field.key || ""}
-                          disabled
-                        />
-                      </MKBox>
-                    </Grid>
-                  ))}
+                  BookingData.map((field, index) => {
+                    return (
+                      <Grid item xs={12} md={4} key={index}>
+                        <MKBox mb={2}>
+                          <MKInput
+                            type="text"
+                            label={field.label}
+                            fullWidth
+                            InputLabelProps={{ shrink: true }}
+                            value={field.key || ""}
+                            disabled
+                          />
+                        </MKBox>
+                      </Grid>
+                    );
+                  })}
               </Grid>
-              <MKTypography variant="h6">
-                Please mention your token number at the counter. This is a tentative fare and final
-                fare will be decided at the counter. This is a booking request and not a
-                confirmation of the booking.
-              </MKTypography>
+              <MKTypography variant="h6">{message}</MKTypography>
             </MKBox>
             <Box sx={{ display: "flex", flexDirection: "row", pt: 3 }}>
               {" "}

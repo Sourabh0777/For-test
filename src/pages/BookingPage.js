@@ -39,11 +39,12 @@ import { ButtonGroup, useMediaQuery } from "@mui/material";
 import GroupButton from "./Components/GroupButton";
 import TaxiBookingForm from "./NewFormPage/TaxiBookingForm";
 import BusBookingForm from "./NewFormPage/BusBookingForm";
+import FeedBackForm from "./NewFormPage/FeedBackForm";
 
 function BookingPage() {
-  const [selectedButton, setSelectedButton] = useState();
+  const [selectedButton, setSelectedButton] = useState("Feedback");
   const selectedButtonHandleer = (value) => {
-    setSelectedButton(value);
+    setSelectedButton("Feedback");
   };
   const isMobile = useMediaQuery("(max-width:600px)");
 
@@ -99,6 +100,7 @@ function BookingPage() {
               <GroupButton onClick={selectedButtonHandleer} />
               {selectedButton == "Taxi" && <TaxiBookingForm />}
               {selectedButton == "Bus" && <BusBookingForm />}
+              {selectedButton == "Feedback" && <FeedBackForm />}
             </Card>
           </Grid>
         </Grid>

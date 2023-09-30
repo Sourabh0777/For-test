@@ -433,7 +433,6 @@ const TaxiBookingForm = () => {
 
   return (
     <MKBox p={3}>
-      <MKTypography variant="body2" color="text" mb={3}></MKTypography>
       <MKBox
         width="100%"
         component="form"
@@ -839,6 +838,14 @@ const TaxiBookingForm = () => {
                   alignItems={"center"}
                 >
                   {/* Total Cost and fair */}
+                  <MKBox>
+                    <MKBox display="flex" alignItems="center" gap={1}>
+                      <MKBox height="10px" width="10px" borderRadius="50%" bgColor="info"></MKBox>
+                      <MKTypography variant="caption" color="text" fontWeight="medium">
+                        Parking: &#8377; From Counter
+                      </MKTypography>
+                    </MKBox>
+                  </MKBox>
                   <MKBox>
                     {tollCost ? (
                       <MKBox display="flex" alignItems="center" gap={1}>
