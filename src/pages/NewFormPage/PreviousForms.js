@@ -28,15 +28,7 @@ import { useHttpClient } from "hooks/http-hook";
 import { useFormik } from "formik";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
-import {
-  CarRentalOutlined,
-  LocationCityOutlined,
-  MapOutlined,
-  MapsHomeWorkOutlined,
-  Person2Outlined,
-  TaxiAlertOutlined,
-} from "@mui/icons-material";
-const TaxiBookingForm = () => {
+const PreviousForm = () => {
   const navigate = useNavigate();
   const [termsChecked, setTermsChecked] = useState(true);
 
@@ -106,17 +98,8 @@ const TaxiBookingForm = () => {
     setSelectedSourceLocation(a[0]);
   };
 
-  const [type, setType] = useState("");
-
   const handleLocationChange = (event) => {
     setLocation(event.target.value);
-
-    console.log("location change", event.target.value);
-    const selectedLocation = Locations?.find((location) => location.id === event.target.value);
-
-    console.log("selected", selectedLocation);
-
-    setType(selectedLocation?.type);
 
     const landingLocationList = LocationData.filter((item) => item._id == event.target.value);
     setSelectedDestinationName(landingLocationList[0].locationName);
@@ -127,16 +110,6 @@ const TaxiBookingForm = () => {
     });
     setLandingLocationList(landList);
   };
-
-  // useEffect(() => {
-  //   const selectedLocation = Locations?.filter((location) => location.id === location);
-
-  //   setType(selectedLocation?.type);
-  // }, [location]);
-
-  console.log("locations", Locations);
-  console.log("type", type);
-
   const handleLandingLocationChange = (e) => {
     setSelectedLandingLocation(e.target.value);
     const dataOfLandingLocation = landingLocationsData
@@ -169,9 +142,9 @@ const TaxiBookingForm = () => {
         setLocationData(responseData.data);
 
         const locationNames = responseData.data
-          .filter((location) => location.enabled)
+          .filter((location) => (!checked ? location.type === "taxi" : location.type === "package"))
           .map((item) => {
-            return { name: item.locationName, id: item._id, type: item.type };
+            return { name: item.locationName, id: item._id };
           });
 
         setLocations(locationNames);
@@ -281,7 +254,7 @@ const TaxiBookingForm = () => {
     setSelectedPackageSourceLocation(a[0]);
   };
   console.log(
-    "🚀 ~ file: TaxiBookingForm.js:252 ~ selectedPackageSourceLocation:",
+    "🚀 ~ file: PreviousForm.js:252 ~ selectedPackageSourceLocation:",
     selectedPackageSourceLocation
   );
 
@@ -296,17 +269,6 @@ const TaxiBookingForm = () => {
     const selectedPackage = packageData.filter((item) => item._id == e.target.value._id);
     setSelectedPackageData(selectedPackage);
   };
-
-  useEffect(() => {
-    if (type === "package") {
-      const selectedPackageItem = packageData.find(
-        (item) => item?.location?._id === selectedLocation
-      );
-      console.log("selected", selectedPackageItem, selectedLocation);
-      setSelectedPackage(selectedPackageItem);
-      setselectedPackageID(selectedPackageItem?._id);
-    }
-  }, [type, selectedLocation]);
 
   useEffect(() => {
     if (selectedPackageData && selectedPackage) {
@@ -350,10 +312,10 @@ const TaxiBookingForm = () => {
         console.log(error);
       }
     };
-    fetchPackages();
-  }, []);
-
-  console.log("Packages", packageData);
+    if (checked) {
+      fetchPackages();
+    }
+  }, [checked]);
 
   useEffect(() => {
     if (
@@ -389,6 +351,7 @@ const TaxiBookingForm = () => {
     departureTime,
     fullName,
     mobileNo,
+    checked,
     selectedPackage,
     pickupLocation,
     termsChecked,
@@ -405,18 +368,17 @@ const TaxiBookingForm = () => {
       destination: selectedLocation,
       noOfPassengers: noOfPassengers,
       texiType: selectedTaxiType._id,
-      fare: selectedTaxiType.fair,
-      // paymentMode: "online",
+      fare: selectedTaxiType.fair + tollCost,
+      paymentMode: "online",
       additionalCharges: tollCost,
       confirmed: false,
-      toll: tollCost,
       bookingStatus: "pending",
       paymentAccepted: false,
       landingLocationId: selectedLandingLocation,
     };
-    // if (checked) {
-    //   formData.bookingType = "package";
-    // }
+    if (checked) {
+      formData.bookingType = "package";
+    }
     try {
       const responseData = await sendRequest(
         // eslint-disable-next-line no-undef
@@ -433,7 +395,6 @@ const TaxiBookingForm = () => {
     }
   };
   const packageSubmitHandler = async () => {
-    console.log("packageId,", selectedPackageID);
     let formData = {
       firstName: firstName,
       lastName: lastName || " ",
@@ -441,20 +402,18 @@ const TaxiBookingForm = () => {
       travelDate: dateOfTraveling,
       travelTime: formattedTime,
       source: selectedSourceLocation.id,
-      // destination: destinationId,
-      destination: selectedLocation,
+      destination: destinationId,
       noOfPassengers: noOfPassengers,
       texiType: selectedTaxiType._id,
-      fare: selectedTaxiType.fair,
-      // paymentMode: "online",
-      // additionalCharges: tollCost,
+      fare: selectedTaxiType.fair + tollCost,
+      paymentMode: "online",
+      additionalCharges: tollCost,
       confirmed: false,
       bookingStatus: "pending",
       paymentAccepted: false,
       landingLocationId: selectedPackage?.location?._id,
       bookingType: "package",
       packageId: selectedPackageID,
-      toll: tollCost,
     };
     try {
       const responseData = await sendRequest(
@@ -493,23 +452,19 @@ const TaxiBookingForm = () => {
               >
                 <Grid item xs={12} sm={12} md={3}>
                   <MKBox mb={2}>
-                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                      <InputLabel id="destination">Select Pickup Location</InputLabel>
+                    <FormControl required sx={{ m: 1, minWidth: 120 }}>
+                      <InputLabel id="destination">From</InputLabel>
                       <Select
                         name="source"
                         id="source"
                         value={selectedSourceLocation.name || ""}
                         onChange={handleSourceLocationChange}
-                        // sx={{ minHeight: 45, minWidth: 270 }}
                         sx={{ minHeight: 45, minWidth: 270 }}
                       >
                         {sourcseLocation &&
                           sourcseLocation.map((item, idx) => (
-                            <MenuItem key={idx} value={item.name} display="flex">
-                              <MapsHomeWorkOutlined />{" "}
-                              <MKTypography variant="body2" ml={2}>
-                                {item.name}
-                              </MKTypography>
+                            <MenuItem key={idx} value={item.name}>
+                              {item.name}
                             </MenuItem>
                           ))}
                       </Select>
@@ -518,8 +473,8 @@ const TaxiBookingForm = () => {
                 </Grid>
                 <Grid item xs={12} sm={12} md={3}>
                   <MKBox mb={2}>
-                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                      <InputLabel id="destination">Select Destination</InputLabel>
+                    <FormControl required sx={{ m: 1, minWidth: 120 }}>
+                      <InputLabel id="destination">To</InputLabel>
                       <Select
                         name="destination"
                         labelId="destination"
@@ -531,10 +486,7 @@ const TaxiBookingForm = () => {
                         {Locations &&
                           Locations.map((item, idx) => (
                             <MenuItem key={idx} value={item.id}>
-                              <MapOutlined />{" "}
-                              <MKTypography variant="body2" ml={2}>
-                                {item.name}
-                              </MKTypography>
+                              {item.name}
                             </MenuItem>
                           ))}
                       </Select>
@@ -543,10 +495,9 @@ const TaxiBookingForm = () => {
                 </Grid>
                 <Grid item xs={12} sm={12} md={3}>
                   <MKBox mb={2}>
-                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                      <InputLabel id="landingLocation"> Select Drop Point</InputLabel>
+                    <FormControl required sx={{ m: 1, minWidth: 120 }}>
+                      <InputLabel id="landingLocation">Landing Location</InputLabel>
                       <Select
-                        disabled={type === "package"}
                         labelId="landingLocation"
                         id="landingLocation"
                         value={selectedLandingLocation.typeName}
@@ -557,10 +508,7 @@ const TaxiBookingForm = () => {
                         {landingLocationList &&
                           landingLocationList.map((item, idx) => (
                             <MenuItem key={idx} value={item.id}>
-                              <LocationCityOutlined />{" "}
-                              <MKTypography variant="body2" ml={2}>
-                                {item.landingLocation}
-                              </MKTypography>
+                              {item.landingLocation}
                             </MenuItem>
                           ))}
                       </Select>
@@ -569,26 +517,20 @@ const TaxiBookingForm = () => {
                 </Grid>
                 <Grid item xs={12} sm={12} md={3}>
                   <MKBox mb={2}>
-                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                      <InputLabel id="taxiType">Select Vehicle</InputLabel>
+                    <FormControl required sx={{ m: 1, minWidth: 120 }}>
+                      <InputLabel id="taxiType">Taxi Type</InputLabel>
                       <Select
                         labelId="taxiType"
                         id="taxiType"
-                        value={selectedTaxiType?._id ? selectedTaxiType : ""}
+                        value={selectedTaxiType}
                         label="taxiType"
                         onChange={handleTaxiChange}
                         sx={{ minHeight: 45, minWidth: 270 }}
                       >
                         {filteredTaxiTypeList &&
                           filteredTaxiTypeList.map((item, idx) => (
-                            // <MenuItem key={idx} value={item}>
-                            //   {item.typeName} {item.hasAc == true ? "Ac" : "Non - Ac"}
-                            // </MenuItem>
-                            <MenuItem key={idx} value={item} display="flex">
-                              <TaxiAlertOutlined />{" "}
-                              <MKTypography variant="body2" ml={2}>
-                                {item.typeName} ({item.hasAc == true ? "Ac" : "Non - Ac"})
-                              </MKTypography>
+                            <MenuItem key={idx} value={item}>
+                              {item.typeName} {item.hasAc == true ? "Ac" : "Non - Ac"}
                             </MenuItem>
                           ))}
                       </Select>
@@ -608,13 +550,14 @@ const TaxiBookingForm = () => {
                 <Grid item xs={12} sm={6} md={3}>
                   <MKBox mb={3}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DemoContainer variant="standard" components={["DatePicker"]}>
+                      <DemoContainer components={["DatePicker"]}>
                         <DatePicker
                           sx={{ width: "100%" }}
                           label="Date of Traveling"
                           name="dateOfTraveling"
                           value={dateOfTraveling}
                           onChange={handleDateChange}
+                          required
                         />
                       </DemoContainer>
                     </LocalizationProvider>
@@ -630,6 +573,7 @@ const TaxiBookingForm = () => {
                       name="departureTime"
                       value={departureTime}
                       onChange={timeHandler}
+                      required
                       sx={{ pointer: "cursor" }}
                     />
                   </MKBox>
@@ -666,6 +610,172 @@ const TaxiBookingForm = () => {
             )}
           </Grid>
         )}
+        {/* {checked && (
+            <Grid container spacing={1}>
+              {activeStep == 0 && (
+                <Grid
+                  container
+                  spacing={2}
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <Grid item xs={12} sm={12} md={3}>
+                    <MKBox mb={2}>
+                      <FormControl required sx={{ m: 1, minWidth: 120 }}>
+                        <InputLabel id="packageSource">Pick Up</InputLabel>
+                        <Select
+                          name="packageSource"
+                          labelId="source"
+                          id="packageSource"
+                          value={
+                            selectedPackageSourceLocation ? selectedPackageSourceLocation.name : ""
+                          }
+                          onChange={handlePackageSourceLocationChange}
+                          sx={{ minHeight: 45, minWidth: 270 }}
+                        >
+                          {sourcseLocation &&
+                            sourcseLocation.map((item, idx) => (
+                              <MenuItem key={idx} value={item.name}>
+                                {item.name}
+                              </MenuItem>
+                            ))}
+                        </Select>
+                      </FormControl>
+                    </MKBox>
+                  </Grid>
+                  <Grid item xs={12} sm={12} md={3}>
+                    <MKBox mb={2}>
+                      <FormControl required sx={{ m: 1, minWidth: 120 }}>
+                        <InputLabel id="Package">Select Package</InputLabel>
+                        <Select
+                          name="Package"
+                          labelId="Package"
+                          id="Package"
+                          value={selectedPackage}
+                          onChange={handlePackageChange}
+                          sx={{ minHeight: 45, minWidth: 270 }}
+                        >
+                          {PackagesList &&
+                            PackagesList.map((item, idx) => (
+                              <MenuItem key={idx} value={item}>
+                                {item.name}
+                              </MenuItem>
+                            ))}
+                        </Select>
+                      </FormControl>
+                    </MKBox>
+                  </Grid>
+                  <Grid item xs={12} sm={12} md={3}>
+                    <MKBox mb={2}>
+                      <MKInput
+                        name="source"
+                        type="text"
+                        label="Location"
+                        InputLabelProps={{ shrink: true }}
+                        fullWidth
+                        value={pickupLocation}
+                        default
+                        disabled
+                        required
+                      />
+                    </MKBox>
+                  </Grid>
+                  <Grid item xs={12} sm={12} md={3}>
+                    <MKBox mb={2}>
+                      <FormControl required sx={{ m: 1, minWidth: 120 }}>
+                        <InputLabel id="taxiType">Taxi Type</InputLabel>
+                        <Select
+                          labelId="taxiType"
+                          id="taxiType"
+                          value={selectedTaxiType}
+                          label="taxiType"
+                          onChange={handleTaxiChange}
+                          sx={{ minHeight: 45, minWidth: 270 }}
+                        >
+                          {packageTaxiList &&
+                            packageTaxiList.map((item, idx) => (
+                              <MenuItem key={idx} value={item}>
+                                {item.typeName} {item.hasAc == true ? "Ac" : "Non - Ac"}
+                              </MenuItem>
+                            ))}
+                        </Select>
+                      </FormControl>
+                    </MKBox>
+                  </Grid>
+                </Grid>
+              )}
+              {activeStep === 1 && (
+                <Grid
+                  container
+                  spacing={2}
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <Grid item xs={12} sm={6} md={3}>
+                    <MKBox mb={3}>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DemoContainer components={["DatePicker"]}>
+                          <DatePicker
+                            sx={{ width: "100%" }}
+                            label="Date of Traveling"
+                            name="dateOfTraveling"
+                            value={dateOfTraveling}
+                            onChange={handleDateChange}
+                            required
+                          />
+                        </DemoContainer>
+                      </LocalizationProvider>
+                    </MKBox>
+                  </Grid>
+                  <Grid item xs={12} sm={12} md={3}>
+                    <MKBox mb={2}>
+                      <MKInput
+                        type="time"
+                        label="Departure Time"
+                        InputLabelProps={{ shrink: true }}
+                        fullWidth
+                        name="departureTime"
+                        value={departureTime}
+                        onChange={timeHandler}
+                        required
+                        sx={{ pointer: "cursor" }}
+                      />
+                    </MKBox>
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={3}>
+                    <MKBox mb={2}>
+                      <MKInput
+                        type="text"
+                        InputLabelProps={{ shrink: true }}
+                        label="Full Name"
+                        fullWidth
+                        name="firstName"
+                        required
+                        value={fullName}
+                        onChange={handleFullName}
+                      />
+                    </MKBox>
+                  </Grid>
+                  <Grid item xs={12} sm={12} md={3}>
+                    <MKBox mb={2}>
+                      <MKInput
+                        type="tel"
+                        label="Mobile no"
+                        InputLabelProps={{ shrink: true }}
+                        fullWidth
+                        name="mobileNo"
+                        required
+                        value={mobileNo}
+                        onChange={mobileNOHandler}
+                      />
+                    </MKBox>
+                  </Grid>
+                </Grid>
+              )}
+            </Grid>
+          )} */}
         {!checked && (
           <Grid container spacing={2}>
             {activeStep === 1 || activeStep === 0 ? (
@@ -674,42 +784,35 @@ const TaxiBookingForm = () => {
                   <Grid item xs={12} md={9}>
                     <Grid container spacing={2} sx={{ mx: 1, mt: 0.5 }}>
                       <Grid item xs={12} sm={12} md={3}>
-                        <MKBox display="flex" alignItems="center">
-                          <MKBox display="flex" alignItems="center" mr={3}>
-                            <Person2Outlined />
-                            <MKTypography variant="body2" ml={1}>
-                              Passengers:
-                            </MKTypography>
-                          </MKBox>
+                        <MKBox>
                           <MKInput
                             variant="standard"
                             type="number"
-                            // label="Number of Passengers"
+                            label="No of Passengers"
                             InputLabelProps={{ shrink: true }}
                             fullWidth
                             name="noOfPassengers"
                             value={noOfPassengers}
                             onChange={handlePassengerChange}
-                            sx={{ textAlign: "center" }}
-                            // required
+                            required
                           />
                         </MKBox>
                       </Grid>
                       {/* <Grid item xs={12} sm={12} md={3}>
-                        <MKBox>
-                          <FormControlLabel
-                            control={
-                              <Switch
-                                checked={checked}
-                                onChange={handleChange}
-                                inputProps={{ "aria-label": "controlled" }}
-                              />
-                            }
-                            label="Package"
-                          />
-                        </MKBox>
-                      </Grid> */}
-                      {/* <Grid item xs={12} sm={12} md={6}>
+                          <MKBox>
+                            <FormControlLabel
+                              control={
+                                <Switch
+                                  checked={checked}
+                                  onChange={handleChange}
+                                  inputProps={{ "aria-label": "controlled" }}
+                                />
+                              }
+                              label="Package"
+                            />
+                          </MKBox>
+                        </Grid> */}
+                      <Grid item xs={12} sm={12} md={6}>
                         <MKBox>
                           <FormControlLabel
                             required
@@ -720,33 +823,8 @@ const TaxiBookingForm = () => {
                             onChange={handleTermsChange}
                           />
                         </MKBox>
-                      </Grid> */}
+                      </Grid>
                     </Grid>
-                  </Grid>
-                )}
-                {activeStep === 1 && (
-                  <Grid
-                    item
-                    xs={12}
-                    sm={12}
-                    md={9}
-                    mt={2}
-                    display={"flex"}
-                    gap={2}
-                    justifyContent={"start"}
-                    alignItems={"center"}
-                    pl={3}
-                  >
-                    <MKBox>
-                      <FormControlLabel
-                        required
-                        control={<Checkbox />}
-                        sx={{ display: "flex" }}
-                        label="Accept terms and conditions"
-                        checked={termsChecked}
-                        onChange={handleTermsChange}
-                      />
-                    </MKBox>
                   </Grid>
                 )}
                 <Grid
@@ -761,13 +839,13 @@ const TaxiBookingForm = () => {
                 >
                   {/* Total Cost and fair */}
                   {/* <MKBox>
-                    <MKBox display="flex" alignItems="center" gap={1}>
-                      <MKBox height="10px" width="10px" borderRadius="50%" bgColor="info"></MKBox>
-                      <MKTypography variant="caption" color="text" fontWeight="medium">
-                        Parking: &#8377; From Counter
-                      </MKTypography>
-                    </MKBox>
-                  </MKBox> */}
+                      <MKBox display="flex" alignItems="center" gap={1}>
+                        <MKBox height="10px" width="10px" borderRadius="50%" bgColor="info"></MKBox>
+                        <MKTypography variant="caption" color="text" fontWeight="medium">
+                          Parking: &#8377; From Counter
+                        </MKTypography>
+                      </MKBox>
+                    </MKBox> */}
                   <MKBox>
                     {tollCost ? (
                       <MKBox display="flex" alignItems="center" gap={1}>
@@ -962,7 +1040,309 @@ const TaxiBookingForm = () => {
                     </Button>
                   </Box>{" "}
                   <MKButton
-                    onClick={type === "taxi" ? submitHandler : packageSubmitHandler}
+                    onClick={submitHandler}
+                    disabled={!termsChecked}
+                    variant="gradient"
+                    color="info"
+                  >
+                    Confirm Booking{" "}
+                  </MKButton>
+                  <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                    <Box sx={{ flex: "1 1 auto" }} />
+                    {/* <Button onClick={handleReset}>Reset</Button> */}
+                  </Box>
+                </React.Fragment>
+              ) : (
+                <React.Fragment>
+                  <Box sx={{ display: "flex", flexDirection: "row", pt: 0 }}>
+                    <Button
+                      color="inherit"
+                      disabled={activeStep === 0}
+                      onClick={handleBack}
+                      sx={{ mr: 1 }}
+                    >
+                      Back
+                    </Button>
+                    <Button onClick={handleNext} disabled={isNextDisabled}>
+                      Next
+                    </Button>
+                  </Box>
+                </React.Fragment>
+              )}
+            </Grid>
+          </Grid>
+        )}
+        {checked && (
+          <Grid container spacing={2}>
+            {/* {activeStep === 0 ? ( */}
+            {activeStep === 1 || activeStep === 0 ? (
+              <Grid container>
+                {activeStep === 0 ? (
+                  <Grid item xs={12} md={9}>
+                    <Grid container spacing={2} sx={{ mx: 1, mt: 0.5 }}>
+                      <Grid item xs={12} sm={12} md={3}>
+                        <MKBox>
+                          <MKInput
+                            variant="standard"
+                            type="number"
+                            label="No of Passengers"
+                            InputLabelProps={{ shrink: true }}
+                            fullWidth
+                            name="noOfPassengers"
+                            value={noOfPassengers}
+                            onChange={handlePassengerChange}
+                            required
+                          />
+                        </MKBox>
+                      </Grid>
+                      <Grid item xs={12} sm={12} md={3}>
+                        <MKBox>
+                          <FormControlLabel
+                            control={
+                              <Switch
+                                checked={checked}
+                                onChange={handleChange}
+                                inputProps={{ "aria-label": "controlled" }}
+                              />
+                            }
+                            label="Package"
+                          />
+                        </MKBox>
+                      </Grid>
+                      <Grid item xs={12} sm={12} md={6}>
+                        <MKBox>
+                          <FormControlLabel
+                            required
+                            control={<Checkbox />}
+                            sx={{ display: "flex" }}
+                            label="Accept terms and conditions"
+                            checked={termsChecked}
+                            onChange={handleTermsChange}
+                          />
+                        </MKBox>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                ) : (
+                  <Grid item xs={12} md={9}></Grid>
+                )}
+                <Grid
+                  item
+                  xs={12}
+                  md={3}
+                  mt={2}
+                  display={"flex"}
+                  gap={2}
+                  justifyContent={"end"}
+                  alignItems={"center"}
+                >
+                  <MKBox>
+                    {tollCost ? (
+                      <MKBox display="flex" alignItems="center" gap={1}>
+                        <MKBox height="10px" width="10px" borderRadius="50%" bgColor="info"></MKBox>
+                        <MKTypography variant="caption" color="text" fontWeight="medium">
+                          Toll Cost: &#8377; {tollCost}
+                        </MKTypography>
+                      </MKBox>
+                    ) : (
+                      <MKBox display="flex" alignItems="center" gap={1}>
+                        <MKBox height="10px" width="10px" borderRadius="50%" bgColor="info"></MKBox>
+                        <MKTypography variant="caption" color="text" fontWeight="medium">
+                          Toll Cost: NA
+                        </MKTypography>
+                      </MKBox>
+                    )}
+                  </MKBox>
+                  <MKBox>
+                    {selectedTaxiType?.fair ? (
+                      <MKBox display="flex" alignItems="center" gap={1}>
+                        <MKBox
+                          height="10px"
+                          width="10px"
+                          borderRadius="50%"
+                          bgColor="success"
+                        ></MKBox>
+                        <MKTypography variant="caption" color="text" fontWeight="medium">
+                          Fare: &#8377; {selectedTaxiType?.fair}
+                        </MKTypography>
+                      </MKBox>
+                    ) : (
+                      <MKBox display="flex" alignItems="center" gap={1}>
+                        <MKBox
+                          height="10px"
+                          width="10px"
+                          borderRadius="50%"
+                          bgColor="success"
+                        ></MKBox>
+                        <MKTypography variant="caption" color="text" fontWeight="medium">
+                          Fare: NA
+                        </MKTypography>
+                      </MKBox>
+                    )}
+                  </MKBox>
+                </Grid>
+              </Grid>
+            ) : null}
+            {activeStep == 2 && (
+              <Grid
+                container
+                spacing={2}
+                display="flex"
+                justifyContent="flex-start"
+                alignItems="self-start"
+                sx={{ mx: 1, mt: 0.5 }}
+              >
+                <Grid item xs={12} sm={12} md={3}>
+                  <MKBox mb={2}>
+                    <MKInput
+                      variant="standard"
+                      type="text"
+                      label="Name"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={fullName}
+                      disabled
+                    />
+                  </MKBox>
+                </Grid>
+                <Grid item xs={12} sm={12} md={3}>
+                  <MKBox mb={2}>
+                    <MKInput
+                      variant="standard"
+                      type="text"
+                      label="Mobile No"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={mobileNo}
+                      disabled
+                    />
+                  </MKBox>
+                </Grid>
+                <Grid item xs={12} sm={12} md={3}>
+                  <MKBox mb={2}>
+                    <MKInput
+                      variant="standard"
+                      type="text"
+                      label="Date"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={formateDate}
+                      disabled
+                    />
+                  </MKBox>
+                </Grid>
+                <Grid item xs={12} sm={12} md={3}>
+                  <MKBox mb={2}>
+                    <MKInput
+                      variant="standard"
+                      type="text"
+                      label="Time"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={formattedTime}
+                      disabled
+                    />
+                  </MKBox>
+                </Grid>
+                <Grid item xs={12} sm={12} md={3}>
+                  <MKBox mb={2}>
+                    <MKInput
+                      variant="standard"
+                      type="text"
+                      label="Total Fair"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={selectedTaxiType.fair + tollCost || 0}
+                      disabled
+                    />
+                  </MKBox>
+                </Grid>
+                <Grid item xs={12} sm={12} md={3}>
+                  <MKBox mb={2}>
+                    <MKInput
+                      type="text"
+                      variant="standard"
+                      label="Selected Taxi Type"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={
+                        selectedTaxiType.typeName +
+                        (selectedTaxiType.hasAc === true ? " - Ac" : " - Non - Ac")
+                      }
+                      disabled
+                    />
+                  </MKBox>
+                </Grid>
+                <Grid item xs={12} sm={12} md={3}>
+                  <MKBox mb={2}>
+                    <MKInput
+                      variant="standard"
+                      type="number"
+                      label="No of Passengers"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      name="noOfPassengers"
+                      value={noOfPassengers || 0}
+                      disabled
+                    />
+                  </MKBox>
+                </Grid>
+                <Grid item xs={12} sm={12} md={3}>
+                  <MKBox mb={2}>
+                    <MKInput
+                      variant="standard"
+                      type="text"
+                      label="From"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={selectedPackageSourceLocation.name}
+                      disabled
+                    />
+                  </MKBox>
+                </Grid>
+                <Grid item xs={12} sm={12} md={3}>
+                  <MKBox mb={2}>
+                    <MKInput
+                      variant="standard"
+                      type="text"
+                      label="To"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={pickupLocation}
+                      disabled
+                    />
+                  </MKBox>
+                </Grid>
+                <Grid item xs={12} sm={12} md={3}>
+                  <MKBox mb={2}>
+                    <MKInput
+                      variant="standard"
+                      type="text"
+                      label="Total Fair"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={selectedTaxiType.fair + tollCost || 0}
+                      disabled
+                    />
+                  </MKBox>
+                </Grid>
+              </Grid>
+            )}
+            <Grid container item justifyContent="center" xs={12} mt={0} mb={2}>
+              {activeStep === 2 ? (
+                <React.Fragment>
+                  <Box sx={{ display: "flex", flexDirection: "row", pt: 0 }}>
+                    <Button
+                      color="inherit"
+                      disabled={activeStep === 0}
+                      onClick={handleBack}
+                      sx={{ mr: 1 }}
+                    >
+                      Back
+                    </Button>
+                  </Box>{" "}
+                  <MKButton
+                    onClick={packageSubmitHandler}
                     disabled={!termsChecked}
                     variant="gradient"
                     color="info"
@@ -999,4 +1379,4 @@ const TaxiBookingForm = () => {
   );
 };
 
-export default TaxiBookingForm;
+export default PreviousForm;

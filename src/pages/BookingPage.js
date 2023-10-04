@@ -55,7 +55,7 @@ function BookingPage() {
         left={0}
         zIndex={1}
         width="100%"
-        minHeight="110vh"
+        height="100vh"
         sx={{
           backgroundImage: ({ functions: { linearGradient, rgba }, palette: { gradients } }) =>
             `${linearGradient(
@@ -67,7 +67,15 @@ function BookingPage() {
           backgroundRepeat: "no-repeat",
         }}
       />
-      <MKBox px={1} width="100%" height="100vh" mx="auto" position="relative" zIndex={2}>
+      <MKBox
+        px={1}
+        height="98vh"
+        pt={5}
+        position="relative"
+        display="flex"
+        alignItems="center"
+        zIndex={2}
+      >
         <Grid container spacing={1} justifyContent="center" alignItems="center" height="100%">
           <Grid
             item
