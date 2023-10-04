@@ -22,6 +22,7 @@ import ColorToggleButton from "pages/Form/Components/ColorToggleButton";
 import BookingConfirmationForm from "./Component/BookingConfirmationForm";
 import { useParams } from "react-router-dom";
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
+import bgImage2 from "assets/images/Background image/bg-2.jpg";
 
 const BookingsConfirmation = () => {
   let { token } = useParams();
@@ -33,19 +34,19 @@ const BookingsConfirmation = () => {
         left={0}
         zIndex={1}
         width="100%"
-        minHeight="110vh"
+        minHeight="100vh"
         sx={{
           backgroundImage: ({ functions: { linearGradient, rgba }, palette: { gradients } }) =>
             `${linearGradient(
               rgba(gradients.dark.main, 0.6),
               rgba(gradients.dark.state, 0.6)
-            )}, url(${bgImage})`,
+            )}, url(${bgImage2})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
         }}
       />
-      <MKBox px={1} width="100%" height="100vh" mx="auto" position="relative" zIndex={2}>
+      <MKBox px={1} width="100%" height="98vh" mx="auto" position="relative" zIndex={2}>
         <Grid container spacing={1} justifyContent="center" alignItems="center" height="100%">
           <BookingConfirmationForm bookingId={token} />
         </Grid>

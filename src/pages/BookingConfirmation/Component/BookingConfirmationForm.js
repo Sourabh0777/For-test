@@ -5,13 +5,14 @@
 import React, { useEffect, useState } from "react";
 import MKBox from "components/MKBox";
 import MKTypography from "components/MKTypography";
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, TextField } from "@mui/material";
 import MKInput from "components/MKInput";
 import MKButton from "components/MKButton";
 import { useHttpClient } from "hooks/http-hook";
 import Animations from "pages/NewFormPage/Animations";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
+import { AddBox, Person2Outlined } from "@mui/icons-material";
 
 const BookingConfirmationForm = ({ bookingId }) => {
   const [todaysDate, setTodaysDate] = useState();
@@ -71,7 +72,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
               key: responseData?.data[0]?.firstName + " " + responseData.data[0]?.lastName,
             },
             { label: "Phone Number", key: responseData.data[0]?.phoneNumber },
-            { label: "From", key: responseData.data[0]?.source?.sourceName },
+            { label: "Pick Up Location", key: responseData.data[0]?.source?.sourceName },
             { label: "Token", key: responseData.data[0]?.token },
             { label: "Travel Date", key: responseData.data[0]?.travelDate },
             { label: "Travel Date", key: formattedTravelDate },
@@ -91,7 +92,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
               key: responseData?.data[0]?.firstName + " " + responseData.data[0]?.lastName,
             },
             { label: "Phone Number", key: responseData.data[0]?.phoneNumber },
-            { label: "From", key: responseData.data[0]?.source?.sourceName },
+            { label: "Pick Up Location", key: responseData.data[0]?.source?.sourceName },
             { label: "Token", key: responseData.data[0]?.token },
             { label: "Travel Date", key: formattedTravelDate },
             { label: "Travel Time", key: responseData.data[0]?.travelTime },
@@ -107,7 +108,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
             },
             { label: "Phone Number", key: responseData.data[0]?.phoneNumber },
             { label: "token", key: responseData.data[0]?.token },
-            { label: "From", key: responseData.data[0]?.startingLocation?.sourceName },
+            { label: "Starting Location", key: responseData.data[0]?.startingLocation?.sourceName },
             { label: "Destination", key: responseData.data[0]?.destination },
             { label: "Travel Date", key: formattedTravelDate },
             { label: "Travel Time", key: responseData.data[0]?.travelTime },
@@ -152,8 +153,8 @@ const BookingConfirmationForm = ({ bookingId }) => {
   };
   return (
     <Grid item xs={8} lg={8} mt={0}>
-      {isLoading && <Animations />}
-      {!isLoading && (
+      {(isLoading || !BookingData) && <Animations />}
+      {!isLoading && BookingData && (
         <MKBox
           bgColor="white"
           borderRadius="xl"
@@ -174,40 +175,76 @@ const BookingConfirmationForm = ({ bookingId }) => {
             mx={2}
             mt={-2}
           >
-            <MKTypography variant="h3" color="white">
+            <MKTypography variant="h5" color="white">
               Booking Request
             </MKTypography>
           </MKBox>
-          <MKBox pt={4} pb={3} px={3}>
+          <MKBox pt={4} pb={2} px={3}>
+            <MKBox mb={3}>
+              {message && (
+                <MKTypography
+                  color="warning"
+                  variant="caption"
+                  style={{ textAlign: "center", textDecoration: "underline" }}
+                  fontWeight="medium"
+                >
+                  Note: **{message}
+                </MKTypography>
+              )}
+            </MKBox>
             <MKBox component="form" role="form">
               <Grid container spacing={3}>
                 {BookingData &&
                   BookingData.map((field, index) => {
                     return (
                       <Grid item xs={12} md={4} key={index}>
-                        <MKBox mb={2}>
-                          <MKInput
+                        <MKBox
+                          mb={2}
+                          bgColor="info"
+                          color="white"
+                          p={2}
+                          borderRadius="lg"
+                          style={{ position: "relative" }}
+                        >
+                          {/* <MKInput
                             type="text"
                             label={field.label}
                             fullWidth
                             InputLabelProps={{ shrink: true }}
                             value={field.key || ""}
                             disabled
-                          />
+                          /> */}
+                          <MKTypography
+                            style={{ position: "absolute", top: 5, left: 5 }}
+                            variant="caption"
+                            fontWeight="medium"
+                            color="white"
+                          >
+                            {field.label}
+                          </MKTypography>
+                          <MKBox>
+                            <MKTypography
+                              style={{ textAlign: "center" }}
+                              variant="body2"
+                              fontWeight="medium"
+                              color="white"
+                            >
+                              {field.key}
+                            </MKTypography>
+                          </MKBox>
                         </MKBox>
                       </Grid>
                     );
                   })}
               </Grid>
-              {message && <MKTypography variant="h6">{message}</MKTypography>}
             </MKBox>
-            <Grid container spacing={3} mt={2}>
-              <Grid item xs={12} md={8}>
-                <MKTypography variant="h6" fontWeight="medium" color="text" mb={1}>
-                  Any remarks for the ride?
+            <Grid container spacing={3} mt={1}>
+              <Grid item xs={12} md={12}>
+                <MKTypography variant="body2" color="text" mb={1}>
+                  Do you have any special instruction for the ride?
                 </MKTypography>
                 <MKBox mb={2}>
-                  <textarea
+                  {/* <textarea
                     rows="2"
                     style={{
                       width: "100%",
@@ -217,9 +254,18 @@ const BookingConfirmationForm = ({ bookingId }) => {
                     }}
                     value={feedback}
                     onChange={(e) => setFeedback(e.target.value)}
+                  /> */}
+                  <TextField
+                    id="outlined-multiline-flexible"
+                    label="Enter your remarks"
+                    multiline
+                    value={feedback}
+                    onChange={(e) => setFeedback(e.target.value)}
+                    maxRows={8}
+                    fullWidth
                   />
                 </MKBox>
-                <MKBox mb={2} mt={2} display="flex">
+                <MKBox mb={2} mt={4} display="flex" justifyContent="center">
                   <MKButton variant="gradient" color="info" onClick={submitHandler}>
                     Submit Remark
                   </MKButton>
@@ -229,14 +275,25 @@ const BookingConfirmationForm = ({ bookingId }) => {
                     onClick={handleNewBookingClick}
                     sx={{ ml: 5 }}
                   >
-                    Create a new Booking{" "}
+                    <AddBox /> Create a new Booking{" "}
                   </MKButton>
                 </MKBox>
               </Grid>
-              <Grid item xs={12} md={4}>
+              {/* <Grid item xs={12} md={4}>
                 <MKBox mb={2} mt={2}></MKBox>
-              </Grid>
+              </Grid> */}
             </Grid>
+            <MKBox display="flex" justifyContent="center" alignItems="center">
+              <MKTypography
+                variant="caption"
+                component={"i"}
+                style={{ textAlign: "center" }}
+                fontWeight="medium"
+              >
+                Please note that this is just a booking request, not confirmation. Booking will be
+                confirmed only after making payment in the counter
+              </MKTypography>
+            </MKBox>
           </MKBox>
         </MKBox>
       )}

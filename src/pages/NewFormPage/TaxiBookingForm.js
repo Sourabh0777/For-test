@@ -28,6 +28,7 @@ import { useHttpClient } from "hooks/http-hook";
 import { useFormik } from "formik";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 import {
   CarRentalOutlined,
   LocationCityOutlined,
@@ -36,7 +37,7 @@ import {
   Person2Outlined,
   TaxiAlertOutlined,
 } from "@mui/icons-material";
-const TaxiBookingForm = () => {
+const TaxiBookingForm = ({ setHideButton }) => {
   const navigate = useNavigate();
   const [termsChecked, setTermsChecked] = useState(true);
 
@@ -471,6 +472,12 @@ const TaxiBookingForm = () => {
       console.log(error, "here");
     }
   };
+
+  useEffect(() => {
+    if (activeStep === 2) {
+      setHideButton(true);
+    }
+  }, [activeStep]);
 
   return (
     <MKBox p={3}>
@@ -997,6 +1004,10 @@ const TaxiBookingForm = () => {
       </MKBox>
     </MKBox>
   );
+};
+
+TaxiBookingForm.propTypes = {
+  setHideButton: PropTypes.func,
 };
 
 export default TaxiBookingForm;

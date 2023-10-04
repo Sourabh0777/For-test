@@ -29,11 +29,15 @@ export default function Animations() {
           mx={2}
           mt={-2}
         >
-          <MKTypography variant="h3" color="white">
-            Booking Confirmed
+          <MKTypography variant="h5" color="white">
+            Booking Request
           </MKTypography>
         </MKBox>
         <Box m={5}>
+          <Skeleton animation="wave" />
+          <Skeleton animation="wave" />
+          <Skeleton animation="wave" />
+          <Skeleton animation="wave" />
           <Skeleton animation="wave" />
           <Skeleton animation="wave" />
           <Skeleton animation="wave" />

@@ -35,6 +35,7 @@ import SimpleFooter from "examples/Footers/SimpleFooter";
 
 // Images
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
+import bgImage2 from "assets/images/Background image/3619437.jpg";
 import { ButtonGroup, useMediaQuery } from "@mui/material";
 import GroupButton from "./Components/GroupButton";
 import TaxiBookingForm from "./NewFormPage/TaxiBookingForm";
@@ -46,6 +47,7 @@ function BookingPage() {
     setSelectedButton(value);
   };
   const isMobile = useMediaQuery("(max-width:600px)");
+  const [hideButton, setHideButton] = useState(false);
 
   return (
     <>
@@ -61,7 +63,7 @@ function BookingPage() {
             `${linearGradient(
               rgba(gradients.dark.main, 0.6),
               rgba(gradients.dark.state, 0.6)
-            )}, url(${bgImage})`,
+            )}, url(${bgImage2})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -104,8 +106,8 @@ function BookingPage() {
                   Book Your Ride
                 </MKTypography>
               </MKBox>
-              <GroupButton onClick={selectedButtonHandleer} />
-              {selectedButton == "Taxi" && <TaxiBookingForm />}
+              {!hideButton && <GroupButton onClick={selectedButtonHandleer} />}
+              {selectedButton == "Taxi" && <TaxiBookingForm setHideButton={setHideButton} />}
               {selectedButton == "Bus" && <BusBookingForm />}
             </Card>
           </Grid>
