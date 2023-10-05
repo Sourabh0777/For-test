@@ -8,6 +8,8 @@ import {
   FormHelperText,
   FormLabel,
   Grid,
+  Input,
+  InputAdornment,
   InputLabel,
   MenuItem,
   Radio,
@@ -30,11 +32,13 @@ import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import {
+  AccountCircle,
   CarRentalOutlined,
   LocationCityOutlined,
   MapOutlined,
   MapsHomeWorkOutlined,
   Person2Outlined,
+  PhoneCallbackOutlined,
   TaxiAlertOutlined,
 } from "@mui/icons-material";
 const TaxiBookingForm = ({ setHideButton }) => {
@@ -479,6 +483,8 @@ const TaxiBookingForm = ({ setHideButton }) => {
     }
   }, [activeStep]);
 
+  const [show, setShow] = useState(false);
+
   return (
     <MKBox p={3}>
       <MKBox
@@ -509,14 +515,16 @@ const TaxiBookingForm = ({ setHideButton }) => {
                         onChange={handleSourceLocationChange}
                         // sx={{ minHeight: 45, minWidth: 270 }}
                         sx={{ minHeight: 45, minWidth: 270 }}
+                        startAdornment={
+                          <InputAdornment position="start">
+                            <MapsHomeWorkOutlined />
+                          </InputAdornment>
+                        }
                       >
                         {sourcseLocation &&
                           sourcseLocation.map((item, idx) => (
                             <MenuItem key={idx} value={item.name} display="flex">
-                              <MapsHomeWorkOutlined />{" "}
-                              <MKTypography variant="body2" ml={2}>
-                                {item.name}
-                              </MKTypography>
+                              <MKTypography variant="p">{item.name}</MKTypography>
                             </MenuItem>
                           ))}
                       </Select>
@@ -534,14 +542,16 @@ const TaxiBookingForm = ({ setHideButton }) => {
                         value={selectedLocation}
                         onChange={handleLocationChange}
                         sx={{ minHeight: 45, minWidth: 270 }}
+                        startAdornment={
+                          <InputAdornment position="start">
+                            <MapOutlined />
+                          </InputAdornment>
+                        }
                       >
                         {Locations &&
                           Locations.map((item, idx) => (
                             <MenuItem key={idx} value={item.id}>
-                              <MapOutlined />{" "}
-                              <MKTypography variant="body2" ml={2}>
-                                {item.name}
-                              </MKTypography>
+                              <MKTypography variant="p">{item.name}</MKTypography>
                             </MenuItem>
                           ))}
                       </Select>
@@ -560,14 +570,16 @@ const TaxiBookingForm = ({ setHideButton }) => {
                         label="landingLocation"
                         onChange={handleLandingLocationChange}
                         sx={{ minHeight: 45, minWidth: 270 }}
+                        startAdornment={
+                          <InputAdornment position="start">
+                            <LocationCityOutlined />
+                          </InputAdornment>
+                        }
                       >
                         {landingLocationList &&
                           landingLocationList.map((item, idx) => (
                             <MenuItem key={idx} value={item.id}>
-                              <LocationCityOutlined />{" "}
-                              <MKTypography variant="body2" ml={2}>
-                                {item.landingLocation}
-                              </MKTypography>
+                              <MKTypography variant="p">{item.landingLocation}</MKTypography>
                             </MenuItem>
                           ))}
                       </Select>
@@ -585,6 +597,11 @@ const TaxiBookingForm = ({ setHideButton }) => {
                         label="taxiType"
                         onChange={handleTaxiChange}
                         sx={{ minHeight: 45, minWidth: 270 }}
+                        startAdornment={
+                          <InputAdornment position="start">
+                            <TaxiAlertOutlined />
+                          </InputAdornment>
+                        }
                       >
                         {filteredTaxiTypeList &&
                           filteredTaxiTypeList.map((item, idx) => (
@@ -592,8 +609,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                             //   {item.typeName} {item.hasAc == true ? "Ac" : "Non - Ac"}
                             // </MenuItem>
                             <MenuItem key={idx} value={item} display="flex">
-                              <TaxiAlertOutlined />{" "}
-                              <MKTypography variant="body2" ml={2}>
+                              <MKTypography variant="p">
                                 {item.typeName} ({item.hasAc == true ? "Ac" : "Non - Ac"})
                               </MKTypography>
                             </MenuItem>
@@ -641,7 +657,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                     />
                   </MKBox>
                 </Grid>
-                <Grid item xs={12} sm={6} md={3}>
+                {/* <Grid item xs={12} sm={6} md={3}>
                   <MKBox mb={2}>
                     <MKInput
                       type="text"
@@ -654,8 +670,49 @@ const TaxiBookingForm = ({ setHideButton }) => {
                       onChange={handleFullName}
                     />
                   </MKBox>
+                </Grid> */}
+
+                <Grid item xs={12} sm={6} md={3}>
+                  <MKBox mb={2}>
+                    <FormControl variant="standard" fullWidth>
+                      <InputLabel htmlFor="input-with-icon-adornment">Enter Full Name</InputLabel>
+                      <Input
+                        type="text"
+                        id="input-with-icon-adornment"
+                        required
+                        value={fullName}
+                        onChange={handleFullName}
+                        startAdornment={
+                          <InputAdornment position="start">
+                            <AccountCircle />
+                          </InputAdornment>
+                        }
+                      />
+                    </FormControl>
+                  </MKBox>
                 </Grid>
-                <Grid item xs={12} sm={12} md={3}>
+                <Grid item xs={12} sm={6} md={3}>
+                  <MKBox mb={2}>
+                    <FormControl variant="standard" fullWidth>
+                      <InputLabel htmlFor="input-with-icon-adornment">
+                        Enter Phone Number
+                      </InputLabel>
+                      <Input
+                        type="tell"
+                        id="input-with-icon-adornment"
+                        required
+                        value={mobileNo}
+                        onChange={mobileNOHandler}
+                        startAdornment={
+                          <InputAdornment position="start">
+                            <PhoneCallbackOutlined />
+                          </InputAdornment>
+                        }
+                      />
+                    </FormControl>
+                  </MKBox>
+                </Grid>
+                {/* <Grid item xs={12} sm={12} md={3}>
                   <MKBox mb={2}>
                     <MKInput
                       type="tel"
@@ -668,7 +725,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                       onChange={mobileNOHandler}
                     />
                   </MKBox>
-                </Grid>
+                </Grid> */}
               </Grid>
             )}
           </Grid>
@@ -684,7 +741,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                         <MKBox display="flex" alignItems="center">
                           <MKBox display="flex" alignItems="center" mr={3}>
                             <Person2Outlined />
-                            <MKTypography variant="body2" ml={1}>
+                            <MKTypography variant="h6" fontWeight="medium" ml={1}>
                               Passengers:
                             </MKTypography>
                           </MKBox>
