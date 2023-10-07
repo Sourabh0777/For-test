@@ -48,6 +48,10 @@ const BookingConfirmationForm = ({ bookingId }) => {
     fetchMessage();
   }, []);
 
+  const [booking, setBooking] = useState({});
+
+  const [submitted, setSubmitted] = useState(false);
+
   useEffect(() => {
     const fetchBooking = async () => {
       try {
@@ -56,6 +60,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
         );
         if (responseData.data) {
           set_id(responseData.data[0]._id);
+          setBooking(responseData.data[0]);
         }
         console.log("🚀 ~~ responseData:", responseData.data[0]);
         const formattedTravelDate = dayjs(responseData?.data[0]?.travelDate).format("DD-MM-YYYY");
@@ -74,7 +79,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
             { label: "Phone Number", key: responseData.data[0]?.phoneNumber },
             { label: "Pick Up Location", key: responseData.data[0]?.source?.sourceName },
             { label: "Token", key: responseData.data[0]?.token },
-            { label: "Travel Date", key: responseData.data[0]?.travelDate },
+            // { label: "Travel Date", key: responseData.data[0]?.travelDate },
             { label: "Travel Date", key: formattedTravelDate },
             { label: "Travel Time", key: responseData.data[0]?.travelTime },
             // { label: "Payment Mode", key: responseData.data[0]?.paymentMode },
@@ -121,10 +126,11 @@ const BookingConfirmationForm = ({ bookingId }) => {
       }
     };
     fetchBooking();
-  }, [bookingId, messages]);
+  }, [bookingId, messages, submitted]);
   const handleNewBookingClick = () => {
     navigate("/BookingPage");
   };
+
   const [feedback, setFeedback] = useState();
   const submitHandler = async () => {
     if (feedback == "") {
@@ -143,6 +149,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
         );
         if (responseData) {
           navigate(`/booking/${responseData?.data?.token}`);
+          setSubmitted(!submitted);
         }
       } catch (error) {
         console.log(error, "here");
@@ -151,8 +158,11 @@ const BookingConfirmationForm = ({ bookingId }) => {
       return;
     }
   };
+  useEffect(() => {
+    setFeedback(booking?.remark);
+  }, [booking._id]);
   return (
-    <Grid item xs={8} lg={8} mt={0}>
+    <Grid item xs={8} lg={8} mt={3}>
       {(isLoading || !BookingData) && <Animations />}
       {!isLoading && BookingData && (
         <MKBox
@@ -179,7 +189,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
               Booking Request
             </MKTypography>
           </MKBox>
-          <MKBox pt={4} pb={2} px={3}>
+          <MKBox pt={2} pb={1} px={3}>
             <MKBox mb={3}>
               {message && (
                 <MKTypography
@@ -193,7 +203,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
               )}
             </MKBox>
             <MKBox component="form" role="form">
-              <Grid container spacing={3}>
+              <Grid container spacing={1}>
                 {BookingData &&
                   BookingData.map((field, index) => {
                     return (
@@ -238,13 +248,60 @@ const BookingConfirmationForm = ({ bookingId }) => {
                   })}
               </Grid>
             </MKBox>
-            <Grid container spacing={3} mt={1}>
-              <Grid item xs={12} md={12}>
-                <MKTypography variant="body2" color="text" mb={1}>
-                  Do you have any special instruction for the ride?
-                </MKTypography>
-                <MKBox mb={2}>
-                  {/* <textarea
+            {!booking?.remark ? (
+              <Grid container spacing={3} mt={1}>
+                <Grid item xs={12} md={12}>
+                  <MKTypography variant="body2" color="text" mb={1}>
+                    Do you have any special instruction for the ride?
+                  </MKTypography>
+                  <MKBox mb={2}>
+                    {/* <textarea
+                  rows="2"
+                  style={{
+                    width: "100%",
+                    padding: "10px",
+                    overflowY: "auto",
+                    resize: "none",
+                  }}
+                  value={feedback}
+                  onChange={(e) => setFeedback(e.target.value)}
+                /> */}
+                    <TextField
+                      id="outlined-multiline-flexible"
+                      label="Enter your remarks"
+                      multiline
+                      value={feedback}
+                      onChange={(e) => setFeedback(e.target.value)}
+                      maxRows={8}
+                      fullWidth
+                    />
+                  </MKBox>
+                  <MKBox mb={2} mt={4} display="flex" justifyContent="center">
+                    <MKButton variant="gradient" color="info" onClick={submitHandler}>
+                      Submit Remark
+                    </MKButton>
+                    <MKButton
+                      variant="gradient"
+                      color="info"
+                      onClick={handleNewBookingClick}
+                      sx={{ ml: 5 }}
+                    >
+                      <AddBox /> Create a new Booking{" "}
+                    </MKButton>
+                  </MKBox>
+                </Grid>
+                {/* <Grid item xs={12} md={4}>
+              <MKBox mb={2} mt={2}></MKBox>
+            </Grid> */}
+              </Grid>
+            ) : (
+              <Grid container spacing={3} mt={1}>
+                <Grid item xs={12} md={12}>
+                  <MKTypography variant="body2" color="text" mb={1}>
+                    Special instruction for the ride
+                  </MKTypography>
+                  <MKBox mb={2}>
+                    {/* <textarea
                     rows="2"
                     style={{
                       width: "100%",
@@ -255,34 +312,38 @@ const BookingConfirmationForm = ({ bookingId }) => {
                     value={feedback}
                     onChange={(e) => setFeedback(e.target.value)}
                   /> */}
-                  <TextField
-                    id="outlined-multiline-flexible"
-                    label="Enter your remarks"
-                    multiline
-                    value={feedback}
-                    onChange={(e) => setFeedback(e.target.value)}
-                    maxRows={8}
-                    fullWidth
-                  />
-                </MKBox>
-                <MKBox mb={2} mt={4} display="flex" justifyContent="center">
-                  <MKButton variant="gradient" color="info" onClick={submitHandler}>
-                    Submit Remark
-                  </MKButton>
-                  <MKButton
-                    variant="gradient"
-                    color="info"
-                    onClick={handleNewBookingClick}
-                    sx={{ ml: 5 }}
-                  >
-                    <AddBox /> Create a new Booking{" "}
-                  </MKButton>
-                </MKBox>
-              </Grid>
-              {/* <Grid item xs={12} md={4}>
+                    {/* <TextField
+                      id="outlined-multiline-flexible"
+                      label="Enter your remarks"
+                      multiline
+                      value={feedback}
+                      onChange={(e) => setFeedback(e.target.value)}
+                      maxRows={8}
+                      fullWidth
+                    /> */}
+                    <MKTypography variant="caption" color="text">
+                      {booking?.remark}
+                    </MKTypography>
+                  </MKBox>
+                  <MKBox mb={2} mt={4} display="flex" justifyContent="center">
+                    {/* <MKButton variant="gradient" color="info" onClick={submitHandler}>
+                      Change Remark
+                    </MKButton> */}
+                    <MKButton
+                      variant="gradient"
+                      color="info"
+                      onClick={handleNewBookingClick}
+                      sx={{ ml: 5 }}
+                    >
+                      <AddBox /> Create a new Booking{" "}
+                    </MKButton>
+                  </MKBox>
+                </Grid>
+                {/* <Grid item xs={12} md={4}>
                 <MKBox mb={2} mt={2}></MKBox>
               </Grid> */}
-            </Grid>
+              </Grid>
+            )}
             <MKBox display="flex" justifyContent="center" alignItems="center">
               <MKTypography
                 variant="caption"

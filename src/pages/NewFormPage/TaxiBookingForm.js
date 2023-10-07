@@ -34,6 +34,8 @@ import PropTypes from "prop-types";
 import {
   AccountCircle,
   CarRentalOutlined,
+  ChevronLeftOutlined,
+  ExpandMoreOutlined,
   LocationCityOutlined,
   MapOutlined,
   MapsHomeWorkOutlined,
@@ -204,7 +206,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
 
   const [formateDate, setFormateDate] = useState("");
   //Values
-  const [dateOfTraveling, setDateOfTraveling] = useState(null);
+  const [dateOfTraveling, setDateOfTraveling] = useState(dayjs());
   const [departureTime, setDepartureTime] = useState("");
   const [fullName, setFullName] = useState();
   const [firstName, setFirstName] = useState("");
@@ -310,8 +312,24 @@ const TaxiBookingForm = ({ setHideButton }) => {
       console.log("selected", selectedPackageItem, selectedLocation);
       setSelectedPackage(selectedPackageItem);
       setselectedPackageID(selectedPackageItem?._id);
+      const taxiTypes = taxiTypeList.filter((item1) =>
+        selectedPackageItem?.location?.landingLocations[0]?.taxiFares?.some(
+          (item2) => item1._id === item2.vehicleType
+        )
+      );
+      taxiTypes.forEach((taxiType) => {
+        const fairData = selectedPackageItem?.location?.landingLocations[0]?.taxiFares?.find(
+          (item) => item.vehicleType === taxiType._id
+        );
+        if (fairData) {
+          taxiType.fair = fairData.fare; // Assuming "fair" is the property you want to add
+        }
+      });
+      setFilteredTaxiTypeList(taxiTypes);
     }
   }, [type, selectedLocation]);
+
+  console.log("type", type, selectedPackage, selectedLocation, filteredTaxiTypeList);
 
   useEffect(() => {
     if (selectedPackageData && selectedPackage) {
@@ -366,7 +384,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
         termsChecked &&
         tollCost &&
         selectedLocation &&
-        selectedLandingLocation &&
+        // selectedLandingLocation &&
         selectedTaxiType.fair) ||
       (checked && selectedPackage && pickupLocation && selectedTaxiType.fair && termsChecked)
     ) {
@@ -511,13 +529,19 @@ const TaxiBookingForm = ({ setHideButton }) => {
                       <Select
                         name="source"
                         id="source"
-                        value={selectedSourceLocation.name || ""}
+                        value={selectedSourceLocation.name || "Pickup Location"}
+                        placeholder="Pickup Location"
                         onChange={handleSourceLocationChange}
                         // sx={{ minHeight: 45, minWidth: 270 }}
                         sx={{ minHeight: 45, minWidth: 270 }}
                         startAdornment={
                           <InputAdornment position="start">
                             <MapsHomeWorkOutlined />
+                          </InputAdornment>
+                        }
+                        endAdornment={
+                          <InputAdornment position="start">
+                            <ExpandMoreOutlined />
                           </InputAdornment>
                         }
                       >
@@ -545,6 +569,11 @@ const TaxiBookingForm = ({ setHideButton }) => {
                         startAdornment={
                           <InputAdornment position="start">
                             <MapOutlined />
+                          </InputAdornment>
+                        }
+                        endAdornment={
+                          <InputAdornment position="start">
+                            <ExpandMoreOutlined />
                           </InputAdornment>
                         }
                       >
@@ -575,6 +604,11 @@ const TaxiBookingForm = ({ setHideButton }) => {
                             <LocationCityOutlined />
                           </InputAdornment>
                         }
+                        endAdornment={
+                          <InputAdornment position="start">
+                            <ExpandMoreOutlined />
+                          </InputAdornment>
+                        }
                       >
                         {landingLocationList &&
                           landingLocationList.map((item, idx) => (
@@ -600,6 +634,11 @@ const TaxiBookingForm = ({ setHideButton }) => {
                         startAdornment={
                           <InputAdornment position="start">
                             <TaxiAlertOutlined />
+                          </InputAdornment>
+                        }
+                        endAdornment={
+                          <InputAdornment position="start">
+                            <ExpandMoreOutlined />
                           </InputAdornment>
                         }
                       >
@@ -745,7 +784,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                               Passengers:
                             </MKTypography>
                           </MKBox>
-                          <MKInput
+                          {/* <MKInput
                             variant="standard"
                             type="number"
                             // label="Number of Passengers"
@@ -756,7 +795,57 @@ const TaxiBookingForm = ({ setHideButton }) => {
                             onChange={handlePassengerChange}
                             sx={{ textAlign: "center" }}
                             // required
-                          />
+                          /> */}
+                          <MKBox
+                            display="flex"
+                            sx={{ border: "1px solid grey", borderRadius: "25px" }}
+                          >
+                            <MKButton
+                              size="small"
+                              variant="gradient"
+                              color="info"
+                              fontSize="30px"
+                              sx={{ borderRadius: "25px 0 0 25px " }}
+                              onClick={() => {
+                                if (noOfPassengers === 1) {
+                                  return;
+                                }
+                                setNoOfPassengers(noOfPassengers - 1);
+                              }}
+                            >
+                              -
+                            </MKButton>
+                            <MKButton disabled>{noOfPassengers}</MKButton>
+                            <MKButton
+                              size="small"
+                              variant="gradient"
+                              color="info"
+                              fontSize="30px"
+                              sx={{ borderRadius: "0 25px 25px 0" }}
+                              onClick={() => {
+                                if (selectedTaxiType.typeName === "Innova") {
+                                  if (!isNaN(noOfPassengers) && noOfPassengers >= 9) {
+                                    return;
+                                  }
+                                } else if (selectedTaxiType.typeName === "3+1") {
+                                  if (!isNaN(noOfPassengers) && noOfPassengers >= 4) {
+                                    return;
+                                  }
+                                } else if (selectedTaxiType.typeName === "6+1") {
+                                  if (!isNaN(noOfPassengers) && noOfPassengers >= 9) {
+                                    return;
+                                  }
+                                } else {
+                                  if (!isNaN(noOfPassengers) && noOfPassengers >= 2) {
+                                    return;
+                                  }
+                                }
+                                setNoOfPassengers(noOfPassengers + 1);
+                              }}
+                            >
+                              +
+                            </MKButton>
+                          </MKBox>
                         </MKBox>
                       </Grid>
                       {/* <Grid item xs={12} sm={12} md={3}>
