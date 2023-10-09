@@ -22,7 +22,7 @@ const BusBookingConfirmation = () => {
       { label: "Last Name", key: responseData.data?.lastName },
       { label: "Phone Number", key: responseData.data?.phoneNumber },
       { label: "From", key: responseData.data?.startingLocation?.sourceName },
-      { label: "Destination", key: responseData.data?.destination },
+      // { label: "Destination", key: responseData.data?.destination },
       // { label: "Travel Date", key: responseData.data?.travelDate },
       { label: "Travel Date", key: formattedTravelDate },
       { label: "Travel Time", key: responseData.data?.travelTime },

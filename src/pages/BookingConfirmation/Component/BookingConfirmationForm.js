@@ -114,7 +114,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
             { label: "Phone Number", key: responseData.data[0]?.phoneNumber },
             { label: "token", key: responseData.data[0]?.token },
             { label: "Starting Location", key: responseData.data[0]?.startingLocation?.sourceName },
-            { label: "Destination", key: responseData.data[0]?.destination },
+            // { label: "Destination", key: responseData.data[0]?.destination },
             { label: "Travel Date", key: formattedTravelDate },
             { label: "Travel Time", key: responseData.data[0]?.travelTime },
           ];

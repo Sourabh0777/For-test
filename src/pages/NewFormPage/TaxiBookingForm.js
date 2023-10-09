@@ -41,7 +41,9 @@ import {
   MapsHomeWorkOutlined,
   Person2Outlined,
   PhoneCallbackOutlined,
+  Remove,
   TaxiAlertOutlined,
+  TextDecreaseOutlined,
 } from "@mui/icons-material";
 const TaxiBookingForm = ({ setHideButton }) => {
   const navigate = useNavigate();
@@ -498,6 +500,8 @@ const TaxiBookingForm = ({ setHideButton }) => {
   useEffect(() => {
     if (activeStep === 2) {
       setHideButton(true);
+    } else {
+      setHideButton(false);
     }
   }, [activeStep]);
 
@@ -507,6 +511,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
     <MKBox p={3}>
       <MKBox
         width="100%"
+        minHeight="36vh"
         component="form"
         method="post"
         autoComplete="off"
@@ -517,13 +522,13 @@ const TaxiBookingForm = ({ setHideButton }) => {
             {activeStep == 0 && (
               <Grid
                 container
-                spacing={2}
+                // spacing={2}
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
               >
                 <Grid item xs={12} sm={12} md={3}>
-                  <MKBox mb={2}>
+                  <MKBox mb={{ xs: 0.5, md: 2 }}>
                     <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
                       <InputLabel id="destination">Select Pickup Location</InputLabel>
                       <Select
@@ -536,7 +541,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                         sx={{ minHeight: 45, minWidth: 270 }}
                         startAdornment={
                           <InputAdornment position="start">
-                            <MapsHomeWorkOutlined />
+                            <MapsHomeWorkOutlined fontSize="medium" />
                           </InputAdornment>
                         }
                         endAdornment={
@@ -556,7 +561,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                   </MKBox>
                 </Grid>
                 <Grid item xs={12} sm={12} md={3}>
-                  <MKBox mb={2}>
+                  <MKBox mb={{ xs: 0.5, md: 2 }}>
                     <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
                       <InputLabel id="destination">Select Destination</InputLabel>
                       <Select
@@ -568,7 +573,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                         sx={{ minHeight: 45, minWidth: 270 }}
                         startAdornment={
                           <InputAdornment position="start">
-                            <MapOutlined />
+                            <MapOutlined fontSize="medium" />
                           </InputAdornment>
                         }
                         endAdornment={
@@ -588,7 +593,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                   </MKBox>
                 </Grid>
                 <Grid item xs={12} sm={12} md={3}>
-                  <MKBox mb={2}>
+                  <MKBox mb={{ xs: 0.5, md: 2 }}>
                     <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
                       <InputLabel id="landingLocation"> Select Drop Point</InputLabel>
                       <Select
@@ -601,7 +606,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                         sx={{ minHeight: 45, minWidth: 270 }}
                         startAdornment={
                           <InputAdornment position="start">
-                            <LocationCityOutlined />
+                            <LocationCityOutlined fontSize="medium" />
                           </InputAdornment>
                         }
                         endAdornment={
@@ -621,7 +626,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                   </MKBox>
                 </Grid>
                 <Grid item xs={12} sm={12} md={3}>
-                  <MKBox mb={2}>
+                  <MKBox mb={{ xs: 0.5, md: 2 }}>
                     <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
                       <InputLabel id="taxiType">Select Vehicle</InputLabel>
                       <Select
@@ -633,7 +638,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                         sx={{ minHeight: 45, minWidth: 270 }}
                         startAdornment={
                           <InputAdornment position="start">
-                            <TaxiAlertOutlined />
+                            <TaxiAlertOutlined fontSize="medium" />
                           </InputAdornment>
                         }
                         endAdornment={
@@ -668,7 +673,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                 alignItems="center"
               >
                 <Grid item xs={12} sm={6} md={3}>
-                  <MKBox mb={3}>
+                  <MKBox mb={{ xs: 0.5, md: 2 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DemoContainer variant="standard" components={["DatePicker"]}>
                         <DatePicker
@@ -683,7 +688,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                   </MKBox>
                 </Grid>
                 <Grid item xs={12} sm={12} md={3}>
-                  <MKBox mb={2}>
+                  <MKBox mb={{ xs: 0.5, md: 2 }}>
                     <MKInput
                       type="time"
                       label="Departure Time"
@@ -712,7 +717,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                 </Grid> */}
 
                 <Grid item xs={12} sm={6} md={3}>
-                  <MKBox mb={2}>
+                  <MKBox mb={{ xs: 0.5, md: 2 }}>
                     <FormControl variant="standard" fullWidth>
                       <InputLabel htmlFor="input-with-icon-adornment">Enter Full Name</InputLabel>
                       <Input
@@ -723,7 +728,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                         onChange={handleFullName}
                         startAdornment={
                           <InputAdornment position="start">
-                            <AccountCircle />
+                            <AccountCircle fontSize="medium" />
                           </InputAdornment>
                         }
                       />
@@ -731,7 +736,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                   </MKBox>
                 </Grid>
                 <Grid item xs={12} sm={6} md={3}>
-                  <MKBox mb={2}>
+                  <MKBox mb={{ xs: 0.5, md: 2 }}>
                     <FormControl variant="standard" fullWidth>
                       <InputLabel htmlFor="input-with-icon-adornment">
                         Enter Phone Number
@@ -744,7 +749,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                         onChange={mobileNOHandler}
                         startAdornment={
                           <InputAdornment position="start">
-                            <PhoneCallbackOutlined />
+                            <PhoneCallbackOutlined fontSize="medium" />
                           </InputAdornment>
                         }
                       />
@@ -775,14 +780,19 @@ const TaxiBookingForm = ({ setHideButton }) => {
               <Grid container>
                 {activeStep === 0 && (
                   <Grid item xs={12} md={9}>
-                    <Grid container spacing={2} sx={{ mx: 1, mt: 0.5 }}>
-                      <Grid item xs={12} sm={12} md={3}>
-                        <MKBox display="flex" alignItems="center">
-                          <MKBox display="flex" alignItems="center" mr={3}>
-                            <Person2Outlined />
-                            <MKTypography variant="h6" fontWeight="medium" ml={1}>
-                              Passengers:
-                            </MKTypography>
+                    <Grid container spacing={2} sx={{ mt: 0.5 }}>
+                      <Grid item xs={12} md={3}>
+                        <MKBox
+                          display="flex"
+                          pl={1}
+                          // flexDirection={{ xs: "column", md: "row" }}
+                          // alignItems={{ xs: "start", md: "center" }}
+                          alignItems={"center"}
+                          justifyContent="start"
+                        >
+                          <MKBox display="flex" alignItems="center" mr={1} mb={{ xs: 0.5, md: 0 }}>
+                            <Person2Outlined fontSize="medium" />
+                            <MKTypography variant="h6">Passengers:</MKTypography>
                           </MKBox>
                           {/* <MKInput
                             variant="standard"
@@ -798,30 +808,75 @@ const TaxiBookingForm = ({ setHideButton }) => {
                           /> */}
                           <MKBox
                             display="flex"
-                            sx={{ border: "1px solid grey", borderRadius: "25px" }}
+                            justifyContent="center"
+                            alignItems="center"
+                            ml={1}
+                            // sx={{ border: "1px solid grey" }}
+                            // px={1}
+                            py={0}
+                            borderRadius="lg"
                           >
-                            <MKButton
-                              size="small"
-                              variant="gradient"
-                              color="info"
-                              fontSize="30px"
-                              sx={{ borderRadius: "25px 0 0 25px " }}
+                            <MKBox
+                              // size="small"
+                              // variant="gradient"
+                              // color="info"
+                              display="flex"
+                              // bgColor="info"
+                              justifyContent="center"
+                              width="30px"
+                              px={3}
+                              // sx={{ borderRadius: "25px 0 0 25px " }}
                               onClick={() => {
                                 if (noOfPassengers === 1) {
                                   return;
                                 }
                                 setNoOfPassengers(noOfPassengers - 1);
                               }}
+                              sx={{
+                                cursor: "pointer",
+                                border: "1px solid grey",
+                                borderRadius: "15px 0 0 15px",
+                                ":hover": {
+                                  backgroundColor: "lightgrey",
+                                },
+                              }}
+                              py={1}
                             >
-                              -
-                            </MKButton>
-                            <MKButton disabled>{noOfPassengers}</MKButton>
-                            <MKButton
-                              size="small"
-                              variant="gradient"
-                              color="info"
-                              fontSize="30px"
-                              sx={{ borderRadius: "0 25px 25px 0" }}
+                              {/* <MKBox height="2px" width="14px" bgColor="dark"></MKBox>
+                               */}
+                              <Remove fontSize="medium" />
+                            </MKBox>
+                            <MKBox
+                              width="60px"
+                              display="flex"
+                              justifyContent="center"
+                              sx={{ borderTop: "1px solid grey", borderBottom: "1px solid grey" }}
+                              py={0.9}
+                            >
+                              <MKTypography variant="body2" fontWeight="medium">
+                                {noOfPassengers}
+                              </MKTypography>
+                            </MKBox>
+                            <MKBox
+                              // sx={{  }}
+                              px={3}
+                              display="flex"
+                              justifyContent="center"
+                              // size="small"
+                              // variant="gradient"
+                              // color="info"
+                              fontSize="20px"
+                              width="30px"
+                              py={0.9}
+                              sx={{
+                                cursor: "pointer",
+                                border: "1px solid grey",
+                                borderRadius: "0 15px 15px 0",
+                                ":hover": {
+                                  backgroundColor: "lightgrey",
+                                },
+                              }}
+                              // sx={{ borderRadius: "0 25px 25px 0" }}
                               onClick={() => {
                                 if (selectedTaxiType.typeName === "Innova") {
                                   if (!isNaN(noOfPassengers) && noOfPassengers >= 9) {
@@ -843,8 +898,10 @@ const TaxiBookingForm = ({ setHideButton }) => {
                                 setNoOfPassengers(noOfPassengers + 1);
                               }}
                             >
-                              +
-                            </MKButton>
+                              <MKTypography variant="body2" fontWeight="medium">
+                                +
+                              </MKTypography>
+                            </MKBox>
                           </MKBox>
                         </MKBox>
                       </Grid>
@@ -883,7 +940,8 @@ const TaxiBookingForm = ({ setHideButton }) => {
                     xs={12}
                     sm={12}
                     md={9}
-                    mt={2}
+                    mt={3}
+                    mb={2}
                     display={"flex"}
                     gap={2}
                     justifyContent={"start"}
@@ -976,6 +1034,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                 justifyContent="flex-start"
                 alignItems="self-start"
                 sx={{ mx: 1, mt: 0.5 }}
+                mb={4}
               >
                 <Grid item xs={12} sm={12} md={6}>
                   <MKBox mb={2}>
@@ -995,12 +1054,28 @@ const TaxiBookingForm = ({ setHideButton }) => {
                     <MKInput
                       variant="standard"
                       type="text"
-                      label="Mobile No"
+                      label="Phone Number"
                       InputLabelProps={{ shrink: true }}
                       fullWidth
                       value={mobileNo}
                       disabled
                     />
+                    {/* <FormControl variant="standard" fullWidth>
+                      <InputLabel htmlFor="input-with-icon-adornment">Phone Number</InputLabel>
+                      <Input
+                        type="tell"
+                        id="input-with-icon-adornment"
+                        required
+                        value={mobileNo}
+                        onChange={mobileNOHandler}
+                        startAdornment={
+                          <InputAdornment position="start">
+                            <PhoneCallbackOutlined fontSize="medium" />
+                          </InputAdornment>
+                        }
+                        disabled
+                      />
+                    </FormControl> */}
                   </MKBox>
                 </Grid>
                 <Grid item xs={12} sm={12} md={6}>
@@ -1101,7 +1176,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                 </Grid>
               </Grid>
             )}
-            <Grid container item justifyContent="center" xs={12} mt={0} mb={2}>
+            <Grid container item justifyContent="center" xs={12} mt={2} mb={1}>
               {activeStep === 2 ? (
                 <React.Fragment>
                   <Box sx={{ display: "flex", flexDirection: "row", pt: 0 }}>
