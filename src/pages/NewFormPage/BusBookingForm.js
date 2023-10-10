@@ -76,11 +76,31 @@ const BusBookingForm = ({ setHideButton }) => {
   const [mobileNo, setMobileNo] = useState();
 
   const [selectedSourceLocation, setSelectedSourceLocation] = React.useState("");
+  const [matchedLocations, setMatchedLocations] = useState([]);
 
   const handleSourceLocationChange = (event) => {
-    console.log("source", event.target.value);
-    setSelectedSourceLocation(event.target.value);
+    const newValue = event.target.value;
+    setSelectedSourceLocation(newValue);
+    setMatchedLocations([]);
+
+    const newMatchedLocations = [];
+
+    console.log("Locations", LocationData);
+
+    LocationData.forEach((location) => {
+      location?.list?.forEach((item) => {
+        if (item.source._id === newValue) {
+          // Found a match! Do something with the item.
+          console.log("Found a match:", item);
+          newMatchedLocations.push(location);
+        }
+      });
+    });
+
+    setMatchedLocations(newMatchedLocations);
   };
+
+  console.log("Matched", matchedLocations);
 
   const [sourcseLocation, setSourceLocation] = useState([]);
   const [sourcseLocationData, setSourceLocationData] = useState();
@@ -115,16 +135,25 @@ const BusBookingForm = ({ setHideButton }) => {
   const [fare40, setFare40] = useState("");
   const [fare45, setFare45] = useState("");
   const [fare50, setFare50] = useState("");
+
+  const [sharedSlots, setSharedSlots] = useState([]);
+
   const handleLocationChange = (event) => {
-    setSelectedLocationName(event.target.value.name);
-    setLocation(event.target.value.id);
-    const selected = LocationData?.find((location) => location._id === event.target.value.id);
-    setPerSeatFare(selected.perSeatFair);
-    setFare35(selected.Seater35Fair);
-    setFare40(selected.Seater40Fair);
-    setFare45(selected.Seater45Fair);
-    setFare50(selected.Seater50Fair);
+    setSelectedLocationName(event.target.value.standName);
+    setLocation(event.target.value._id);
+    const selected = LocationData?.find((location) => location._id === event.target.value._id);
+    // console.log("Selected", selected?.slots);
+
+    const fareList = selected?.list?.find((l) => l?.source._id === selectedSourceLocation);
+    console.log("fareList", fareList);
+    setSharedSlots(fareList?.slots);
+    setPerSeatFare(fareList?.perSeatFair);
+    setFare35(fareList?.seater35Fair);
+    setFare40(fareList?.seater40Fair);
+    setFare45(fareList?.seater45Fair);
+    setFare50(fareList?.seater50Fair);
   };
+  console.log("Slots", sharedSlots);
   const handleDateChange = (newValue) => {
     setDateOfTraveling(newValue);
     const day = newValue.$d.getDate().toString().padStart(2, "0");
@@ -375,7 +404,7 @@ const BusBookingForm = ({ setHideButton }) => {
                         name="destination"
                         labelId="destination"
                         id="destination"
-                        value={selectedLocation.name}
+                        value={selectedLocation.standName}
                         onChange={handleLocationChange}
                         sx={{ minHeight: 45, minWidth: 270 }}
                         startAdornment={
@@ -389,10 +418,10 @@ const BusBookingForm = ({ setHideButton }) => {
                           </InputAdornment>
                         }
                       >
-                        {Locations &&
-                          Locations.map((item, idx) => (
+                        {matchedLocations &&
+                          matchedLocations.map((item, idx) => (
                             <MenuItem key={idx} value={item}>
-                              {item.name}
+                              {item.standName}
                             </MenuItem>
                           ))}
                       </Select>
@@ -524,7 +553,7 @@ const BusBookingForm = ({ setHideButton }) => {
                           sx={{ minHeight: 45, minWidth: 270 }}
                           startAdornment={
                             <InputAdornment position="start">
-                              <LocationCityOutlined fontSize="medium" />
+                              <BusAlertOutlined fontSize="medium" />
                             </InputAdornment>
                           }
                           endAdornment={
@@ -753,14 +782,19 @@ const BusBookingForm = ({ setHideButton }) => {
                           <MenuItem value="" disabled>
                             Select
                           </MenuItem>
-                          <MenuItem value="06:00">06:00 AM</MenuItem>
-                          <MenuItem value="09:00">09:00 AM</MenuItem>
+                          {sharedSlots?.map((slot, i) => (
+                            <MenuItem key={i} value={slot}>
+                              {format12Hour(slot)}
+                            </MenuItem>
+                          ))}
+
+                          {/* <MenuItem value="09:00">09:00 AM</MenuItem>
                           <MenuItem value="12:00">12:00 PM</MenuItem>
                           <MenuItem value="15:00">03:00 PM</MenuItem>
                           <MenuItem value="18:00">06:00 PM</MenuItem>
                           <MenuItem value="21:00">09:00 PM</MenuItem>
                           <MenuItem value="00:00">12:00 AM</MenuItem>
-                          <MenuItem value="03:00">03:00 AM</MenuItem>
+                          <MenuItem value="03:00">03:00 AM</MenuItem> */}
                         </Select>
                       </FormControl>
                     </MKBox>
