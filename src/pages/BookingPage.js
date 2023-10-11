@@ -81,7 +81,7 @@ function BookingPage() {
           alignItems="center"
           // zIndex={2}
         >
-          <Grid container spacing={1} justifyContent="center" alignItems="center" height="100%">
+          <Grid container spacing={1} justifyContent="center" alignItems="center">
             <Grid
               item
               xs={12}
@@ -97,8 +97,8 @@ function BookingPage() {
                 sx={{
                   // mb: 10,
                   // ml: 9,
-                  minWidth: { md: "40vw", xs: "95vw" },
-                  minHeight: "90vh",
+                  minWidth: { md: "40vw", xs: "90vw" },
+                  minHeight: { md: "90vh", xs: "94vh" },
                 }}
               >
                 <MKBox
@@ -112,7 +112,7 @@ function BookingPage() {
                   mb={1}
                   textAlign="center"
                 >
-                  <MKTypography variant="h4" fontWeight="medium" color="white" mt={1}>
+                  <MKTypography variant="h5" fontWeight="medium" color="white" mt={1}>
                     Book Your Ride
                   </MKTypography>
                 </MKBox>

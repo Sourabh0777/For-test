@@ -1476,6 +1476,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
               justifyContent="center"
               xs={12}
               mt={4}
+              pt={4}
               mb={1}
               position={"absolute"}
               bottom={10}
