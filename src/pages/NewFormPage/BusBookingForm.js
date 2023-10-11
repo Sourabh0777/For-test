@@ -142,9 +142,9 @@ const BusBookingForm = ({ setHideButton }) => {
   const [sharedSlots, setSharedSlots] = useState([]);
 
   const handleLocationChange = (event) => {
-    setSelectedLocationName(event.target.value.standName);
-    setLocation(event.target.value._id);
-    const selected = LocationData?.find((location) => location._id === event.target.value._id);
+    // setSelectedLocationName(event.target.value.standName);
+    setLocation(event.target.value);
+    const selected = LocationData?.find((location) => location._id === event.target.value);
     // console.log("Selected", selected?.slots);
 
     const fareList = selected?.list?.find((l) => l?.source._id === selectedSourceLocation);
@@ -410,7 +410,7 @@ const BusBookingForm = ({ setHideButton }) => {
                         name="destination"
                         labelId="destination"
                         id="destination"
-                        value={selectedLocation.standName}
+                        value={selectedLocation}
                         onChange={handleLocationChange}
                         sx={{ minHeight: 45, minWidth: 270 }}
                         startAdornment={
@@ -426,7 +426,7 @@ const BusBookingForm = ({ setHideButton }) => {
                       >
                         {matchedLocations &&
                           matchedLocations.map((item, idx) => (
-                            <MenuItem key={idx} value={item}>
+                            <MenuItem key={idx} value={item._id}>
                               {item.standName}
                             </MenuItem>
                           ))}
@@ -926,7 +926,7 @@ const BusBookingForm = ({ setHideButton }) => {
                           name="destination"
                           labelId="destination"
                           id="destination"
-                          value={selectedLocation.standName}
+                          value={selectedLocation}
                           onChange={handleLocationChange}
                           sx={{ minHeight: 45, minWidth: 270 }}
                           startAdornment={
@@ -942,7 +942,7 @@ const BusBookingForm = ({ setHideButton }) => {
                         >
                           {matchedLocations &&
                             matchedLocations.map((item, idx) => (
-                              <MenuItem key={idx} value={item}>
+                              <MenuItem key={idx} value={item._id}>
                                 {item.standName}
                               </MenuItem>
                             ))}
