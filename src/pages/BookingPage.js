@@ -71,12 +71,15 @@ function BookingPage() {
       >
         <MKBox
           px={1}
-          minHeight="98vh"
-          py={5}
+          // minHeight="98vh"
+          // height="100Vh%"
+          pt={5}
+          // overflow="hidden"
+          // py={5}
           // position="relative"
           display="flex"
           alignItems="center"
-          zIndex={2}
+          // zIndex={2}
         >
           <Grid container spacing={1} justifyContent="center" alignItems="center" height="100%">
             <Grid
@@ -94,7 +97,8 @@ function BookingPage() {
                 sx={{
                   // mb: 10,
                   // ml: 9,
-                  minWidth: { md: 1200 },
+                  minWidth: { md: "40vw", xs: "95vw" },
+                  minHeight: "90vh",
                 }}
               >
                 <MKBox

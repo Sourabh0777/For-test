@@ -3,6 +3,7 @@ import {
   AccountCircle,
   BusAlertOutlined,
   ExpandMoreOutlined,
+  Info,
   LocationCityOutlined,
   MapsHomeWorkOutlined,
   Person2Outlined,
@@ -37,6 +38,7 @@ import { useHttpClient } from "hooks/http-hook";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
+import MDBox from "components/MDBox";
 
 const BusBookingForm = ({ setHideButton }) => {
   const navigate = useNavigate();
@@ -75,6 +77,7 @@ const BusBookingForm = ({ setHideButton }) => {
   const [lastName, setLastName] = useState();
   const [mobileNo, setMobileNo] = useState();
 
+  const [remark, setRemark] = useState("");
   const [selectedSourceLocation, setSelectedSourceLocation] = React.useState("");
   const [matchedLocations, setMatchedLocations] = useState([]);
 
@@ -285,6 +288,7 @@ const BusBookingForm = ({ setHideButton }) => {
         ? fare45
         : fare50
     );
+    console.log("selectedBusType:", selectedBusType);
     const formData = {
       firstName: firstName,
       lastName: lastName || " ",
@@ -305,8 +309,10 @@ const BusBookingForm = ({ setHideButton }) => {
           : noOfPassengers === 45
           ? fare45
           : fare50,
-      isShared: selectedBusType === "full_bus" ? false : true,
+      isShared: selectedBusType !== "full_bus" ? true : false,
+      remark,
     };
+    console.log("isShared:", formData.isShared);
     try {
       const responseData = await sendRequest(
         // eslint-disable-next-line no-undef
@@ -362,7 +368,7 @@ const BusBookingForm = ({ setHideButton }) => {
                     />
                   </FormGroup>
                 </Grid>
-                <Grid item xs={12} sm={12} md={4}>
+                <Grid item xs={12} sm={12} md={6}>
                   <MKBox mb={2}>
                     <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth>
                       <InputLabel id="destination">Select Starting Location</InputLabel>
@@ -396,7 +402,7 @@ const BusBookingForm = ({ setHideButton }) => {
                     </FormControl>
                   </MKBox>
                 </Grid>
-                <Grid item xs={12} sm={12} md={4}>
+                <Grid item xs={12} sm={12} md={6}>
                   <MKBox mb={2}>
                     <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth>
                       <InputLabel id="destination">Destination</InputLabel>
@@ -428,117 +434,9 @@ const BusBookingForm = ({ setHideButton }) => {
                     </FormControl>
                   </MKBox>
                 </Grid>
-                {/* <Grid item xs={12} sm={12} md={4}>
-                  <MKBox mb={2}>
-                    <FormControl variant="standard" required sx={{ m: 1, minWidth: 120 }}>
-                      <InputLabel id="busType">Bus Type</InputLabel>
-                      <Select
-                        name="busType"
-                        labelId="busType"
-                        id="busType"
-                        value={selectedBusType}
-                        onChange={(e) => setSelectedBusType(e.target.value)}
-                        sx={{ minHeight: 45, minWidth: 270 }}
-                        startAdornment={
-                          <InputAdornment position="start">
-                            <BusAlertOutlined color="info" fontSize="medium" />
-                          </InputAdornment>
-                        }
-                        endAdornment={
-                          <InputAdornment position="start">
-                            <ExpandMoreOutlined />
-                          </InputAdornment>
-                        }
-                      >
-                        <MenuItem value="Book Complete Bus">BookCompleteBus</MenuItem>
-                        <MenuItem value="Book Seats">Book Seats</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </MKBox>
-                </Grid> */}
-                {/* {selectedBusType === "full_bus" ? (
-                  <Grid item xs={12} sm={12} md={3}>
-                    <MKBox mb={2}>
-                      <FormControl variant="standard" required sx={{ m: 1, minWidth: 120 }}>
-                        <InputLabel id="busSeats">Select Seats</InputLabel>
-                        <Select
-                          name="busSeats"
-                          labelId="busSeats"
-                          id="busSeats"
-                          // value={noOfPassengers}
-                          onChange={selectedSeatHandler}
-                          sx={{ minHeight: 45, minWidth: 270 }}
-                          startAdornment={
-                            <InputAdornment position="start">
-                              <BusAlertOutlined color="info" fontSize="medium" />
-                            </InputAdornment>
-                          }
-                          endAdornment={
-                            <InputAdornment position="start">
-                              <ExpandMoreOutlined />
-                            </InputAdornment>
-                          }
-                        >
-                          <MenuItem value={0}>0 Seats</MenuItem>
-                          <MenuItem value={35}>35 Seater Bus</MenuItem>
-                          <MenuItem value={40}>40 Seater Bus</MenuItem>
-                          <MenuItem value={45}>45 Seater Bus</MenuItem>{" "}
-                          <MenuItem value={50}>50 Seater Bus</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </MKBox>
-                  </Grid>
-                ) : (
-                  <Grid item xs={12} sm={12} md={3}>
-                    <MKBox mb={2}>
-                      <MKInput
-                        type="number"
-                        label="No of Passengers"
-                        InputLabelProps={{ shrink: true }}
-                        fullWidth
-                        name="noOfPassengers"
-                        value={noOfPassengers || 0}
-                        onChange={(e) => setNoOfPassengers(e.target.value)}
-                        required
-                      />
-                    </MKBox>
-                  </Grid>
-                )} */}
-                {/* {selectedBusType === "full_bus" && (
-                  <Grid item xs={12} sm={12} md={3}>
-                    <MKBox mb={2}>
-                      <FormControl variant="standard" required sx={{ m: 1, minWidth: 120 }}>
-                        <InputLabel id="busSeats">Select Bus Size</InputLabel>
-                        <Select
-                          name="busSeats"
-                          labelId="busSeats"
-                          id="busSeats"
-                          value={noOfPassengers}
-                          onChange={selectedSeatHandler}
-                          sx={{ minHeight: 45, minWidth: 270 }}
-                          startAdornment={
-                            <InputAdornment position="start">
-                              <BusAlertOutlined color="info" fontSize="medium" />
-                            </InputAdornment>
-                          }
-                          endAdornment={
-                            <InputAdornment position="start">
-                              <ExpandMoreOutlined />
-                            </InputAdornment>
-                          }
-                        >
-                          <MenuItem value={0}>0 Seats</MenuItem>
-                          <MenuItem value={35}>35 Seater Bus</MenuItem>
-                          <MenuItem value={40}>40 Seater Bus</MenuItem>
-                          <MenuItem value={45}>45 Seater Bus</MenuItem>{" "}
-                          <MenuItem value={50}>50 Seater Bus</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </MKBox>
-                  </Grid>
-                )} */}
+
                 {selectedBusType === "full_bus" && (
-                  <Grid item xs={12} sm={12} md={4}>
+                  <Grid item xs={12} sm={12} md={6}>
                     <MKBox mb={2}>
                       <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth>
                         <InputLabel id="destination">Select Bus Size</InputLabel>
@@ -572,7 +470,7 @@ const BusBookingForm = ({ setHideButton }) => {
                   </Grid>
                 )}
                 {selectedBusType !== "full_bus" && (
-                  <Grid item xs={12} md={4}>
+                  <Grid item xs={12} md={6}>
                     <Grid container spacing={2} sx={{ mt: 0.5 }}>
                       <Grid item xs={12} md={3}>
                         <MKBox
@@ -667,9 +565,13 @@ const BusBookingForm = ({ setHideButton }) => {
                                 ":hover": {
                                   backgroundColor: "lightgrey",
                                 },
+                                userSelect: "none",
                               }}
                               // sx={{ borderRadius: "0 25px 25px 0" }}
                               onClick={() => {
+                                if (noOfPassengers === 35) {
+                                  return;
+                                }
                                 setNoOfPassengers(noOfPassengers + 1);
                               }}
                             >
@@ -719,7 +621,7 @@ const BusBookingForm = ({ setHideButton }) => {
                 justifyContent="center"
                 alignItems="center"
               >
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid item xs={12} sm={6} md={6}>
                   <MKBox mb={3}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DemoContainer components={["DatePicker"]}>
@@ -736,7 +638,7 @@ const BusBookingForm = ({ setHideButton }) => {
                   </MKBox>
                 </Grid>
                 {selectedBusType !== "full_bus" && (
-                  <Grid item xs={12} sm={12} md={3}>
+                  <Grid item xs={12} sm={12} md={6}>
                     <MKBox mb={2}>
                       {/* <MDInput
                         type="text"
@@ -801,7 +703,7 @@ const BusBookingForm = ({ setHideButton }) => {
                   </Grid>
                 )}
                 {selectedBusType === "full_bus" && (
-                  <Grid item xs={12} sm={12} md={3}>
+                  <Grid item xs={12} sm={12} md={6}>
                     <MKBox mb={2}>
                       <FormControl variant="standard" fullWidth>
                         <MKInput
@@ -819,7 +721,7 @@ const BusBookingForm = ({ setHideButton }) => {
                     </MKBox>
                   </Grid>
                 )}
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid item xs={12} sm={6} md={6}>
                   <MKBox mb={2}>
                     <MKInput
                       type="text"
@@ -834,7 +736,7 @@ const BusBookingForm = ({ setHideButton }) => {
                     />
                   </MKBox>
                 </Grid>
-                <Grid item xs={12} sm={12} md={3}>
+                <Grid item xs={12} sm={12} md={6}>
                   <MKBox mb={2}>
                     <MKInput
                       variant="standard"
@@ -861,6 +763,26 @@ const BusBookingForm = ({ setHideButton }) => {
                   alignItems="center"
                   sx={{ mx: 1, mt: 0.5 }}
                 >
+                  {" "}
+                  <Grid item xs={12} mt={3}>
+                    <MDBox>
+                      <MKBox mb={{ xs: 0.5, md: 2 }}>
+                        <MKInput
+                          variant="standard"
+                          type="tel"
+                          label="Enter Remark (optional)"
+                          InputLabelProps={{ shrink: true }}
+                          multiline
+                          maxRows={3}
+                          fullWidth
+                          name="remark"
+                          required
+                          value={remark}
+                          onChange={(e) => setRemark(e.target.value)}
+                        />
+                      </MKBox>
+                    </MDBox>
+                  </Grid>
                   <Grid item xs={12} sm={12} md={12}>
                     <MKBox>
                       <FormControlLabel
@@ -879,9 +801,8 @@ const BusBookingForm = ({ setHideButton }) => {
                   </Grid>
                 </Grid>
               ) : null}
-              <Grid container mt={4} mb={3}>
-                <Grid item xs={12} md={9}></Grid>
-                <Grid item xs={12} md={3}>
+              <Grid container mt={6} mb={3}>
+                <Grid item xs={12} md={12} justifyContent={"end"}>
                   {/* <Grid xs={12} md={3}> */}
                   <MKBox display="flex" justifyContent="end" alignItems="center" gap={1}>
                     <MKBox height="10px" width="10px" borderRadius="50%" bgColor="success"></MKBox>
@@ -898,11 +819,12 @@ const BusBookingForm = ({ setHideButton }) => {
                           ? fare45
                           : noOfPassengers === 50
                           ? fare50
-                          : "NA"}
+                          : "NA"}{" "}
+                        + Additional Charges
                       </MKTypography>
                     ) : (
                       <MKTypography variant="caption" fontWeight="medium">
-                        Fare: &#8377; NA
+                        Fare: &#8377; NA (includes addtional charges)
                       </MKTypography>
                     )}
                   </MKBox>
@@ -918,33 +840,37 @@ const BusBookingForm = ({ setHideButton }) => {
                   alignItems="self-start"
                   sx={{ mx: 1, mt: 0.5 }}
                 >
-                  <Grid item xs={12} sm={6} md={3}>
-                    <MKBox mb={{ xs: 0.5, md: 2 }}>
+                  <Grid item xs={12} sm={6} md={6}>
+                    <MKBox mb={2}>
                       <MKInput
-                        variant="standard"
                         type="text"
-                        label="Name"
+                        variant="standard"
                         InputLabelProps={{ shrink: true }}
+                        label="Full Name"
                         fullWidth
+                        name="firstName"
+                        required
                         value={fullName}
-                        disabled
+                        onChange={handleFullName}
                       />
                     </MKBox>
                   </Grid>
-                  <Grid item xs={12} sm={6} md={3}>
-                    <MKBox mb={{ xs: 0.5, md: 2 }}>
+                  <Grid item xs={12} sm={6} md={6}>
+                    <MKBox mb={2}>
                       <MKInput
                         variant="standard"
-                        type="text"
-                        label="Phone Number"
+                        type="tel"
+                        label="Mobile no"
                         InputLabelProps={{ shrink: true }}
                         fullWidth
+                        name="mobileNo"
+                        required
                         value={mobileNo}
-                        disabled
+                        onChange={mobileNOHandler}
                       />
                     </MKBox>
                   </Grid>
-                  <Grid item xs={12} sm={12} md={6}>
+                  {/* <Grid item xs={12} sm={12} md={6}>
                     <MKBox mb={2}>
                       <MKInput
                         variant="standard"
@@ -956,84 +882,311 @@ const BusBookingForm = ({ setHideButton }) => {
                         disabled
                       />
                     </MKBox>
-                  </Grid>
+                  </Grid> */}
+
                   <Grid item xs={12} sm={12} md={6}>
                     <MKBox mb={2}>
-                      <MKInput
-                        variant="standard"
-                        type="number"
-                        label="No of Seats Booked"
-                        InputLabelProps={{ shrink: true }}
-                        fullWidth
-                        value={noOfPassengers}
-                        disabled
-                      />
+                      <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth>
+                        <InputLabel id="destination">Starting Location</InputLabel>
+                        <Select
+                          name="source"
+                          id="source"
+                          value={selectedSourceLocation}
+                          placeholder="Pickup Location"
+                          onChange={handleSourceLocationChange}
+                          // sx={{ minHeight: 45, minWidth: 270 }}
+                          sx={{ minHeight: 45, minWidth: 270 }}
+                          startAdornment={
+                            <InputAdornment position="start">
+                              <MapsHomeWorkOutlined fontSize="medium" />
+                            </InputAdornment>
+                          }
+                          endAdornment={
+                            <InputAdornment position="start">
+                              <ExpandMoreOutlined />
+                            </InputAdornment>
+                          }
+                          fullWidth
+                        >
+                          {sourcseLocation &&
+                            sourcseLocation.map((item, idx) => (
+                              <MenuItem key={idx} value={item.id} display="flex">
+                                <MKTypography variant="p">{item.name}</MKTypography>
+                              </MenuItem>
+                            ))}
+                        </Select>
+                      </FormControl>
                     </MKBox>
                   </Grid>
                   <Grid item xs={12} sm={12} md={6}>
                     <MKBox mb={2}>
-                      <MKInput
-                        variant="standard"
-                        type="text"
-                        label="From"
-                        InputLabelProps={{ shrink: true }}
-                        fullWidth
-                        value={startingLocation}
-                        disabled
-                      />
+                      <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth>
+                        <InputLabel id="destination">Destination</InputLabel>
+                        <Select
+                          name="destination"
+                          labelId="destination"
+                          id="destination"
+                          value={selectedLocation.standName}
+                          onChange={handleLocationChange}
+                          sx={{ minHeight: 45, minWidth: 270 }}
+                          startAdornment={
+                            <InputAdornment position="start">
+                              <LocationCityOutlined fontSize="medium" />
+                            </InputAdornment>
+                          }
+                          endAdornment={
+                            <InputAdornment position="start">
+                              <ExpandMoreOutlined />
+                            </InputAdornment>
+                          }
+                        >
+                          {matchedLocations &&
+                            matchedLocations.map((item, idx) => (
+                              <MenuItem key={idx} value={item}>
+                                {item.standName}
+                              </MenuItem>
+                            ))}
+                        </Select>
+                      </FormControl>
                     </MKBox>
                   </Grid>
                   <Grid item xs={12} sm={12} md={6}>
-                    <MKBox mb={2}>
-                      <MKInput
-                        variant="standard"
-                        type="text"
-                        label="To"
-                        InputLabelProps={{ shrink: true }}
-                        fullWidth
-                        value={selectedLocationName}
-                        disabled
-                      />
+                    <MKBox mb={3}>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DemoContainer components={["DatePicker"]}>
+                          <DatePicker
+                            sx={{ width: "100%" }}
+                            label="Date of Traveling"
+                            name="dateOfTraveling"
+                            value={dateOfTraveling}
+                            onChange={handleDateChange}
+                            required
+                          />
+                        </DemoContainer>
+                      </LocalizationProvider>
                     </MKBox>
                   </Grid>
-                  <Grid item xs={12} sm={12} md={6}>
-                    {/* <MKBox mb={2}>
-                      <MKInput
-                        variant="standard"
+                  {selectedBusType === "full_bus" && (
+                    <Grid item xs={12} sm={12} md={6}>
+                      <MKBox mb={2}>
+                        <FormControl variant="standard" fullWidth>
+                          <MKInput
+                            type="time"
+                            label="Departure Time"
+                            InputLabelProps={{ shrink: true }}
+                            fullWidth
+                            name="departureTime"
+                            value={departureTime}
+                            onChange={timeHandler}
+                            required
+                            sx={{ pointer: "cursor" }}
+                          />
+                        </FormControl>
+                      </MKBox>
+                    </Grid>
+                  )}
+                  {selectedBusType !== "full_bus" && (
+                    <Grid item xs={12} sm={12} md={6}>
+                      <MKBox mb={2}>
+                        {/* <MDInput
                         type="text"
-                        label="Date"
+                        variant="standard"
+                        label="Departure Time"
                         InputLabelProps={{ shrink: true }}
                         fullWidth
-                        value={dateOfTraveling}
-                        disabled
-                      />
-                    </MKBox> */}
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DemoContainer components={["DatePicker"]}>
-                        <DatePicker
-                          sx={{ width: "100%" }}
-                          label="Date of Traveling"
-                          name="dateOfTraveling"
-                          value={dateOfTraveling}
-                          onChange={handleDateChange}
-                          disabled
-                        />
-                      </DemoContainer>
-                    </LocalizationProvider>
-                  </Grid>
-                  <Grid item xs={12} sm={12} md={6}>
-                    <MKBox mb={2}>
-                      <MKInput
-                        variant="standard"
-                        type="text"
-                        label="Time"
-                        InputLabelProps={{ shrink: true }}
-                        fullWidth
-                        value={format12Hour(departureTime)}
-                        disabled
-                      />
-                    </MKBox>
-                  </Grid>
+                        name="departureTime"
+                        value={departureTime}
+                        onChange={timeHandler}
+                        required
+                        sx={{ pointer: "cursor" }}
+                        endAdornment={
+                          <InputAdornment position="start">
+                            <ExpandMoreOutlined />
+                          </InputAdornment>
+                        }
+                      /> */}
+
+                        <FormControl variant="standard" fullWidth>
+                          <InputLabel id="destination">Select Departure Time</InputLabel>
+                          <Select
+                            name="destination"
+                            labelId="destination"
+                            id="destination"
+                            value={departureTime}
+                            onChange={(e) => {
+                              const selectedTime = e.target.value;
+                              setDepartureTime(selectedTime);
+                            }}
+                            sx={{ minHeight: 33, minWidth: 270 }}
+                            startAdornment={
+                              <InputAdornment position="start">
+                                <ClockIcon fontSize="medium" />
+                              </InputAdornment>
+                            }
+                            endAdornment={
+                              <InputAdornment position="start">
+                                <ExpandMoreOutlined />
+                              </InputAdornment>
+                            }
+                          >
+                            <MenuItem value="" disabled>
+                              Select
+                            </MenuItem>
+                            {sharedSlots?.map((slot, i) => (
+                              <MenuItem key={i} value={slot}>
+                                {format12Hour(slot)}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </MKBox>
+                    </Grid>
+                  )}
+                  {selectedBusType === "full_bus" && (
+                    <Grid item xs={12} sm={12} md={6}>
+                      <MKBox mb={2}>
+                        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth>
+                          <InputLabel id="destination"> Bus Size</InputLabel>
+                          <Select
+                            name="destination"
+                            labelId="destination"
+                            id="destination"
+                            value={noOfPassengers}
+                            onChange={(e) => {
+                              setNoOfPassengers(e.target.value);
+                            }}
+                            sx={{ minHeight: 45, minWidth: 270 }}
+                            startAdornment={
+                              <InputAdornment position="start">
+                                <BusAlertOutlined fontSize="medium" />
+                              </InputAdornment>
+                            }
+                            endAdornment={
+                              <InputAdornment position="start">
+                                <ExpandMoreOutlined />
+                              </InputAdornment>
+                            }
+                          >
+                            <MenuItem value={35}>35 Seater Bus</MenuItem>
+                            <MenuItem value={40}>40 Seater Bus</MenuItem>
+                            <MenuItem value={45}>45 Seater Bus</MenuItem>
+                            <MenuItem value={50}>50 Seater Bus</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </MKBox>
+                    </Grid>
+                  )}
+
+                  {selectedBusType !== "full_bus" && (
+                    <Grid item xs={12} md={12}>
+                      <Grid container spacing={2} sx={{ mt: 0.5 }}>
+                        <Grid item xs={12} md={3}>
+                          <MKBox
+                            display="flex"
+                            // flexDirection={{ xs: "column", md: "row" }}
+                            // alignItems={{ xs: "start", md: "center" }}
+                            alignItems={"center"}
+                            justifyContent="start"
+                          >
+                            <MKBox
+                              display="flex"
+                              alignItems="center"
+                              mr={1}
+                              mb={{ xs: 0.5, md: 0 }}
+                            >
+                              <Person2Outlined fontSize="medium" />
+                              <MKTypography variant="h6">Passengers:</MKTypography>
+                            </MKBox>
+
+                            <MKBox
+                              display="flex"
+                              justifyContent="center"
+                              alignItems="center"
+                              ml={1}
+                              // sx={{ border: "1px solid grey" }}
+                              // px={1}
+                              py={0}
+                              borderRadius="lg"
+                            >
+                              <MKBox
+                                // size="small"
+                                // variant="gradient"
+                                // color="info"
+                                display="flex"
+                                // bgColor="info"
+                                justifyContent="center"
+                                width="30px"
+                                px={3}
+                                // sx={{ borderRadius: "25px 0 0 25px " }}
+                                onClick={() => {
+                                  if (noOfPassengers === 1) {
+                                    return;
+                                  }
+                                  setNoOfPassengers(noOfPassengers - 1);
+                                }}
+                                sx={{
+                                  cursor: "pointer",
+                                  border: "1px solid grey",
+                                  borderRadius: "15px 0 0 15px",
+                                  ":hover": {
+                                    backgroundColor: "lightgrey",
+                                  },
+                                }}
+                                py={1}
+                              >
+                                {/* <MKBox height="2px" width="14px" bgColor="dark"></MKBox>
+                                 */}
+                                <Remove fontSize="medium" />
+                              </MKBox>
+                              <MKBox
+                                width="60px"
+                                display="flex"
+                                justifyContent="center"
+                                sx={{ borderTop: "1px solid grey", borderBottom: "1px solid grey" }}
+                                py={0.9}
+                              >
+                                <MKTypography variant="body2" fontWeight="medium">
+                                  {noOfPassengers}
+                                </MKTypography>
+                              </MKBox>
+                              <MKBox
+                                // sx={{  }}
+                                px={3}
+                                display="flex"
+                                justifyContent="center"
+                                // size="small"
+                                // variant="gradient"
+                                // color="info"
+                                fontSize="20px"
+                                width="30px"
+                                py={0.9}
+                                sx={{
+                                  cursor: "pointer",
+                                  border: "1px solid grey",
+                                  borderRadius: "0 15px 15px 0",
+                                  ":hover": {
+                                    backgroundColor: "lightgrey",
+                                  },
+                                  userSelect: "none",
+                                }}
+                                // sx={{ borderRadius: "0 25px 25px 0" }}
+                                onClick={() => {
+                                  if (noOfPassengers === 35) {
+                                    return;
+                                  }
+                                  setNoOfPassengers(noOfPassengers + 1);
+                                }}
+                              >
+                                <MKTypography variant="body2" fontWeight="medium">
+                                  +
+                                </MKTypography>
+                              </MKBox>
+                            </MKBox>
+                          </MKBox>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  )}
                 </Grid>
               )}
               <Grid

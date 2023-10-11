@@ -36,6 +36,7 @@ import {
   CarRentalOutlined,
   ChevronLeftOutlined,
   ExpandMoreOutlined,
+  Info,
   LocationCityOutlined,
   MapOutlined,
   MapsHomeWorkOutlined,
@@ -45,7 +46,10 @@ import {
   TaxiAlertOutlined,
   TextDecreaseOutlined,
 } from "@mui/icons-material";
+import TextField from "assets/theme/components/form/textField";
+import MDBox from "components/MDBox";
 const TaxiBookingForm = ({ setHideButton }) => {
+  const [remark, setRemark] = useState("");
   const navigate = useNavigate();
   const [termsChecked, setTermsChecked] = useState(true);
 
@@ -438,6 +442,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
       bookingStatus: "pending",
       paymentAccepted: false,
       landingLocationId: selectedLandingLocation,
+      remark,
     };
     // if (checked) {
     //   formData.bookingType = "package";
@@ -526,10 +531,11 @@ const TaxiBookingForm = ({ setHideButton }) => {
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
+                spacing={1}
               >
-                <Grid item xs={12} sm={12} md={3}>
+                <Grid item xs={12} sm={12} md={6}>
                   <MKBox mb={{ xs: 0.5, md: 2 }}>
-                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                    <FormControl variant="standard" sx={{ m: 1 }} fullWidth>
                       <InputLabel id="destination">Select Pickup Location</InputLabel>
                       <Select
                         name="source"
@@ -560,9 +566,9 @@ const TaxiBookingForm = ({ setHideButton }) => {
                     </FormControl>
                   </MKBox>
                 </Grid>
-                <Grid item xs={12} sm={12} md={3}>
+                <Grid item xs={12} sm={12} md={6}>
                   <MKBox mb={{ xs: 0.5, md: 2 }}>
-                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth>
                       <InputLabel id="destination">Select Destination</InputLabel>
                       <Select
                         name="destination"
@@ -592,9 +598,9 @@ const TaxiBookingForm = ({ setHideButton }) => {
                     </FormControl>
                   </MKBox>
                 </Grid>
-                <Grid item xs={12} sm={12} md={3}>
+                <Grid item xs={12} sm={12} md={6}>
                   <MKBox mb={{ xs: 0.5, md: 2 }}>
-                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth>
                       <InputLabel id="landingLocation"> Select Drop Point</InputLabel>
                       <Select
                         disabled={type === "package"}
@@ -625,9 +631,9 @@ const TaxiBookingForm = ({ setHideButton }) => {
                     </FormControl>
                   </MKBox>
                 </Grid>
-                <Grid item xs={12} sm={12} md={3}>
+                <Grid item xs={12} sm={12} md={6}>
                   <MKBox mb={{ xs: 0.5, md: 2 }}>
-                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth>
                       <InputLabel id="taxiType">Select Vehicle</InputLabel>
                       <Select
                         labelId="taxiType"
@@ -672,11 +678,12 @@ const TaxiBookingForm = ({ setHideButton }) => {
                 justifyContent="center"
                 alignItems="center"
               >
-                <Grid item xs={12} sm={6} md={3}>
-                  <MKBox mb={{ xs: 0.5, md: 2 }}>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <Grid item xs={12} sm={6} md={6}>
+                  <MKBox mb={{ xs: 0.5, md: 2 }} fullWidth>
+                    <LocalizationProvider dateAdapter={AdapterDayjs} fullWidth>
                       <DemoContainer variant="standard" components={["DatePicker"]}>
                         <DatePicker
+                          fullWidth
                           sx={{ width: "100%" }}
                           label="Date of Traveling"
                           name="dateOfTraveling"
@@ -687,7 +694,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                     </LocalizationProvider>
                   </MKBox>
                 </Grid>
-                <Grid item xs={12} sm={12} md={3}>
+                <Grid item xs={12} sm={12} md={6}>
                   <MKBox mb={{ xs: 0.5, md: 2 }}>
                     <MKInput
                       type="time"
@@ -716,7 +723,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                   </MKBox>
                 </Grid> */}
 
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid item xs={12} sm={6} md={6}>
                   <MKBox mb={{ xs: 0.5, md: 2 }}>
                     <FormControl variant="standard" fullWidth>
                       <InputLabel htmlFor="input-with-icon-adornment">Enter Full Name</InputLabel>
@@ -735,7 +742,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                     </FormControl>
                   </MKBox>
                 </Grid>
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid item xs={12} sm={6} md={6}>
                   <MKBox mb={{ xs: 0.5, md: 2 }}>
                     <FormControl variant="standard" fullWidth>
                       <InputLabel htmlFor="input-with-icon-adornment">
@@ -756,20 +763,30 @@ const TaxiBookingForm = ({ setHideButton }) => {
                     </FormControl>
                   </MKBox>
                 </Grid>
-                {/* <Grid item xs={12} sm={12} md={3}>
-                  <MKBox mb={2}>
-                    <MKInput
-                      type="tel"
-                      label="Mobile no"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      name="mobileNo"
-                      required
-                      value={mobileNo}
-                      onChange={mobileNOHandler}
-                    />
-                  </MKBox>
-                </Grid> */}
+                <Grid item xs={12} mt={3}>
+                  <MDBox>
+                    <MKBox mb={{ xs: 0.5, md: 2 }}>
+                      <FormControl variant="standard" fullWidth>
+                        <InputLabel htmlFor="input-with-icon-adornment">
+                          Enter Remark (optional)
+                        </InputLabel>
+                        <Input
+                          type="tex"
+                          multiline
+                          maxRows={3}
+                          id="input-with-icon-adornment"
+                          value={remark}
+                          onChange={(e) => setRemark(e.target.value)}
+                          startAdornment={
+                            <InputAdornment position="start">
+                              <Info fontSize="medium" />
+                            </InputAdornment>
+                          }
+                        />
+                      </FormControl>
+                    </MKBox>
+                  </MDBox>
+                </Grid>
               </Grid>
             )}
           </Grid>
@@ -779,7 +796,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
             {activeStep === 1 || activeStep === 0 ? (
               <Grid container>
                 {activeStep === 0 && (
-                  <Grid item xs={12} md={9}>
+                  <Grid item xs={12} md={12}>
                     <Grid container spacing={2} sx={{ mt: 0.5 }}>
                       <Grid item xs={12} md={3}>
                         <MKBox
@@ -794,18 +811,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                             <Person2Outlined fontSize="medium" />
                             <MKTypography variant="h6">Passengers:</MKTypography>
                           </MKBox>
-                          {/* <MKInput
-                            variant="standard"
-                            type="number"
-                            // label="Number of Passengers"
-                            InputLabelProps={{ shrink: true }}
-                            fullWidth
-                            name="noOfPassengers"
-                            value={noOfPassengers}
-                            onChange={handlePassengerChange}
-                            sx={{ textAlign: "center" }}
-                            // required
-                          /> */}
+
                           <MKBox
                             display="flex"
                             justifyContent="center"
@@ -872,6 +878,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                                 cursor: "pointer",
                                 border: "1px solid grey",
                                 borderRadius: "0 15px 15px 0",
+                                userSelect: "none",
                                 ":hover": {
                                   backgroundColor: "lightgrey",
                                 },
@@ -905,32 +912,6 @@ const TaxiBookingForm = ({ setHideButton }) => {
                           </MKBox>
                         </MKBox>
                       </Grid>
-                      {/* <Grid item xs={12} sm={12} md={3}>
-                        <MKBox>
-                          <FormControlLabel
-                            control={
-                              <Switch
-                                checked={checked}
-                                onChange={handleChange}
-                                inputProps={{ "aria-label": "controlled" }}
-                              />
-                            }
-                            label="Package"
-                          />
-                        </MKBox>
-                      </Grid> */}
-                      {/* <Grid item xs={12} sm={12} md={6}>
-                        <MKBox>
-                          <FormControlLabel
-                            required
-                            control={<Checkbox />}
-                            sx={{ display: "flex" }}
-                            label="Accept terms and conditions"
-                            checked={termsChecked}
-                            onChange={handleTermsChange}
-                          />
-                        </MKBox>
-                      </Grid> */}
                     </Grid>
                   </Grid>
                 )}
@@ -963,8 +944,8 @@ const TaxiBookingForm = ({ setHideButton }) => {
                 <Grid
                   item
                   xs={12}
-                  md={3}
-                  mt={2}
+                  md={12}
+                  mt={3}
                   display={"flex"}
                   gap={2}
                   justifyContent={"end"}
@@ -1003,7 +984,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                           height="10px"
                           width="10px"
                           borderRadius="50%"
-                          bgColor="success"
+                          bgColor="warning"
                         ></MKBox>
                         <MKTypography variant="caption" color="text" fontWeight="medium">
                           Fare: &#8377; {selectedTaxiType?.fair}
@@ -1015,10 +996,38 @@ const TaxiBookingForm = ({ setHideButton }) => {
                           height="10px"
                           width="10px"
                           borderRadius="50%"
-                          bgColor="success"
+                          bgColor="warning"
                         ></MKBox>
                         <MKTypography variant="caption" color="text" fontWeight="medium">
                           Fare: NA
+                        </MKTypography>
+                      </MKBox>
+                    )}
+                  </MKBox>
+                  <MKBox>
+                    {selectedTaxiType?.fair ? (
+                      <MKBox display="flex" alignItems="center" gap={1}>
+                        <MKBox
+                          height="10px"
+                          width="10px"
+                          borderRadius="50%"
+                          bgColor="success"
+                        ></MKBox>
+                        <MKTypography variant="caption" color="text" fontWeight="medium">
+                          Total Cost: &#8377; {selectedTaxiType?.fair + tollCost} + Additional
+                          Charges
+                        </MKTypography>
+                      </MKBox>
+                    ) : (
+                      <MKBox display="flex" alignItems="center" gap={1}>
+                        <MKBox
+                          height="10px"
+                          width="10px"
+                          borderRadius="50%"
+                          bgColor="success"
+                        ></MKBox>
+                        <MKTypography variant="caption" color="text" fontWeight="medium">
+                          Total Cost : NA (includes additional charges)
                         </MKTypography>
                       </MKBox>
                     )}
@@ -1037,30 +1046,27 @@ const TaxiBookingForm = ({ setHideButton }) => {
                 mb={4}
               >
                 <Grid item xs={12} sm={12} md={6}>
-                  <MKBox mb={2}>
-                    <MKInput
-                      variant="standard"
-                      type="text"
-                      label="Name"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      value={fullName}
-                      disabled
-                    />
+                  <MKBox mb={{ xs: 0.5, md: 2 }}>
+                    <FormControl variant="standard" fullWidth>
+                      <InputLabel htmlFor="input-with-icon-adornment">Full Name</InputLabel>
+                      <Input
+                        type="text"
+                        id="input-with-icon-adornment"
+                        required
+                        value={fullName}
+                        onChange={handleFullName}
+                        startAdornment={
+                          <InputAdornment position="start">
+                            <AccountCircle fontSize="medium" />
+                          </InputAdornment>
+                        }
+                      />
+                    </FormControl>
                   </MKBox>
                 </Grid>
                 <Grid item xs={12} sm={12} md={6}>
-                  <MKBox mb={2}>
-                    <MKInput
-                      variant="standard"
-                      type="text"
-                      label="Phone Number"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      value={mobileNo}
-                      disabled
-                    />
-                    {/* <FormControl variant="standard" fullWidth>
+                  <MKBox mb={{ xs: 0.5, md: 2 }}>
+                    <FormControl variant="standard" fullWidth>
                       <InputLabel htmlFor="input-with-icon-adornment">Phone Number</InputLabel>
                       <Input
                         type="tell"
@@ -1073,12 +1079,11 @@ const TaxiBookingForm = ({ setHideButton }) => {
                             <PhoneCallbackOutlined fontSize="medium" />
                           </InputAdornment>
                         }
-                        disabled
                       />
-                    </FormControl> */}
+                    </FormControl>
                   </MKBox>
                 </Grid>
-                <Grid item xs={12} sm={12} md={6}>
+                {/* <Grid item xs={12} sm={12} md={6}>
                   <MKBox mb={2}>
                     <MKInput
                       variant="standard"
@@ -1090,93 +1095,391 @@ const TaxiBookingForm = ({ setHideButton }) => {
                       disabled
                     />
                   </MKBox>
-                </Grid>
+                </Grid> */}
                 <Grid item xs={12} sm={12} md={6}>
-                  <MKBox mb={2}>
-                    <MKInput
-                      type="text"
-                      variant="standard"
-                      label="Selected Taxi Type"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      value={
-                        selectedTaxiType.typeName +
-                        (selectedTaxiType.hasAc === true ? " - Ac" : " - Non - Ac")
-                      }
-                      disabled
-                    />
+                  <MKBox mb={{ xs: 0.5, md: 2 }}>
+                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth>
+                      <InputLabel id="taxiType">Vehicle</InputLabel>
+                      <Select
+                        labelId="taxiType"
+                        id="taxiType"
+                        value={selectedTaxiType?._id ? selectedTaxiType : ""}
+                        label="taxiType"
+                        onChange={handleTaxiChange}
+                        sx={{ minHeight: 45, minWidth: 270 }}
+                        startAdornment={
+                          <InputAdornment position="start">
+                            <TaxiAlertOutlined fontSize="medium" />
+                          </InputAdornment>
+                        }
+                        endAdornment={
+                          <InputAdornment position="start">
+                            <ExpandMoreOutlined />
+                          </InputAdornment>
+                        }
+                      >
+                        {filteredTaxiTypeList &&
+                          filteredTaxiTypeList.map((item, idx) => (
+                            // <MenuItem key={idx} value={item}>
+                            //   {item.typeName} {item.hasAc == true ? "Ac" : "Non - Ac"}
+                            // </MenuItem>
+                            <MenuItem key={idx} value={item} display="flex">
+                              <MKTypography variant="p">
+                                {item.typeName} ({item.hasAc == true ? "Ac" : "Non - Ac"})
+                              </MKTypography>
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    </FormControl>
                   </MKBox>
                 </Grid>
                 <Grid item xs={12} sm={12} md={6}>
-                  <MKBox mb={2}>
-                    <MKInput
-                      type="text"
-                      variant="standard"
-                      label="From"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      value={selectedSourceLocation.name}
-                      disabled
-                    />
+                  <MKBox mb={{ xs: 0.5, md: 2 }}>
+                    <FormControl variant="standard" sx={{ m: 1 }} fullWidth>
+                      <InputLabel id="destination"> Pickup Location</InputLabel>
+                      <Select
+                        name="source"
+                        id="source"
+                        value={selectedSourceLocation.name || "Pickup Location"}
+                        placeholder="Pickup Location"
+                        onChange={handleSourceLocationChange}
+                        // sx={{ minHeight: 45, minWidth: 270 }}
+                        sx={{ minHeight: 45, minWidth: 270 }}
+                        startAdornment={
+                          <InputAdornment position="start">
+                            <MapsHomeWorkOutlined fontSize="medium" />
+                          </InputAdornment>
+                        }
+                        endAdornment={
+                          <InputAdornment position="start">
+                            <ExpandMoreOutlined />
+                          </InputAdornment>
+                        }
+                      >
+                        {sourcseLocation &&
+                          sourcseLocation.map((item, idx) => (
+                            <MenuItem key={idx} value={item.name} display="flex">
+                              <MKTypography variant="p">{item.name}</MKTypography>
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    </FormControl>
                   </MKBox>
                 </Grid>
                 <Grid item xs={12} sm={12} md={6}>
-                  <MKBox mb={2}>
-                    <MKInput
-                      type="text"
-                      variant="standard"
-                      label="To"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      value={selectedDestinationName}
-                      disabled
-                    />
+                  <MKBox mb={{ xs: 0.5, md: 2 }}>
+                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth>
+                      <InputLabel id="destination">Destination</InputLabel>
+                      <Select
+                        name="destination"
+                        labelId="destination"
+                        id="destination"
+                        value={selectedLocation}
+                        onChange={handleLocationChange}
+                        sx={{ minHeight: 45, minWidth: 270 }}
+                        startAdornment={
+                          <InputAdornment position="start">
+                            <MapOutlined fontSize="medium" />
+                          </InputAdornment>
+                        }
+                        endAdornment={
+                          <InputAdornment position="start">
+                            <ExpandMoreOutlined />
+                          </InputAdornment>
+                        }
+                      >
+                        {Locations &&
+                          Locations.map((item, idx) => (
+                            <MenuItem key={idx} value={item.id}>
+                              <MKTypography variant="p">{item.name}</MKTypography>
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    </FormControl>
                   </MKBox>
                 </Grid>
                 <Grid item xs={12} sm={12} md={6}>
-                  <MKBox mb={2}>
-                    <MKInput
-                      type="text"
-                      variant="standard"
-                      label="Date"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      value={formateDate}
-                      disabled
-                    />
+                  <MKBox mb={{ xs: 0.5, md: 2 }}>
+                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth>
+                      <InputLabel id="landingLocation"> Drop Point</InputLabel>
+                      <Select
+                        disabled={type === "package"}
+                        labelId="landingLocation"
+                        id="landingLocation"
+                        value={selectedLandingLocation.typeName}
+                        label="landingLocation"
+                        onChange={handleLandingLocationChange}
+                        sx={{ minHeight: 45, minWidth: 270 }}
+                        startAdornment={
+                          <InputAdornment position="start">
+                            <LocationCityOutlined fontSize="medium" />
+                          </InputAdornment>
+                        }
+                        endAdornment={
+                          <InputAdornment position="start">
+                            <ExpandMoreOutlined />
+                          </InputAdornment>
+                        }
+                      >
+                        {landingLocationList &&
+                          landingLocationList.map((item, idx) => (
+                            <MenuItem key={idx} value={item.id}>
+                              <MKTypography variant="p">{item.landingLocation}</MKTypography>
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    </FormControl>
                   </MKBox>
                 </Grid>
                 <Grid item xs={12} sm={12} md={6}>
-                  <MKBox mb={2}>
+                  <MKBox mb={{ xs: 0.5, md: 2 }} fullWidth>
+                    <LocalizationProvider dateAdapter={AdapterDayjs} fullWidth>
+                      <DemoContainer variant="standard" components={["DatePicker"]}>
+                        <DatePicker
+                          fullWidth
+                          sx={{ width: "100%" }}
+                          label="Date of Traveling"
+                          name="dateOfTraveling"
+                          value={dateOfTraveling}
+                          onChange={handleDateChange}
+                        />
+                      </DemoContainer>
+                    </LocalizationProvider>
+                  </MKBox>
+                </Grid>
+                <Grid item xs={12} sm={12} md={6}>
+                  <MKBox mb={{ xs: 0.5 }} mt={1}>
                     <MKInput
-                      type="text"
-                      variant="standard"
-                      label="Time"
+                      type="time"
+                      label="Departure Time"
                       InputLabelProps={{ shrink: true }}
                       fullWidth
-                      value={formattedTime}
-                      disabled
+                      name="departureTime"
+                      value={departureTime}
+                      onChange={timeHandler}
+                      sx={{ pointer: "cursor" }}
                     />
                   </MKBox>
                 </Grid>
 
-                <Grid item xs={12} sm={12} md={6}>
-                  <MKBox mb={2}>
-                    <MKInput
-                      variant="standard"
-                      type="number"
-                      label="No of Passengers"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      name="noOfPassengers"
-                      value={noOfPassengers || 0}
-                      disabled
-                    />
+                <Grid item xs={12} md={3}>
+                  <MKBox
+                    display="flex"
+                    pl={1}
+                    // flexDirection={{ xs: "column", md: "row" }}
+                    // alignItems={{ xs: "start", md: "center" }}
+                    alignItems={"center"}
+                    justifyContent="start"
+                  >
+                    <MKBox display="flex" alignItems="center" mr={1} mb={{ xs: 0.5, md: 0 }}>
+                      <Person2Outlined fontSize="medium" />
+                      <MKTypography variant="h6">Passengers:</MKTypography>
+                    </MKBox>
+
+                    <MKBox
+                      display="flex"
+                      justifyContent="center"
+                      alignItems="center"
+                      ml={1}
+                      // sx={{ border: "1px solid grey" }}
+                      // px={1}
+                      py={0}
+                      borderRadius="lg"
+                    >
+                      <MKBox
+                        // size="small"
+                        // variant="gradient"
+                        // color="info"
+                        display="flex"
+                        // bgColor="info"
+                        justifyContent="center"
+                        width="30px"
+                        px={3}
+                        // sx={{ borderRadius: "25px 0 0 25px " }}
+                        onClick={() => {
+                          if (noOfPassengers === 1) {
+                            return;
+                          }
+                          setNoOfPassengers(noOfPassengers - 1);
+                        }}
+                        sx={{
+                          cursor: "pointer",
+                          border: "1px solid grey",
+                          borderRadius: "15px 0 0 15px",
+                          ":hover": {
+                            backgroundColor: "lightgrey",
+                          },
+                        }}
+                        py={1}
+                      >
+                        {/* <MKBox height="2px" width="14px" bgColor="dark"></MKBox>
+                         */}
+                        <Remove fontSize="medium" />
+                      </MKBox>
+                      <MKBox
+                        width="60px"
+                        display="flex"
+                        justifyContent="center"
+                        sx={{ borderTop: "1px solid grey", borderBottom: "1px solid grey" }}
+                        py={0.9}
+                      >
+                        <MKTypography variant="body2" fontWeight="medium">
+                          {noOfPassengers}
+                        </MKTypography>
+                      </MKBox>
+                      <MKBox
+                        // sx={{  }}
+                        px={3}
+                        display="flex"
+                        justifyContent="center"
+                        // size="small"
+                        // variant="gradient"
+                        // color="info"
+                        fontSize="20px"
+                        width="30px"
+                        py={0.9}
+                        sx={{
+                          cursor: "pointer",
+                          border: "1px solid grey",
+                          borderRadius: "0 15px 15px 0",
+                          userSelect: "none",
+                          ":hover": {
+                            backgroundColor: "lightgrey",
+                          },
+                        }}
+                        // sx={{ borderRadius: "0 25px 25px 0" }}
+                        onClick={() => {
+                          if (selectedTaxiType.typeName === "Innova") {
+                            if (!isNaN(noOfPassengers) && noOfPassengers >= 9) {
+                              return;
+                            }
+                          } else if (selectedTaxiType.typeName === "3+1") {
+                            if (!isNaN(noOfPassengers) && noOfPassengers >= 4) {
+                              return;
+                            }
+                          } else if (selectedTaxiType.typeName === "6+1") {
+                            if (!isNaN(noOfPassengers) && noOfPassengers >= 9) {
+                              return;
+                            }
+                          } else {
+                            if (!isNaN(noOfPassengers) && noOfPassengers >= 2) {
+                              return;
+                            }
+                          }
+                          setNoOfPassengers(noOfPassengers + 1);
+                        }}
+                      >
+                        <MKTypography variant="body2" fontWeight="medium">
+                          +
+                        </MKTypography>
+                      </MKBox>
+                    </MKBox>
+                  </MKBox>
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  md={12}
+                  mt={3}
+                  display={"flex"}
+                  gap={2}
+                  justifyContent={"end"}
+                  alignItems={"center"}
+                >
+                  {/* Total Cost and fair */}
+                  {/* <MKBox>
+                    <MKBox display="flex" alignItems="center" gap={1}>
+                      <MKBox height="10px" width="10px" borderRadius="50%" bgColor="info"></MKBox>
+                      <MKTypography variant="caption" color="text" fontWeight="medium">
+                        Parking: &#8377; From Counter
+                      </MKTypography>
+                    </MKBox>
+                  </MKBox> */}
+                  <MKBox>
+                    {tollCost ? (
+                      <MKBox display="flex" alignItems="center" gap={1}>
+                        <MKBox height="10px" width="10px" borderRadius="50%" bgColor="info"></MKBox>
+                        <MKTypography variant="caption" color="text" fontWeight="medium">
+                          Toll Cost: &#8377; {tollCost}
+                        </MKTypography>
+                      </MKBox>
+                    ) : (
+                      <MKBox display="flex" alignItems="center" gap={1}>
+                        <MKBox height="10px" width="10px" borderRadius="50%" bgColor="info"></MKBox>
+                        <MKTypography variant="caption" color="text" fontWeight="medium">
+                          Toll Cost: NA
+                        </MKTypography>
+                      </MKBox>
+                    )}
+                  </MKBox>
+                  <MKBox>
+                    {selectedTaxiType?.fair ? (
+                      <MKBox display="flex" alignItems="center" gap={1}>
+                        <MKBox
+                          height="10px"
+                          width="10px"
+                          borderRadius="50%"
+                          bgColor="warning"
+                        ></MKBox>
+                        <MKTypography variant="caption" color="text" fontWeight="medium">
+                          Fare: &#8377; {selectedTaxiType?.fair}
+                        </MKTypography>
+                      </MKBox>
+                    ) : (
+                      <MKBox display="flex" alignItems="center" gap={1}>
+                        <MKBox
+                          height="10px"
+                          width="10px"
+                          borderRadius="50%"
+                          bgColor="warning"
+                        ></MKBox>
+                        <MKTypography variant="caption" color="text" fontWeight="medium">
+                          Fare: NA
+                        </MKTypography>
+                      </MKBox>
+                    )}
+                  </MKBox>
+                  <MKBox>
+                    {selectedTaxiType?.fair ? (
+                      <MKBox display="flex" alignItems="center" gap={1}>
+                        <MKBox
+                          height="10px"
+                          width="10px"
+                          borderRadius="50%"
+                          bgColor="success"
+                        ></MKBox>
+                        <MKTypography variant="caption" color="text" fontWeight="medium">
+                          Total Cost: &#8377; {selectedTaxiType?.fair + tollCost} + Additional
+                          Charges
+                        </MKTypography>
+                      </MKBox>
+                    ) : (
+                      <MKBox display="flex" alignItems="center" gap={1}>
+                        <MKBox
+                          height="10px"
+                          width="10px"
+                          borderRadius="50%"
+                          bgColor="success"
+                        ></MKBox>
+                        <MKTypography variant="caption" color="text" fontWeight="medium">
+                          Total Cost : NA (includes additional charges)
+                        </MKTypography>
+                      </MKBox>
+                    )}
                   </MKBox>
                 </Grid>
               </Grid>
             )}
-            <Grid container item justifyContent="center" xs={12} mt={2} mb={1}>
+            <Grid
+              container
+              item
+              justifyContent="center"
+              xs={12}
+              mt={4}
+              mb={1}
+              position={"absolute"}
+              bottom={10}
+            >
               {activeStep === 2 ? (
                 <React.Fragment>
                   <Box sx={{ display: "flex", flexDirection: "row", pt: 0 }}>
