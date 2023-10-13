@@ -172,6 +172,8 @@ const TaxiBookingForm = ({ setHideButton }) => {
     setNoOfPassengers(1);
   };
 
+  console.log("selected Landing", selectedLandingLocation);
+
   useEffect(() => {
     const fetchLocation = async () => {
       try {
@@ -1206,7 +1208,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                         disabled={type === "package"}
                         labelId="landingLocation"
                         id="landingLocation"
-                        value={selectedLandingLocation.typeName}
+                        value={selectedLandingLocation}
                         label="landingLocation"
                         onChange={handleLandingLocationChange}
                         sx={{ minHeight: 45, minWidth: 270 }}
