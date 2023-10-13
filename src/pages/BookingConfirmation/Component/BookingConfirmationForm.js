@@ -35,9 +35,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
   useEffect(() => {
     const fetchMessage = async () => {
       try {
-        const responseData = await sendRequest(
-          `${process.env.REACT_APP_BACKEND_URL}/admin/message`
-        );
+        const responseData = await sendRequest(`${process.env.REACT_APP_BACKEND_URL}/messages`);
         if (responseData) {
           setMessages(responseData);
         }
