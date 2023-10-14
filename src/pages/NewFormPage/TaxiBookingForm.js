@@ -110,7 +110,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
   const [selectedLocation, setLocation] = useState("");
   const [selectedSourceLocation, setSelectedSourceLocation] = useState("");
   const [selectedLandingLocation, setSelectedLandingLocation] = useState("");
-  const [tollCost, setTollCost] = useState();
+  const [tollCost, setTollCost] = useState(0);
   const [selectedTaxiType, setSelectedTaxiType] = useState({});
   const [noOfPassengers, setNoOfPassengers] = useState(1);
   //
@@ -133,7 +133,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
 
     const landingLocationList = LocationData.filter((item) => item._id == event.target.value);
     setSelectedDestinationName(landingLocationList[0].locationName);
-    setTollCost(landingLocationList[0].tollCost);
+    setTollCost(landingLocationList[0].tollCost || 0);
     setLandingLocationsData(landingLocationList[0].landingLocations);
     const landList = landingLocationList[0].landingLocations.map((item) => {
       return { landingLocation: item.place, id: item._id };
@@ -342,7 +342,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
   useEffect(() => {
     if (selectedPackageData && selectedPackage) {
       setPickupLocation(selectedPackageData[0].location.locationName);
-      setTollCost(selectedPackageData[0]?.location?.tollCost);
+      setTollCost(selectedPackageData[0]?.location?.tollCost || 0);
       setDestinationId(selectedPackageData[0].location._id);
       const landingLocationList = selectedPackageData[0].location?.landingLocations?.map((item) => {
         return { name: item.place, id: item._id };
@@ -384,13 +384,13 @@ const TaxiBookingForm = ({ setHideButton }) => {
     fetchPackages();
   }, []);
 
-  console.log("Packages", packageData);
+  console.log("Packages", LocationData);
 
   useEffect(() => {
     if (
       (activeStep == 0 &&
-        termsChecked &&
-        tollCost &&
+        // termsChecked &&
+        // tollCost &&
         selectedLocation &&
         // selectedLandingLocation &&
         selectedTaxiType.fair) ||
@@ -1480,7 +1480,8 @@ const TaxiBookingForm = ({ setHideButton }) => {
               mt={4}
               pt={4}
               mb={1}
-              position={"absolute"}
+              // position={"absolute"}
+              sx={{ position: { md: "absolute" } }}
               bottom={10}
             >
               {activeStep === 2 ? (

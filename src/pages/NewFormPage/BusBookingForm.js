@@ -1196,7 +1196,8 @@ const BusBookingForm = ({ setHideButton }) => {
                 xs={12}
                 mt={0}
                 mb={2}
-                position={"absolute"}
+                // position={"absolute"}
+                sx={{ position: { md: "absolute" } }}
                 bottom={2}
               >
                 {activeStep === 2 ? (

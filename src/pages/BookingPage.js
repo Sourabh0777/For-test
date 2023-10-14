@@ -52,12 +52,12 @@ function BookingPage() {
   return (
     <>
       <MKBox
-        position="absolute"
-        top={0}
-        left={0}
-        zIndex={1}
-        width="100%"
-        minHeight="100vh"
+        // position="absolute"
+        // top={0}
+        // left={0}
+        // zIndex={1}
+        // width="100%"
+        // minHeight="100vh"
         sx={{
           backgroundImage: ({ functions: { linearGradient, rgba }, palette: { gradients } }) =>
             `${linearGradient(
@@ -68,61 +68,42 @@ function BookingPage() {
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
         }}
+        height="auto"
+        minHeight="100vh"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
       >
-        <MKBox
-          px={1}
-          // minHeight="98vh"
-          // height="100Vh%"
-          pt={5}
-          // overflow="hidden"
-          // py={5}
-          // position="relative"
-          display="flex"
-          alignItems="center"
-          // zIndex={2}
+        <Card
+          sx={{
+            // mb: 10,
+            // ml: 9,
+            width: { md: "40vw", xs: "90vw" },
+            // maxWidth: { xs: "90vw" },
+            minHeight: { md: "85vh", xs: "94vh" },
+            marginTop: { xs: 5 },
+            marginBottom: { xs: 8 },
+          }}
         >
-          <Grid container spacing={1} justifyContent="center" alignItems="center">
-            <Grid
-              item
-              xs={12}
-              sm={9}
-              md={5}
-              lg={4}
-              xl={3}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Card
-                sx={{
-                  // mb: 10,
-                  // ml: 9,
-                  minWidth: { md: "40vw", xs: "90vw" },
-                  minHeight: { md: "90vh", xs: "94vh" },
-                }}
-              >
-                <MKBox
-                  variant="gradient"
-                  bgColor="info"
-                  borderRadius="lg"
-                  coloredShadow="info"
-                  mx={2}
-                  mt={-3}
-                  p={2}
-                  mb={1}
-                  textAlign="center"
-                >
-                  <MKTypography variant="h5" fontWeight="medium" color="white" mt={1}>
-                    Book Your Ride
-                  </MKTypography>
-                </MKBox>
-                {!hideButton && <GroupButton onClick={selectedButtonHandleer} />}
-                {selectedButton == "Taxi" && <TaxiBookingForm setHideButton={setHideButton} />}
-                {selectedButton == "Bus" && <BusBookingForm setHideButton={setHideButton} />}
-              </Card>
-            </Grid>
-          </Grid>
-        </MKBox>
+          <MKBox
+            variant="gradient"
+            bgColor="info"
+            borderRadius="lg"
+            coloredShadow="info"
+            mx={2}
+            mt={-3}
+            p={2}
+            mb={1}
+            textAlign="center"
+          >
+            <MKTypography variant="h5" fontWeight="medium" color="white" mt={1}>
+              Book Your Ride
+            </MKTypography>
+          </MKBox>
+          {!hideButton && <GroupButton onClick={selectedButtonHandleer} />}
+          {selectedButton == "Taxi" && <TaxiBookingForm setHideButton={setHideButton} />}
+          {selectedButton == "Bus" && <BusBookingForm setHideButton={setHideButton} />}
+        </Card>
       </MKBox>
     </>
   );

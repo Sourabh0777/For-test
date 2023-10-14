@@ -23,12 +23,13 @@ import BookingConfirmationForm from "./Component/BookingConfirmationForm";
 import { useParams } from "react-router-dom";
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import bgImage2 from "assets/images/Background image/bg-2.jpg";
+import MDBox from "components/MDBox";
 
 const BookingsConfirmation = () => {
   let { token } = useParams();
   return (
     <>
-      <MKBox
+      {/* <MKBox
         position="absolute"
         top={0}
         left={0}
@@ -45,11 +46,35 @@ const BookingsConfirmation = () => {
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
         }}
-      />
-      <MKBox px={1} width="100%" height="98vh" mx="auto" position="relative" zIndex={2}>
-        <Grid container spacing={1} justifyContent="center" alignItems="center" height="100%">
+      /> */}
+      <MKBox
+        sx={{
+          backgroundImage: ({ functions: { linearGradient, rgba }, palette: { gradients } }) =>
+            `${linearGradient(
+              rgba(gradients.dark.main, 0.6),
+              rgba(gradients.dark.state, 0.6)
+            )}, url(${bgImage2})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+        minHeight="100vh"
+        width="100%"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+      >
+        {/* <Grid container justifyContent="center" alignItems="center"> */}
+        <MDBox
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          sx={{ width: { xs: "90vw", lg: 1200 } }}
+          py={5}
+        >
           <BookingConfirmationForm bookingId={token} />
-        </Grid>
+        </MDBox>
+        {/* </Grid> */}
       </MKBox>
     </>
   );

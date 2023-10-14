@@ -36,14 +36,14 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Grid container spacing={9} alignItems="center" justifyContent="center" mt={1}>
-        {/* <Navbar changeTypeHandler={changeTypeHandler} /> */}
-        <Routes>
-          {getRoutes(routes)}
-          <Route path="/taxi" element={<Form />} />
-          <Route path="*" element={<Navigate to="/BookingPage" />} />
-        </Routes>
-      </Grid>
+      {/* <Grid container spacing={9} alignItems="center" justifyContent="center"> */}
+      {/* <Navbar changeTypeHandler={changeTypeHandler} /> */}
+      <Routes>
+        {getRoutes(routes)}
+        <Route path="/taxi" element={<Form />} />
+        <Route path="*" element={<Navigate to="/BookingPage" />} />
+      </Routes>
+      {/* </Grid> */}
     </ThemeProvider>
   );
 }

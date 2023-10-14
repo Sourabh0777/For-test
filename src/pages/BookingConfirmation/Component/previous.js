@@ -164,7 +164,9 @@ const BookingConfirmationForm = ({ bookingId }) => {
     <MDBox
       // minHeight="100vh"
       // width={{ lg: 1200, xs: "100vw" }}
-      sx={{ width: { xs: "90vw", lg: 1200 } }}
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
     >
       {(isLoading || !BookingData) && <Animations />}
       {!isLoading && BookingData && (
@@ -279,15 +281,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
                       fullWidth
                     />
                   </MKBox>
-                  <MKBox
-                    mb={2}
-                    mt={4}
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    gap={3}
-                    sx={{ flexDirection: { xs: "column", md: "row" } }}
-                  >
+                  <MKBox mb={2} mt={4} display="flex" justifyContent="center">
                     <MKButton variant="gradient" color="info" onClick={submitHandler}>
                       Submit Remark
                     </MKButton>
@@ -295,7 +289,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
                       variant="gradient"
                       color="info"
                       onClick={handleNewBookingClick}
-                      // sx={{ ml: {xs:} }}
+                      sx={{ ml: 5 }}
                     >
                       <AddBox /> Create a new Booking{" "}
                     </MKButton>
