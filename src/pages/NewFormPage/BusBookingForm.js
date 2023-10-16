@@ -24,7 +24,7 @@ import {
   Select,
   Switch,
 } from "@mui/material";
-import { ClockIcon, DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { ClockIcon, DatePicker, LocalizationProvider, MobileTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import Input from "assets/theme/components/form/input";
@@ -173,25 +173,22 @@ const BusBookingForm = ({ setHideButton }) => {
   const [formattedTime, setFormattedTime] = useState("");
 
   const timeHandler = (e) => {
-    console.log("time", e.target.value);
-    setDepartureTime(e.target.value);
-    const inputTime = e.target.value; // Assuming e.target.value contains the time in 24-hour format (e.g., "15:30")
+    setDepartureTime(e);
+    console.log("time", e);
+    // const inputTime = e.target.value;
 
-    // Split the input time into hours and minutes
-    const [hours, minutes] = inputTime.split(":");
+    // const [hours, minutes] = inputTime.split(":");
 
-    // Create a Date object with the input time
-    const date = new Date();
-    date.setHours(hours);
-    date.setMinutes(minutes);
+    // const date = new Date();
+    // date.setHours(hours);
+    // date.setMinutes(minutes);
 
-    // Format the time in 12-hour format with AM/PM
-    const options = { hour: "numeric", minute: "numeric", hour12: true };
-    const formatted = date.toLocaleTimeString(undefined, options);
+    // const options = { hour: "numeric", minute: "numeric", hour12: true };
+    // const formatted = date.toLocaleTimeString(undefined, options);
+    const formatted = e?.format("hh:mm A");
+    console.log("time 2", formatted);
 
-    // Set the formatted time in state
     setFormattedTime(formatted);
-    console.log("formatted", formattedTime);
   };
 
   const handleFullName = (e) => {
@@ -709,21 +706,42 @@ const BusBookingForm = ({ setHideButton }) => {
                   </Grid>
                 )}
                 {selectedBusType === "full_bus" && (
-                  <Grid item xs={12} sm={12} md={6}>
-                    <MKBox mb={2}>
-                      <FormControl variant="standard" fullWidth>
-                        <MKInput
-                          type="time"
-                          label="Departure Time"
-                          InputLabelProps={{ shrink: true }}
+                  // <Grid item xs={12} sm={12} md={6}>
+                  //   <MKBox mb={2}>
+                  //     <FormControl variant="standard" fullWidth>
+                  //       <MKInput
+                  //         type="time"
+                  //         label="Departure Time"
+                  //         InputLabelProps={{ shrink: true }}
+                  //         fullWidth
+                  //         name="departureTime"
+                  //         value={departureTime}
+                  //         onChange={timeHandler}
+                  //         required
+                  //         sx={{ pointer: "cursor" }}
+                  //       />
+                  //     </FormControl>
+                  //   </MKBox>
+                  // </Grid>
+                  <Grid item xs={12} sm={6} md={6}>
+                    <MKBox mb={{ xs: 0.5, md: 2 }} fullWidth>
+                      <LocalizationProvider dateAdapter={AdapterDayjs} fullWidth>
+                        <DemoContainer
+                          variant="standard"
+                          components={["MobileTimePicker"]}
                           fullWidth
-                          name="departureTime"
-                          value={departureTime}
-                          onChange={timeHandler}
-                          required
-                          sx={{ pointer: "cursor" }}
-                        />
-                      </FormControl>
+                        >
+                          {/* <DemoItem label="Departue Time"> */}
+                          <MobileTimePicker
+                            value={departureTime}
+                            onChange={(value) => timeHandler(value)}
+                            fullWidth
+                            label="Departure Time"
+                            xs={{ width: "100%" }}
+                          />
+                          {/* </DemoItem> */}
+                        </DemoContainer>
+                      </LocalizationProvider>
                     </MKBox>
                   </Grid>
                 )}
@@ -1003,21 +1021,25 @@ const BusBookingForm = ({ setHideButton }) => {
                     </MKBox>
                   </Grid>
                   {selectedBusType === "full_bus" && (
-                    <Grid item xs={12} sm={12} md={6}>
-                      <MKBox mb={2}>
-                        <FormControl variant="standard" fullWidth>
-                          <MKInput
-                            type="time"
-                            label="Departure Time"
-                            InputLabelProps={{ shrink: true }}
+                    <Grid item xs={12} sm={6} md={6}>
+                      <MKBox mb={{ xs: 0.5, md: 2 }} fullWidth>
+                        <LocalizationProvider dateAdapter={AdapterDayjs} fullWidth>
+                          <DemoContainer
+                            variant="standard"
+                            components={["MobileTimePicker"]}
                             fullWidth
-                            name="departureTime"
-                            value={departureTime}
-                            onChange={timeHandler}
-                            required
-                            sx={{ pointer: "cursor" }}
-                          />
-                        </FormControl>
+                          >
+                            {/* <DemoItem label="Departue Time"> */}
+                            <MobileTimePicker
+                              value={departureTime}
+                              onChange={(value) => timeHandler(value)}
+                              fullWidth
+                              label="Departure Time"
+                              xs={{ width: "100%" }}
+                            />
+                            {/* </DemoItem> */}
+                          </DemoContainer>
+                        </LocalizationProvider>
                       </MKBox>
                     </Grid>
                   )}

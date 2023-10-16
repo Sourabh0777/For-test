@@ -17,8 +17,14 @@ import {
   Select,
   Switch,
 } from "@mui/material";
-import { CalendarIcon, DateField, DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import {
+  CalendarIcon,
+  DateField,
+  DatePicker,
+  LocalizationProvider,
+  MobileTimePicker,
+} from "@mui/x-date-pickers";
+import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
 import MKInput from "components/MKInput";
 import React, { useEffect, useState } from "react";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -49,6 +55,7 @@ import {
 import TextField from "assets/theme/components/form/textField";
 import MDBox from "components/MDBox";
 import TandC from "./TandC";
+import moment from "moment/moment";
 const TaxiBookingForm = ({ setHideButton }) => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -234,17 +241,20 @@ const TaxiBookingForm = ({ setHideButton }) => {
   const [formattedTime, setFormattedTime] = useState("");
 
   const timeHandler = (e) => {
-    setDepartureTime(e.target.value);
-    const inputTime = e.target.value;
+    setDepartureTime(e);
+    console.log("time", e);
+    // const inputTime = e.target.value;
 
-    const [hours, minutes] = inputTime.split(":");
+    // const [hours, minutes] = inputTime.split(":");
 
-    const date = new Date();
-    date.setHours(hours);
-    date.setMinutes(minutes);
+    // const date = new Date();
+    // date.setHours(hours);
+    // date.setMinutes(minutes);
 
-    const options = { hour: "numeric", minute: "numeric", hour12: true };
-    const formatted = date.toLocaleTimeString(undefined, options);
+    // const options = { hour: "numeric", minute: "numeric", hour12: true };
+    // const formatted = date.toLocaleTimeString(undefined, options);
+    const formatted = e?.format("hh:mm A");
+    console.log("time 2", formatted);
 
     setFormattedTime(formatted);
   };
@@ -707,7 +717,24 @@ const TaxiBookingForm = ({ setHideButton }) => {
                     </LocalizationProvider>
                   </MKBox>
                 </Grid>
-                <Grid item xs={12} sm={12} md={6}>
+                <Grid item xs={12} sm={6} md={6}>
+                  <MKBox mb={{ xs: 0.5, md: 2 }} fullWidth>
+                    <LocalizationProvider dateAdapter={AdapterDayjs} fullWidth>
+                      <DemoContainer variant="standard" components={["MobileTimePicker"]} fullWidth>
+                        {/* <DemoItem label="Departue Time"> */}
+                        <MobileTimePicker
+                          value={departureTime}
+                          onChange={(value) => timeHandler(value)}
+                          fullWidth
+                          label="Departue Time"
+                          xs={{ width: "100%" }}
+                        />
+                        {/* </DemoItem> */}
+                      </DemoContainer>
+                    </LocalizationProvider>
+                  </MKBox>
+                </Grid>
+                {/* <Grid item xs={12} sm={12} md={6}>
                   <MKBox mb={{ xs: 0.5, md: 2 }}>
                     <MKInput
                       type="time"
@@ -720,7 +747,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                       sx={{ pointer: "cursor" }}
                     />
                   </MKBox>
-                </Grid>
+                </Grid> */}
                 {/* <Grid item xs={12} sm={6} md={3}>
                   <MKBox mb={2}>
                     <MKInput
@@ -937,12 +964,12 @@ const TaxiBookingForm = ({ setHideButton }) => {
                     mt={3}
                     mb={2}
                     display={"flex"}
-                    gap={2}
+                    // gap={2}
                     justifyContent={"start"}
                     alignItems={"center"}
                     pl={3}
                   >
-                    <MKBox display="flex" justifyContent="center" alignItems="center" gap={-3}>
+                    <MKBox display="flex" justifyContent="center" alignItems="center">
                       <FormControlLabel
                         required
                         control={<Checkbox label="" />}
@@ -961,7 +988,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                     sm={12}
                     md={6}
                     mt={3}
-                    mb={2}
+                    // mb={2}
                     display={"flex"}
                     gap={2}
                     justifyContent={"end"}
@@ -1179,7 +1206,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
             {activeStep == 2 && (
               <Grid
                 container
-                spacing={2}
+                spacing={1}
                 display="flex"
                 // justifyContent="flex-start"
                 // alignItems="self-start"
@@ -1187,7 +1214,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                 // mb={4}
               >
                 <Grid item xs={12} sm={12} md={6}>
-                  <MKBox mb={{ xs: 0.5, md: 2 }}>
+                  <MKBox mb={{ xs: 0.5, md: 1 }}>
                     <FormControl variant="standard" fullWidth>
                       <InputLabel htmlFor="input-with-icon-adornment">Full Name</InputLabel>
                       <Input
@@ -1206,7 +1233,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                   </MKBox>
                 </Grid>
                 <Grid item xs={12} sm={12} md={6}>
-                  <MKBox mb={{ xs: 0.5, md: 2 }}>
+                  <MKBox mb={{ xs: 0.5, md: 1 }}>
                     <FormControl variant="standard" fullWidth>
                       <InputLabel htmlFor="input-with-icon-adornment">Phone Number</InputLabel>
                       <Input
@@ -1226,7 +1253,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                 </Grid>
 
                 <Grid item xs={12} sm={12} md={6}>
-                  <MKBox mb={{ xs: 0.5, md: 2 }}>
+                  <MKBox mb={{ xs: 0.5, md: 1 }}>
                     <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth>
                       <InputLabel id="taxiType">Vehicle</InputLabel>
                       <Select
@@ -1263,7 +1290,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                   </MKBox>
                 </Grid>
                 <Grid item xs={12} sm={12} md={6}>
-                  <MKBox mb={{ xs: 0.5, md: 2 }}>
+                  <MKBox mb={{ xs: 0.5, md: 1 }}>
                     <FormControl variant="standard" sx={{ m: 1 }} fullWidth>
                       <InputLabel id="destination"> Pickup Location</InputLabel>
                       <Select
@@ -1296,7 +1323,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                   </MKBox>
                 </Grid>
                 <Grid item xs={12} sm={12} md={6}>
-                  <MKBox mb={{ xs: 0.5, md: 2 }}>
+                  <MKBox mb={{ xs: 0.5, md: 1 }}>
                     <FormControl variant="standard" sx={{ m: 1 }} fullWidth>
                       <InputLabel id="destination">Destination</InputLabel>
                       <Select
@@ -1329,7 +1356,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                 </Grid>
 
                 <Grid item xs={12} sm={12} md={6}>
-                  <MKBox mb={{ xs: 0.5, md: 2 }}>
+                  <MKBox mb={{ xs: 0.5, md: 1 }}>
                     <FormControl variant="standard" sx={{ m: 1 }} fullWidth>
                       <InputLabel id="landingLocation"> Drop Point</InputLabel>
                       <Select
@@ -1363,7 +1390,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                   </MKBox>
                 </Grid>
                 <Grid item xs={12} sm={12} md={6}>
-                  <MKBox mb={{ xs: 0.5, md: 2 }} fullWidth>
+                  <MKBox mb={{ xs: 0.5, md: 1 }} fullWidth>
                     <LocalizationProvider dateAdapter={AdapterDayjs} fullWidth>
                       <DemoContainer variant="standard" components={["DatePicker"]}>
                         <DatePicker
@@ -1380,7 +1407,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                     </LocalizationProvider>
                   </MKBox>
                 </Grid>
-                <Grid item xs={12} sm={12} md={6}>
+                {/* <Grid item xs={12} sm={12} md={6}>
                   <MKBox mb={{ xs: 0.5 }} mt={1}>
                     <MKInput
                       type="time"
@@ -1392,6 +1419,23 @@ const TaxiBookingForm = ({ setHideButton }) => {
                       onChange={timeHandler}
                       sx={{ pointer: "cursor" }}
                     />
+                  </MKBox>
+                </Grid> */}
+                <Grid item xs={12} sm={6} md={6}>
+                  <MKBox mb={{ xs: 0.5, md: 2 }} fullWidth>
+                    <LocalizationProvider dateAdapter={AdapterDayjs} fullWidth>
+                      <DemoContainer variant="standard" components={["MobileTimePicker"]} fullWidth>
+                        {/* <DemoItem label="Departue Time"> */}
+                        <MobileTimePicker
+                          value={departureTime}
+                          onChange={(value) => timeHandler(value)}
+                          fullWidth
+                          label="Departue Time"
+                          xs={{ width: "100%" }}
+                        />
+                        {/* </DemoItem> */}
+                      </DemoContainer>
+                    </LocalizationProvider>
                   </MKBox>
                 </Grid>
 
@@ -1445,8 +1489,6 @@ const TaxiBookingForm = ({ setHideButton }) => {
                         }}
                         py={1}
                       >
-                        {/* <MKBox height="2px" width="14px" bgColor="dark"></MKBox>
-                         */}
                         <Remove fontSize="medium" />
                       </MKBox>
                       <MKBox
@@ -1513,11 +1555,11 @@ const TaxiBookingForm = ({ setHideButton }) => {
                   item
                   xs={12}
                   md={12}
-                  mt={0}
+                  mt={2}
                   // display={"flex"}
                   // flexDirection={"column"}
                   gap={1}
-                  mb={1}
+                  // mb={1}
                   // justifyContent={"space"}
                   // alignItems={"center"}
                 >
@@ -1528,7 +1570,6 @@ const TaxiBookingForm = ({ setHideButton }) => {
                         borderCollapse: "collapse",
                         border: "1px solid black",
                       }}
-                      // sx={{width:{xs:"100%", md:"50%"}}}
                     >
                       <tbody>
                         <tr style={{ borderBottom: "1px solid black" }}>
@@ -1612,32 +1653,10 @@ const TaxiBookingForm = ({ setHideButton }) => {
                       </tbody>
                     </table>
                   </MKBox>
-                  <MDBox display="flex" justifyContent="center" alignItems="center" mt={1}>
+                  <MDBox display="flex" justifyContent="center" alignItems="center">
                     <MKTypography variant="caption">Additional Charges may Apply *</MKTypography>
                   </MDBox>
                 </Grid>
-                {/* <Grid container spacing={3} justify="center" alignItems="center">
-                  <Grid item xs={12} md={6}>
-                    <MKBox>
-                      <table style={{ width: "100%" }}>
-                        <tbody>
-                          <tr>
-                            <td>Fare</td>
-                            <td>&#8377; {selectedTaxiType?.fair || 0}</td>
-                          </tr>
-                          <tr>
-                            <td>Toll Cost</td>
-                            <td>&#8377; {tollCost || 0}</td>
-                          </tr>
-                          <tr>
-                            <td>Total Cost</td>
-                            <td>&#8377; {selectedTaxiType?.fair + tollCost}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </MKBox>
-                  </Grid>
-                </Grid> */}
               </Grid>
             )}
             <Grid
@@ -1648,7 +1667,6 @@ const TaxiBookingForm = ({ setHideButton }) => {
               mt={4}
               pt={4}
               mb={1}
-              // position={"absolute"}
               sx={{ position: { md: "absolute" } }}
               bottom={10}
             >
@@ -1666,7 +1684,6 @@ const TaxiBookingForm = ({ setHideButton }) => {
                   </Box>{" "}
                   <MKButton
                     onClick={type === "taxi" ? submitHandler : packageSubmitHandler}
-                    // disabled={!termsChecked}
                     variant="gradient"
                     color="info"
                   >
@@ -1674,7 +1691,6 @@ const TaxiBookingForm = ({ setHideButton }) => {
                   </MKButton>
                   <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
                     <Box sx={{ flex: "1 1 auto" }} />
-                    {/* <Button onClick={handleReset}>Reset</Button> */}
                   </Box>
                 </React.Fragment>
               ) : (

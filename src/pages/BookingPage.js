@@ -82,7 +82,7 @@ function BookingPage() {
             // ml: 9,
             width: { md: "40vw", xs: "90vw" },
             // maxWidth: { xs: "90vw" },
-            minHeight: { md: "97vh", xs: "94vh" },
+            minHeight: { md: "94vh", xs: "94vh" },
           }}
         >
           <MKBox
