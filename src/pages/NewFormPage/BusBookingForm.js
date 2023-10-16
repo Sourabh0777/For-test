@@ -39,8 +39,12 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import MDBox from "components/MDBox";
+import TandC from "./TandC";
 
 const BusBookingForm = ({ setHideButton }) => {
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = React.useState(0);
   const [isNextDisabled, setIsNextDisabled] = useState(true);
@@ -785,7 +789,7 @@ const BusBookingForm = ({ setHideButton }) => {
                       </MKBox>
                     </MDBox>
                   </Grid>
-                  <Grid item xs={12} sm={12} md={12}>
+                  <Grid item xs={12} sm={12} md={6}>
                     <MKBox>
                       <FormControlLabel
                         required
@@ -801,6 +805,36 @@ const BusBookingForm = ({ setHideButton }) => {
                       />
                     </MKBox>
                   </Grid>
+                  {activeStep === 1 && (
+                    <Grid
+                      item
+                      xs={12}
+                      sm={12}
+                      md={6}
+                      mt={3}
+                      mb={2}
+                      display={"flex"}
+                      gap={2}
+                      justifyContent={"end"}
+                      alignItems={"center"}
+                      pl={3}
+                    >
+                      <MKBox display="flex" justifyContent="end" alignItems="center">
+                        <MKBox>
+                          <MKTypography
+                            variant="h6"
+                            sx={{ cursor: "pointer", textDecoration: "underline" }}
+                            onClick={handleOpen}
+                            // fontWeight="medium"
+                            color="warning"
+                            // sx={{ textDecoration: "underline" }}
+                          >
+                            Terms and conditions
+                          </MKTypography>
+                        </MKBox>
+                      </MKBox>
+                    </Grid>
+                  )}
                 </Grid>
               ) : null}
               <Grid container mt={6} mb={3}>
@@ -1244,6 +1278,7 @@ const BusBookingForm = ({ setHideButton }) => {
           </Grid>
         </MKBox>
       </MKTypography>
+      <TandC handleClose={handleClose} open={open} />
     </MKBox>
   );
 };

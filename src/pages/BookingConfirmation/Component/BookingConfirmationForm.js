@@ -229,26 +229,32 @@ const BookingConfirmationForm = ({ bookingId }) => {
                       <Grid item xs={12} md={6} key={index}>
                         <MKBox
                           mb={2}
-                          bgColor="info"
-                          color="white"
-                          p={2}
+                          bgColor="white"
+                          display="flex"
+                          alignItems="center"
+                          sx={{ border: "1px solid black" }}
+                          // color="white"
+                          px={2}
                           borderRadius="lg"
-                          style={{ position: "relative" }}
+                          // style={{ position: "relative" }}
                         >
                           <MKTypography
-                            style={{ position: "absolute", top: 5, left: 5 }}
-                            variant="caption"
+                            // style={{ position: "absolute", top: 5, left: 5 }}
+                            style={{ textAlign: "center" }}
+                            variant="body2"
                             fontWeight="medium"
-                            color="white"
+                            color="black"
+                            width="50%"
+                            // sx={{ borderRight: "1px solid black" }}
                           >
                             {field.label}
                           </MKTypography>
-                          <MKBox>
+                          <MKBox width="50%" sx={{ borderLeft: "1px solid black" }} py={1}>
                             <MKTypography
                               style={{ textAlign: "center" }}
                               variant="body2"
                               fontWeight="medium"
-                              color="white"
+                              color="black"
                             >
                               {field.key}
                             </MKTypography>
@@ -262,7 +268,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
             <MKBox mb={1}>
               {message && (
                 <MKTypography
-                  color="warning"
+                  color="primary"
                   variant="body2"
                   style={{ textAlign: "center", textDecoration: "underline" }}
                   fontWeight="medium"

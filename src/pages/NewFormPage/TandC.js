@@ -46,7 +46,7 @@ const TandC = ({ open, handleClose }) => {
           6. Booking will be invalid if the fare amount is not paid in advance.
         </Typography>
         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-          7. Changes in Booking details shall be notified only thru Change Request Form.
+          7. Changes in Booking details shall be notified only through Change Request Form.
         </Typography>
         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
           8. Cancellation Charges apply if booking is cancelled within 6 hours of scheduled dept.

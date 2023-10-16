@@ -933,7 +933,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                     item
                     xs={12}
                     sm={12}
-                    md={9}
+                    md={6}
                     mt={3}
                     mb={2}
                     display={"flex"}
@@ -946,19 +946,41 @@ const TaxiBookingForm = ({ setHideButton }) => {
                       <FormControlLabel
                         required
                         control={<Checkbox label="" />}
-                        label=""
+                        label="Accept terms and conditions"
                         sx={{ display: "flex" }}
                         checked={termsChecked}
                         onChange={handleTermsChange}
                       />
-                      <MKTypography
-                        variant="body2"
-                        sx={{ cursor: "pointer" }}
-                        onClick={handleOpen}
-                        fontWeight="medium"
-                      >
-                        Accept terms and conditions
-                      </MKTypography>
+                    </MKBox>
+                  </Grid>
+                )}
+                {activeStep === 1 && (
+                  <Grid
+                    item
+                    xs={12}
+                    sm={12}
+                    md={6}
+                    mt={3}
+                    mb={2}
+                    display={"flex"}
+                    gap={2}
+                    justifyContent={"end"}
+                    alignItems={"center"}
+                    pl={3}
+                  >
+                    <MKBox display="flex" justifyContent="end" alignItems="center">
+                      <MKBox>
+                        <MKTypography
+                          variant="h6"
+                          sx={{ cursor: "pointer", textDecoration: "underline" }}
+                          onClick={handleOpen}
+                          // fontWeight="medium"
+                          color="warning"
+                          // sx={{ textDecoration: "underline" }}
+                        >
+                          Terms and conditions
+                        </MKTypography>
+                      </MKBox>
                     </MKBox>
                   </Grid>
                 )}
@@ -1050,7 +1072,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                   item
                   xs={12}
                   md={12}
-                  mt={3}
+                  mt={activeStep === 0 ? 11.5 : 3}
                   sx={{ marginLeft: { xs: 0, md: 2 } }}
                   // flexDirection={"column"}
                   gap={1}
