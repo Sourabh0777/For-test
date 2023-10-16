@@ -69,8 +69,11 @@ const BookingsConfirmation = () => {
           display="flex"
           alignItems="center"
           justifyContent="center"
-          sx={{ width: { xs: "90vw", lg: 1200 } }}
-          py={5}
+          sx={{
+            width: { xs: "90vw", lg: 1200 },
+            paddingTop: { xs: 5, md: 3 },
+            paddingBottom: { xs: 5, md: 2 },
+          }}
         >
           <BookingConfirmationForm bookingId={token} />
         </MDBox>

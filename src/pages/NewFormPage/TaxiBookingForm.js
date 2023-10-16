@@ -17,7 +17,7 @@ import {
   Select,
   Switch,
 } from "@mui/material";
-import { DateField, DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { CalendarIcon, DateField, DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import MKInput from "components/MKInput";
 import React, { useEffect, useState } from "react";
@@ -48,7 +48,12 @@ import {
 } from "@mui/icons-material";
 import TextField from "assets/theme/components/form/textField";
 import MDBox from "components/MDBox";
+import TandC from "./TandC";
 const TaxiBookingForm = ({ setHideButton }) => {
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   const [remark, setRemark] = useState("");
   const navigate = useNavigate();
   const [termsChecked, setTermsChecked] = useState(true);
@@ -58,9 +63,9 @@ const TaxiBookingForm = ({ setHideButton }) => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const handleTermsChange = (event) => {
     setTermsChecked(event.target.checked);
-    if (event.target.checked == false) {
-      setIsNextDisabled(true);
-    }
+    // if (event.target.checked == false) {
+    //   setIsNextDisabled(true);
+    // }
   };
   const handleNext = () => {
     setIsNextDisabled(true);
@@ -384,7 +389,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
     fetchPackages();
   }, []);
 
-  console.log("Packages", LocationData);
+  console.log("Packages", termsChecked);
 
   useEffect(() => {
     if (
@@ -409,6 +414,9 @@ const TaxiBookingForm = ({ setHideButton }) => {
       setIsNextDisabled(false);
     }
     if (mobileNo && mobileNo.length < 10) {
+      setIsNextDisabled(true);
+    }
+    if (!termsChecked) {
       setIsNextDisabled(true);
     }
   }, [
@@ -605,10 +613,11 @@ const TaxiBookingForm = ({ setHideButton }) => {
                     <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth>
                       <InputLabel id="landingLocation"> Select Drop Point</InputLabel>
                       <Select
+                        style={{ backgroundColor: type === "package" ? "#f0f0f0" : "inherit" }}
                         disabled={type === "package"}
                         labelId="landingLocation"
                         id="landingLocation"
-                        value={selectedLandingLocation.typeName}
+                        value={selectedLandingLocation}
                         label="landingLocation"
                         onChange={handleLandingLocationChange}
                         sx={{ minHeight: 45, minWidth: 270 }}
@@ -690,7 +699,9 @@ const TaxiBookingForm = ({ setHideButton }) => {
                           label="Date of Traveling"
                           name="dateOfTraveling"
                           value={dateOfTraveling}
+                          disablePast
                           onChange={handleDateChange}
+                          format="DD/MM/YYYY"
                         />
                       </DemoContainer>
                     </LocalizationProvider>
@@ -931,19 +942,27 @@ const TaxiBookingForm = ({ setHideButton }) => {
                     alignItems={"center"}
                     pl={3}
                   >
-                    <MKBox>
+                    <MKBox display="flex" justifyContent="center" alignItems="center" gap={-3}>
                       <FormControlLabel
                         required
-                        control={<Checkbox />}
+                        control={<Checkbox label="" />}
+                        label=""
                         sx={{ display: "flex" }}
-                        label="Accept terms and conditions"
                         checked={termsChecked}
                         onChange={handleTermsChange}
                       />
+                      <MKTypography
+                        variant="body2"
+                        sx={{ cursor: "pointer" }}
+                        onClick={handleOpen}
+                        fontWeight="medium"
+                      >
+                        Accept terms and conditions
+                      </MKTypography>
                     </MKBox>
                   </Grid>
                 )}
-                <Grid
+                {/* <Grid
                   item
                   xs={12}
                   md={12}
@@ -953,15 +972,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                   justifyContent={"end"}
                   alignItems={"center"}
                 >
-                  {/* Total Cost and fair */}
-                  {/* <MKBox>
-                    <MKBox display="flex" alignItems="center" gap={1}>
-                      <MKBox height="10px" width="10px" borderRadius="50%" bgColor="info"></MKBox>
-                      <MKTypography variant="caption" color="text" fontWeight="medium">
-                        Parking: &#8377; From Counter
-                      </MKTypography>
-                    </MKBox>
-                  </MKBox> */}
+         
                   <MKBox>
                     {tollCost ? (
                       <MKBox display="flex" alignItems="center" gap={1}>
@@ -1034,6 +1045,112 @@ const TaxiBookingForm = ({ setHideButton }) => {
                       </MKBox>
                     )}
                   </MKBox>
+                </Grid> */}
+                <Grid
+                  item
+                  xs={12}
+                  md={12}
+                  mt={3}
+                  sx={{ marginLeft: { xs: 0, md: 2 } }}
+                  // flexDirection={"column"}
+                  gap={1}
+                  mb={3}
+
+                  // alignItems={"center"}
+                >
+                  <MKBox display={"flex"} justifyContent={"center"}>
+                    <table
+                      style={{
+                        width: "50%",
+                        borderCollapse: "collapse",
+                        border: "1px solid black",
+                      }}
+                    >
+                      <tbody>
+                        <tr style={{ borderBottom: "1px solid black" }}>
+                          <td style={{ borderRight: "1px solid black", padding: "5px" }}>
+                            <MKBox display="flex" alignItems="center" gap={1}>
+                              <MKBox
+                                height="8px"
+                                width="8px"
+                                borderRadius="50%"
+                                bgColor="info"
+                              ></MKBox>
+                              <MKTypography variant="caption">Fare</MKTypography>
+                            </MKBox>
+                          </td>
+                          <td>
+                            <MDBox
+                              display="flex"
+                              alignItems="center"
+                              justifyContent="end"
+                              gap={1}
+                              pr={1}
+                            >
+                              <MKTypography variant="caption">
+                                &#8377; {selectedTaxiType?.fair || 0}
+                              </MKTypography>
+                            </MDBox>
+                          </td>
+                        </tr>
+                        <tr style={{ borderBottom: "1px solid black" }}>
+                          <td style={{ borderRight: "1px solid black", padding: "5px" }}>
+                            <MKBox display="flex" alignItems="center" gap={1}>
+                              <MKBox
+                                height="8px"
+                                width="8px"
+                                borderRadius="50%"
+                                bgColor="warning"
+                              ></MKBox>
+                              <MKTypography variant="caption">Toll</MKTypography>
+                            </MKBox>
+                          </td>
+                          <td>
+                            <MDBox
+                              display="flex"
+                              alignItems="center"
+                              justifyContent="end"
+                              gap={1}
+                              pr={1}
+                            >
+                              <MKTypography variant="caption">&#8377; {tollCost || 0}</MKTypography>
+                            </MDBox>
+                          </td>
+                        </tr>
+                        <tr style={{ borderBottom: "1px solid black" }}>
+                          <td style={{ borderRight: "1px solid black", padding: "5px" }}>
+                            <MKBox display="flex" alignItems="center" gap={1}>
+                              <MKBox
+                                height="8px"
+                                width="8px"
+                                borderRadius="50%"
+                                bgColor="success"
+                              ></MKBox>
+                              <MKTypography variant="caption" fontWeight="medium">
+                                Total
+                              </MKTypography>
+                            </MKBox>
+                          </td>
+                          <td>
+                            <MDBox
+                              display="flex"
+                              alignItems="center"
+                              justifyContent="end"
+                              gap={1}
+                              pr={1}
+                            >
+                              <MKTypography variant="caption" fontWeight="medium">
+                                &#8377; {selectedTaxiType?.fair + tollCost || 0}
+                              </MKTypography>
+                            </MDBox>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </MKBox>
+                  <MDBox display="flex" justifyContent="center" alignItems="center" mt={1}>
+                    <MKTypography variant="caption">Additional Charges may Apply *</MKTypography>
+                  </MDBox>
                 </Grid>
               </Grid>
             ) : null}
@@ -1042,10 +1159,10 @@ const TaxiBookingForm = ({ setHideButton }) => {
                 container
                 spacing={2}
                 display="flex"
-                justifyContent="flex-start"
-                alignItems="self-start"
+                // justifyContent="flex-start"
+                // alignItems="self-start"
                 sx={{ mx: 1, mt: 0.5 }}
-                mb={4}
+                // mb={4}
               >
                 <Grid item xs={12} sm={12} md={6}>
                   <MKBox mb={{ xs: 0.5, md: 2 }}>
@@ -1085,19 +1202,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                     </FormControl>
                   </MKBox>
                 </Grid>
-                {/* <Grid item xs={12} sm={12} md={6}>
-                  <MKBox mb={2}>
-                    <MKInput
-                      variant="standard"
-                      type="text"
-                      label="Total Fair"
-                      InputLabelProps={{ shrink: true }}
-                      fullWidth
-                      value={selectedTaxiType.fair + tollCost || 0}
-                      disabled
-                    />
-                  </MKBox>
-                </Grid> */}
+
                 <Grid item xs={12} sm={12} md={6}>
                   <MKBox mb={{ xs: 0.5, md: 2 }}>
                     <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth>
@@ -1170,7 +1275,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                 </Grid>
                 <Grid item xs={12} sm={12} md={6}>
                   <MKBox mb={{ xs: 0.5, md: 2 }}>
-                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth>
+                    <FormControl variant="standard" sx={{ m: 1 }} fullWidth>
                       <InputLabel id="destination">Destination</InputLabel>
                       <Select
                         name="destination"
@@ -1200,11 +1305,13 @@ const TaxiBookingForm = ({ setHideButton }) => {
                     </FormControl>
                   </MKBox>
                 </Grid>
+
                 <Grid item xs={12} sm={12} md={6}>
                   <MKBox mb={{ xs: 0.5, md: 2 }}>
-                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth>
+                    <FormControl variant="standard" sx={{ m: 1 }} fullWidth>
                       <InputLabel id="landingLocation"> Drop Point</InputLabel>
                       <Select
+                        style={{ backgroundColor: type === "package" ? "#f0f0f0" : "inherit" }}
                         disabled={type === "package"}
                         labelId="landingLocation"
                         id="landingLocation"
@@ -1243,7 +1350,9 @@ const TaxiBookingForm = ({ setHideButton }) => {
                           label="Date of Traveling"
                           name="dateOfTraveling"
                           value={dateOfTraveling}
+                          disablePast
                           onChange={handleDateChange}
+                          format="DD/MM/YYYY"
                         />
                       </DemoContainer>
                     </LocalizationProvider>
@@ -1382,94 +1491,131 @@ const TaxiBookingForm = ({ setHideButton }) => {
                   item
                   xs={12}
                   md={12}
-                  mt={3}
-                  display={"flex"}
-                  gap={2}
-                  justifyContent={"end"}
-                  alignItems={"center"}
+                  mt={0}
+                  // display={"flex"}
+                  // flexDirection={"column"}
+                  gap={1}
+                  mb={1}
+                  // justifyContent={"space"}
+                  // alignItems={"center"}
                 >
-                  {/* Total Cost and fair */}
-                  {/* <MKBox>
-                    <MKBox display="flex" alignItems="center" gap={1}>
-                      <MKBox height="10px" width="10px" borderRadius="50%" bgColor="info"></MKBox>
-                      <MKTypography variant="caption" color="text" fontWeight="medium">
-                        Parking: &#8377; From Counter
-                      </MKTypography>
-                    </MKBox>
-                  </MKBox> */}
-                  <MKBox>
-                    {tollCost ? (
-                      <MKBox display="flex" alignItems="center" gap={1}>
-                        <MKBox height="10px" width="10px" borderRadius="50%" bgColor="info"></MKBox>
-                        <MKTypography variant="caption" color="text" fontWeight="medium">
-                          Toll Cost: &#8377; {tollCost}
-                        </MKTypography>
-                      </MKBox>
-                    ) : (
-                      <MKBox display="flex" alignItems="center" gap={1}>
-                        <MKBox height="10px" width="10px" borderRadius="50%" bgColor="info"></MKBox>
-                        <MKTypography variant="caption" color="text" fontWeight="medium">
-                          Toll Cost: NA
-                        </MKTypography>
-                      </MKBox>
-                    )}
+                  <MKBox display={"flex"} justifyContent={"center"}>
+                    <table
+                      style={{
+                        width: "50%",
+                        borderCollapse: "collapse",
+                        border: "1px solid black",
+                      }}
+                      // sx={{width:{xs:"100%", md:"50%"}}}
+                    >
+                      <tbody>
+                        <tr style={{ borderBottom: "1px solid black" }}>
+                          <td style={{ borderRight: "1px solid black", padding: "5px" }}>
+                            <MKBox display="flex" alignItems="center" gap={1}>
+                              <MKBox
+                                height="8px"
+                                width="8px"
+                                borderRadius="50%"
+                                bgColor="info"
+                              ></MKBox>
+                              <MKTypography variant="caption">Fare</MKTypography>
+                            </MKBox>
+                          </td>
+                          <td>
+                            <MDBox
+                              display="flex"
+                              alignItems="center"
+                              justifyContent="end"
+                              gap={1}
+                              pr={1}
+                            >
+                              <MKTypography variant="caption">
+                                &#8377; {selectedTaxiType?.fair || 0}
+                              </MKTypography>
+                            </MDBox>
+                          </td>
+                        </tr>
+                        <tr style={{ borderBottom: "1px solid black" }}>
+                          <td style={{ borderRight: "1px solid black", padding: "5px" }}>
+                            <MKBox display="flex" alignItems="center" gap={1}>
+                              <MKBox
+                                height="8px"
+                                width="8px"
+                                borderRadius="50%"
+                                bgColor="warning"
+                              ></MKBox>
+                              <MKTypography variant="caption">Toll</MKTypography>
+                            </MKBox>
+                          </td>
+                          <td>
+                            <MDBox
+                              display="flex"
+                              alignItems="center"
+                              justifyContent="end"
+                              gap={1}
+                              pr={1}
+                            >
+                              <MKTypography variant="caption">&#8377; {tollCost || 0}</MKTypography>
+                            </MDBox>
+                          </td>
+                        </tr>
+                        <tr style={{ borderBottom: "1px solid black" }}>
+                          <td style={{ borderRight: "1px solid black", padding: "5px" }}>
+                            <MKBox display="flex" alignItems="center" gap={1}>
+                              <MKBox
+                                height="8px"
+                                width="8px"
+                                borderRadius="50%"
+                                bgColor="success"
+                              ></MKBox>
+                              <MKTypography variant="caption" fontWeight="medium">
+                                Total
+                              </MKTypography>
+                            </MKBox>
+                          </td>
+                          <td>
+                            <MDBox
+                              display="flex"
+                              alignItems="center"
+                              justifyContent="end"
+                              gap={1}
+                              pr={1}
+                            >
+                              <MKTypography variant="caption" fontWeight="medium">
+                                &#8377; {selectedTaxiType?.fair + tollCost}
+                              </MKTypography>
+                            </MDBox>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </MKBox>
-                  <MKBox>
-                    {selectedTaxiType?.fair ? (
-                      <MKBox display="flex" alignItems="center" gap={1}>
-                        <MKBox
-                          height="10px"
-                          width="10px"
-                          borderRadius="50%"
-                          bgColor="warning"
-                        ></MKBox>
-                        <MKTypography variant="caption" color="text" fontWeight="medium">
-                          Fare: &#8377; {selectedTaxiType?.fair}
-                        </MKTypography>
-                      </MKBox>
-                    ) : (
-                      <MKBox display="flex" alignItems="center" gap={1}>
-                        <MKBox
-                          height="10px"
-                          width="10px"
-                          borderRadius="50%"
-                          bgColor="warning"
-                        ></MKBox>
-                        <MKTypography variant="caption" color="text" fontWeight="medium">
-                          Fare: NA
-                        </MKTypography>
-                      </MKBox>
-                    )}
-                  </MKBox>
-                  <MKBox>
-                    {selectedTaxiType?.fair ? (
-                      <MKBox display="flex" alignItems="center" gap={1}>
-                        <MKBox
-                          height="10px"
-                          width="10px"
-                          borderRadius="50%"
-                          bgColor="success"
-                        ></MKBox>
-                        <MKTypography variant="caption" color="text" fontWeight="medium">
-                          Total Cost: &#8377; {selectedTaxiType?.fair + tollCost} + Additional
-                          Charges
-                        </MKTypography>
-                      </MKBox>
-                    ) : (
-                      <MKBox display="flex" alignItems="center" gap={1}>
-                        <MKBox
-                          height="10px"
-                          width="10px"
-                          borderRadius="50%"
-                          bgColor="success"
-                        ></MKBox>
-                        <MKTypography variant="caption" color="text" fontWeight="medium">
-                          Total Cost : NA (includes additional charges)
-                        </MKTypography>
-                      </MKBox>
-                    )}
-                  </MKBox>
+                  <MDBox display="flex" justifyContent="center" alignItems="center" mt={1}>
+                    <MKTypography variant="caption">Additional Charges may Apply *</MKTypography>
+                  </MDBox>
                 </Grid>
+                {/* <Grid container spacing={3} justify="center" alignItems="center">
+                  <Grid item xs={12} md={6}>
+                    <MKBox>
+                      <table style={{ width: "100%" }}>
+                        <tbody>
+                          <tr>
+                            <td>Fare</td>
+                            <td>&#8377; {selectedTaxiType?.fair || 0}</td>
+                          </tr>
+                          <tr>
+                            <td>Toll Cost</td>
+                            <td>&#8377; {tollCost || 0}</td>
+                          </tr>
+                          <tr>
+                            <td>Total Cost</td>
+                            <td>&#8377; {selectedTaxiType?.fair + tollCost}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </MKBox>
+                  </Grid>
+                </Grid> */}
               </Grid>
             )}
             <Grid
@@ -1498,7 +1644,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                   </Box>{" "}
                   <MKButton
                     onClick={type === "taxi" ? submitHandler : packageSubmitHandler}
-                    disabled={!termsChecked}
+                    // disabled={!termsChecked}
                     variant="gradient"
                     color="info"
                   >
@@ -1530,6 +1676,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
           </Grid>
         )}
       </MKBox>
+      <TandC handleClose={handleClose} open={open} />
     </MKBox>
   );
 };

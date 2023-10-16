@@ -67,7 +67,7 @@ function BookingPage() {
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
-          paddingTop: { xs: 5, md: 6 },
+          paddingTop: { xs: 5, md: 3 },
           paddingBottom: { xs: 8, md: 0 },
         }}
         height="auto"
@@ -82,7 +82,7 @@ function BookingPage() {
             // ml: 9,
             width: { md: "40vw", xs: "90vw" },
             // maxWidth: { xs: "90vw" },
-            minHeight: { md: "85vh", xs: "94vh" },
+            minHeight: { md: "97vh", xs: "94vh" },
           }}
         >
           <MKBox

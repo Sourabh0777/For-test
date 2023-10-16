@@ -632,6 +632,8 @@ const BusBookingForm = ({ setHideButton }) => {
                           value={dateOfTraveling}
                           onChange={handleDateChange}
                           required
+                          format="DD/MM/YYYY"
+                          disablePast
                         />
                       </DemoContainer>
                     </LocalizationProvider>

@@ -17,6 +17,7 @@ import MDBox from "components/MDBox";
 
 const BookingConfirmationForm = ({ bookingId }) => {
   const [todaysDate, setTodaysDate] = useState();
+  const [ladningId, setLandingId] = useState(null);
   const [messages, setMessages] = useState();
   const [message, setMessage] = useState();
   const navigate = useNavigate();
@@ -24,6 +25,12 @@ const BookingConfirmationForm = ({ bookingId }) => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [buttonStatus, setButtonStatus] = useState();
   const [_id, set_id] = useState();
+  const [landingLocations, setLandingLocations] = useState([]);
+  const getLandingName = (id) => {
+    console.log("Landings", landingLocations, id);
+    const selected = landingLocations?.find((location) => location._id === id);
+    return selected?.place;
+  };
   useEffect(() => {
     const currentDate = new Date();
     const day = String(currentDate.getDate()).padStart(2, "0");
@@ -60,6 +67,8 @@ const BookingConfirmationForm = ({ bookingId }) => {
         if (responseData.data) {
           set_id(responseData.data[0]._id);
           setBooking(responseData.data[0]);
+          setLandingLocations(responseData.data[0]?.destination?.landingLocations);
+          setLandingId(responseData[0]?.landingLocationId);
         }
         console.log("🚀 ~~ responseData:", responseData.data[0]);
         const formattedTravelDate = dayjs(responseData?.data[0]?.travelDate).format("DD-MM-YYYY");
@@ -76,11 +85,19 @@ const BookingConfirmationForm = ({ bookingId }) => {
               key: responseData?.data[0]?.firstName + " " + responseData.data[0]?.lastName,
             },
             { label: "Phone Number", key: responseData.data[0]?.phoneNumber },
-            { label: "Pick Up Location", key: responseData.data[0]?.source?.sourceName },
+            { label: "Date of Travelling", key: formattedTravelDate },
+            { label: "Departure Time", key: responseData.data[0]?.travelTime },
+            { label: "Pickup Location", key: responseData.data[0]?.source?.sourceName },
+            { label: "Destination", key: responseData.data[0]?.destination?.locationName },
+            {
+              label: "Vehicle",
+              key: `${responseData.data[0]?.texiType?.typeName}(
+                ${responseData.data[0]?.texiType?.hasAc ? "Ac" : "Non Ac"}
+              )`,
+            },
+            { label: "Passengers", key: responseData.data[0]?.noOfPassengers },
             { label: "Token", key: responseData.data[0]?.token },
             // { label: "Travel Date", key: responseData.data[0]?.travelDate },
-            { label: "Travel Date", key: formattedTravelDate },
-            { label: "Travel Time", key: responseData.data[0]?.travelTime },
             // { label: "Payment Mode", key: responseData.data[0]?.paymentMode },
             // { label: "Booking Status", key: responseData.data[0]?.bookingStatus },
           ];
@@ -96,10 +113,19 @@ const BookingConfirmationForm = ({ bookingId }) => {
               key: responseData?.data[0]?.firstName + " " + responseData.data[0]?.lastName,
             },
             { label: "Phone Number", key: responseData.data[0]?.phoneNumber },
-            { label: "Pick Up Location", key: responseData.data[0]?.source?.sourceName },
+            { label: "Date of Travelling", key: formattedTravelDate },
+            { label: "Departure Time", key: responseData.data[0]?.travelTime },
+            { label: "Pickup Location", key: responseData.data[0]?.source?.sourceName },
+            { label: "Destination", key: responseData.data[0]?.destination?.locationName },
+            { label: "Drop Point", key: getLandingName(responseData?.data[0]?.landingLocationId) },
+            {
+              label: "Vehicle",
+              key: `${responseData.data[0]?.texiType?.typeName}(
+                ${responseData.data[0]?.texiType?.hasAc ? "Ac" : "Non Ac"}
+              )`,
+            },
+            { label: "Passengers", key: responseData.data[0]?.noOfPassengers },
             { label: "Token", key: responseData.data[0]?.token },
-            { label: "Travel Date", key: formattedTravelDate },
-            { label: "Travel Time", key: responseData.data[0]?.travelTime },
           ];
           setBookingData(fields);
           setButtonStatus(responseData?.data[0]?.bookingStatus);
@@ -111,11 +137,13 @@ const BookingConfirmationForm = ({ bookingId }) => {
               key: responseData?.data[0]?.firstName + " " + responseData.data[0]?.lastName,
             },
             { label: "Phone Number", key: responseData.data[0]?.phoneNumber },
-            { label: "token", key: responseData.data[0]?.token },
-            { label: "Starting Location", key: responseData.data[0]?.startingLocation?.sourceName },
+            { label: "Date of Travelling", key: formattedTravelDate },
+            { label: "Departure Time", key: responseData.data[0]?.travelTime },
+            { label: "Pickup Location", key: responseData.data[0]?.startingLocation?.sourceName },
+            { label: "Destination", key: responseData.data[0]?.destination?.standName },
+            { label: "Passengers", key: responseData.data[0]?.noOfPassengers },
+            { label: "Token", key: responseData.data[0]?.token },
             // { label: "Destination", key: responseData.data[0]?.destination },
-            { label: "Travel Date", key: formattedTravelDate },
-            { label: "Travel Time", key: responseData.data[0]?.travelTime },
           ];
           setBookingData(fields);
           setButtonStatus(responseData?.data[0]?.bookingStatus);
@@ -193,24 +221,12 @@ const BookingConfirmationForm = ({ bookingId }) => {
             </MKTypography>
           </MKBox>
           <MKBox pt={2} pb={1} px={3} position="relative">
-            <MKBox mb={3}>
-              {message && (
-                <MKTypography
-                  color="warning"
-                  variant="caption"
-                  style={{ textAlign: "center", textDecoration: "underline" }}
-                  fontWeight="medium"
-                >
-                  Note: **{message}
-                </MKTypography>
-              )}
-            </MKBox>
             <MKBox component="form" role="form">
               <Grid container spacing={1}>
                 {BookingData &&
                   BookingData.map((field, index) => {
                     return (
-                      <Grid item xs={12} md={4} key={index}>
+                      <Grid item xs={12} md={6} key={index}>
                         <MKBox
                           mb={2}
                           bgColor="info"
@@ -219,14 +235,6 @@ const BookingConfirmationForm = ({ bookingId }) => {
                           borderRadius="lg"
                           style={{ position: "relative" }}
                         >
-                          {/* <MKInput
-                            type="text"
-                            label={field.label}
-                            fullWidth
-                            InputLabelProps={{ shrink: true }}
-                            value={field.key || ""}
-                            disabled
-                          /> */}
                           <MKTypography
                             style={{ position: "absolute", top: 5, left: 5 }}
                             variant="caption"
@@ -251,13 +259,25 @@ const BookingConfirmationForm = ({ bookingId }) => {
                   })}
               </Grid>
             </MKBox>
+            <MKBox mb={1}>
+              {message && (
+                <MKTypography
+                  color="warning"
+                  variant="body2"
+                  style={{ textAlign: "center", textDecoration: "underline" }}
+                  fontWeight="medium"
+                >
+                  Note: **{message}
+                </MKTypography>
+              )}
+            </MKBox>
             {!booking?.remark ? (
-              <Grid container spacing={3} mt={1}>
+              <Grid container spacing={1} mt={1}>
                 <Grid item xs={12} md={12}>
-                  <MKTypography variant="body2" color="text" mb={1}>
+                  <MKTypography variant="body2" color="text">
                     Do you have any special instruction for the ride?
                   </MKTypography>
-                  <MKBox mb={2}>
+                  <MKBox mb={1}>
                     {/* <textarea
                   rows="2"
                   style={{
@@ -280,8 +300,8 @@ const BookingConfirmationForm = ({ bookingId }) => {
                     />
                   </MKBox>
                   <MKBox
-                    mb={2}
-                    mt={4}
+                    mb={1}
+                    mt={2}
                     display="flex"
                     justifyContent="center"
                     alignItems="center"
@@ -306,7 +326,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
             </Grid> */}
               </Grid>
             ) : (
-              <Grid container spacing={3} mt={1}>
+              <Grid container spacing={1} mt={1}>
                 <Grid item xs={12} md={12}>
                   <MKTypography variant="body2" color="text" mb={1}>
                     Special instruction for the ride
@@ -336,7 +356,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
                       {booking?.remark}
                     </MKTypography>
                   </MKBox>
-                  <MKBox mb={2} mt={4} display="flex" justifyContent="center">
+                  <MKBox mb={2} mt={2} display="flex" justifyContent="center">
                     {/* <MKButton variant="gradient" color="info" onClick={submitHandler}>
                       Change Remark
                     </MKButton> */}
@@ -357,7 +377,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
             )}
             <MKBox display="flex" justifyContent="center" alignItems="center">
               <MKTypography
-                variant="caption"
+                variant="body2"
                 component={"i"}
                 style={{ textAlign: "center" }}
                 fontWeight="medium"
