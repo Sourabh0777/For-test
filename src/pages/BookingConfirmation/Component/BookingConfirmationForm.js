@@ -26,9 +26,11 @@ const BookingConfirmationForm = ({ bookingId }) => {
   const [buttonStatus, setButtonStatus] = useState();
   const [_id, set_id] = useState();
   const [landingLocations, setLandingLocations] = useState([]);
-  const getLandingName = (id) => {
-    console.log("Landings", landingLocations, id);
-    const selected = landingLocations?.find((location) => location._id === id);
+  const getLandingName = (data) => {
+    console.log("Landings", landingLocations);
+    const selected = data?.destination?.landingLocations?.find(
+      (location) => location._id === data?.landingLocationId
+    );
     return selected?.place;
   };
   useEffect(() => {
@@ -67,7 +69,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
         if (responseData.data) {
           set_id(responseData.data[0]._id);
           setBooking(responseData.data[0]);
-          setLandingLocations(responseData.data[0]?.destination?.landingLocations);
+          setLandingLocations(responseData.data[0]?.destination);
           setLandingId(responseData[0]?.landingLocationId);
         }
         console.log("🚀 ~~ responseData:", responseData.data[0]);
@@ -117,7 +119,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
             { label: "Departure Time", key: responseData.data[0]?.travelTime },
             { label: "Pickup Location", key: responseData.data[0]?.source?.sourceName },
             { label: "Destination", key: responseData.data[0]?.destination?.locationName },
-            { label: "Drop Point", key: getLandingName(responseData?.data[0]?.landingLocationId) },
+            { label: "Drop Point", key: getLandingName(responseData?.data[0]) },
             {
               label: "Vehicle",
               key: `${responseData.data[0]?.texiType?.typeName}(
@@ -381,7 +383,24 @@ const BookingConfirmationForm = ({ bookingId }) => {
               </Grid> */}
               </Grid>
             )}
-            <MKBox display="flex" justifyContent="center" alignItems="center">
+            <MKBox
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+            >
+              {booking?.token?.startsWith("BS") && booking?.isShared && messages?.note ? (
+                <MKTypography
+                  variant="body2"
+                  // component={"i"}
+                  style={{ textAlign: "center" }}
+                  fontWeight="medium"
+                  display="block"
+                  mb={1}
+                >
+                  {messages?.note}
+                </MKTypography>
+              ) : null}
               <MKTypography
                 variant="body2"
                 component={"i"}

@@ -227,7 +227,8 @@ const TaxiBookingForm = ({ setHideButton }) => {
   const [formateDate, setFormateDate] = useState("");
   //Values
   const [dateOfTraveling, setDateOfTraveling] = useState(dayjs());
-  const [departureTime, setDepartureTime] = useState("");
+  // const [departureTime, setDepartureTime] = useState("");
+  const [departureTime, setDepartureTime] = useState(dayjs().set("hour", 12).set("minute", 0));
   const [fullName, setFullName] = useState();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState();
@@ -238,7 +239,10 @@ const TaxiBookingForm = ({ setHideButton }) => {
     setFirstName(a[0]);
     setLastName(a[1]);
   };
-  const [formattedTime, setFormattedTime] = useState("");
+  const [formattedTime, setFormattedTime] = useState(
+    dayjs().set("hour", 12).set("minute", 0).format("hh:mm A")
+  );
+  // const [formattedTime, setFormattedTime] = useState("");
 
   const timeHandler = (e) => {
     setDepartureTime(e);
@@ -459,7 +463,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
       additionalCharges: tollCost,
       confirmed: false,
       toll: tollCost,
-      bookingStatus: "pending",
+      // bookingStatus: "pending",
       paymentAccepted: false,
       landingLocationId: selectedLandingLocation,
       remark,
@@ -499,7 +503,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
       // paymentMode: "online",
       // additionalCharges: tollCost,
       confirmed: false,
-      bookingStatus: "pending",
+      // bookingStatus: "pending",
       paymentAccepted: false,
       landingLocationId: selectedPackage?.location?._id,
       bookingType: "package",
@@ -726,7 +730,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                           value={departureTime}
                           onChange={(value) => timeHandler(value)}
                           fullWidth
-                          label="Departue Time"
+                          label="Departure Time"
                           xs={{ width: "100%" }}
                         />
                         {/* </DemoItem> */}
@@ -1128,7 +1132,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                               <MKTypography variant="caption">Fare</MKTypography>
                             </MKBox>
                           </td>
-                          <td>
+                          <td style={{ width: "50%" }}>
                             <MDBox
                               display="flex"
                               alignItems="center"
@@ -1430,7 +1434,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                           value={departureTime}
                           onChange={(value) => timeHandler(value)}
                           fullWidth
-                          label="Departue Time"
+                          label="Departure Time"
                           xs={{ width: "100%" }}
                         />
                         {/* </DemoItem> */}

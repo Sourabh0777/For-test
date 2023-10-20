@@ -75,7 +75,8 @@ const BusBookingForm = ({ setHideButton }) => {
   const [noOfPassengers, setNoOfPassengers] = useState(1);
   const [dateOfTraveling, setDateOfTraveling] = useState(dayjs());
   // const [departureTime, setDepartureTime] = useState("00:00");
-  const [departureTime, setDepartureTime] = useState("");
+  // const [departureTime, setDepartureTime] = useState("");
+  const [departureTime, setDepartureTime] = useState(dayjs().set("hour", 12).set("minute", 0));
   const [fullName, setFullName] = useState();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState();
@@ -170,7 +171,10 @@ const BusBookingForm = ({ setHideButton }) => {
     setFormateDate(formattedDate);
   };
 
-  const [formattedTime, setFormattedTime] = useState("");
+  // const [formattedTime, setFormattedTime] = useState("");
+  const [formattedTime, setFormattedTime] = useState(
+    dayjs().set("hour", 12).set("minute", 0).format("hh:mm A")
+  );
 
   const timeHandler = (e) => {
     setDepartureTime(e);
@@ -312,6 +316,7 @@ const BusBookingForm = ({ setHideButton }) => {
           : fare50,
       isShared: selectedBusType !== "full_bus" ? true : false,
       remark,
+      bookingStatus: "requested",
     };
     console.log("isShared:", formData.isShared);
     try {
