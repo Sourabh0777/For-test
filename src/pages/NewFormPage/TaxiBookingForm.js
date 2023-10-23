@@ -284,11 +284,11 @@ const TaxiBookingForm = ({ setHideButton }) => {
       if (!isNaN(newValue) && newValue >= 0 && newValue <= 9) {
         setNoOfPassengers(newValue);
       }
-    } else if (selectedTaxiType.typeName === "3+1") {
+    } else if (selectedTaxiType.typeName === "3P + 1D car") {
       if (!isNaN(newValue) && newValue >= 0 && newValue <= 4) {
         setNoOfPassengers(newValue);
       }
-    } else if (selectedTaxiType.typeName === "6+1") {
+    } else if (selectedTaxiType.typeName === "6P + 1D car") {
       if (!isNaN(newValue) && newValue >= 0 && newValue <= 9) {
         setNoOfPassengers(newValue);
       }
@@ -933,11 +933,11 @@ const TaxiBookingForm = ({ setHideButton }) => {
                                   if (!isNaN(noOfPassengers) && noOfPassengers >= 9) {
                                     return;
                                   }
-                                } else if (selectedTaxiType.typeName === "3+1") {
+                                } else if (selectedTaxiType.typeName === "3P + 1D car") {
                                   if (!isNaN(noOfPassengers) && noOfPassengers >= 4) {
                                     return;
                                   }
-                                } else if (selectedTaxiType.typeName === "6+1") {
+                                } else if (selectedTaxiType.typeName === "6P + 1D car") {
                                   if (!isNaN(noOfPassengers) && noOfPassengers >= 9) {
                                     return;
                                   }
@@ -1532,11 +1532,11 @@ const TaxiBookingForm = ({ setHideButton }) => {
                             if (!isNaN(noOfPassengers) && noOfPassengers >= 9) {
                               return;
                             }
-                          } else if (selectedTaxiType.typeName === "3+1") {
+                          } else if (selectedTaxiType.typeName === "3P + 1D car") {
                             if (!isNaN(noOfPassengers) && noOfPassengers >= 4) {
                               return;
                             }
-                          } else if (selectedTaxiType.typeName === "6+1") {
+                          } else if (selectedTaxiType.typeName === "6P + 1D car") {
                             if (!isNaN(noOfPassengers) && noOfPassengers >= 9) {
                               return;
                             }
