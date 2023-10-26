@@ -281,7 +281,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
             {!booking?.remark ? (
               <Grid container spacing={1} mt={1}>
                 <Grid item xs={12} md={12}>
-                  <MKTypography variant="body2" color="text">
+                  <MKTypography variant="p">
                     Do you have any special instruction for the ride?
                   </MKTypography>
                   <MKBox mb={1}>
