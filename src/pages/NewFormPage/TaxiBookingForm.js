@@ -729,6 +729,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                         <MobileTimePicker
                           value={departureTime}
                           onChange={(value) => timeHandler(value)}
+                          disablePast
                           fullWidth
                           label="Departure Time"
                           xs={{ width: "100%" }}
@@ -1433,6 +1434,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                         <MobileTimePicker
                           value={departureTime}
                           onChange={(value) => timeHandler(value)}
+                          disablePast
                           fullWidth
                           label="Departure Time"
                           xs={{ width: "100%" }}

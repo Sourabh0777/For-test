@@ -17,7 +17,7 @@ export default function Animations() {
       mt={{ xs: 0, sm: 0, md: 0 }}
       mb={{ xs: 5, sm: 10, md: 5 }}
       mx={0}
-      sx={{ width: { xs: "90vw", lg: 1200 } }}
+      sx={{ width: { xs: "90vw", lg: 800 } }}
     >
       <MKBox
         variant="gradient"

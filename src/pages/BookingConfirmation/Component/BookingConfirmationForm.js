@@ -194,7 +194,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
     <MDBox
       // minHeight="100vh"
       // width={{ lg: 1200, xs: "100vw" }}
-      sx={{ width: { xs: "90vw", lg: 1200 } }}
+      sx={{ width: { xs: "90vw", lg: 800 } }}
     >
       {(isLoading || !BookingData) && <Animations />}
       {!isLoading && BookingData && (
@@ -238,20 +238,19 @@ const BookingConfirmationForm = ({ bookingId }) => {
                           // color="white"
                           px={2}
                           borderRadius="lg"
-                          // style={{ position: "relative" }}
+                          style={{ position: "relative" }}
                         >
-                          <MKTypography
-                            // style={{ position: "absolute", top: 5, left: 5 }}
-                            style={{ textAlign: "center" }}
-                            variant="body2"
-                            fontWeight="medium"
-                            color="black"
-                            width="50%"
-                            // sx={{ borderRight: "1px solid black" }}
-                          >
-                            {field.label}
-                          </MKTypography>
-                          <MKBox width="50%" sx={{ borderLeft: "1px solid black" }} py={1}>
+                          <MKBox width="100%" pb={1} pt={2}>
+                            <MKTypography
+                              style={{ position: "absolute", top: 5, left: 5 }}
+                              // style={{ textAlign: "center" }}
+                              variant="caption"
+                              fontWeight="medium"
+                              color="black"
+                              width="50%"
+                            >
+                              {field.label}
+                            </MKTypography>
                             <MKTypography
                               style={{ textAlign: "center" }}
                               variant="body2"
