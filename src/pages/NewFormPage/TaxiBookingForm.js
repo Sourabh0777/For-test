@@ -111,6 +111,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
     fetchSourceLocation();
   }, []);
   const [Locations, setLocations] = useState();
+  const [Locations2, setLocations2] = useState();
   const [LocationData, setLocationData] = useState();
   const [landingLocationList, setLandingLocationList] = useState();
   const [taxiTypeList, setTaxiTypeList] = useState();
@@ -130,6 +131,20 @@ const TaxiBookingForm = ({ setHideButton }) => {
     const a = sourcseLocation.filter((item) => item.name == event.target.value);
     setSelectedSourceLocation(a[0]);
   };
+
+  useEffect(() => {
+    const name = selectedSourceLocation?.name;
+    if (name == "Shri Kripalu Dham") {
+      console.log("Shri Kripalu Dham");
+      console.log("Location Data", LocationData);
+      const filtered = Locations2?.filter((l) => l.name !== "Shri Kripalu Dham");
+      setLocations(filtered);
+    } else {
+      console.log("other");
+      const filtered = Locations2?.filter((l) => l.name == "Shri Kripalu Dham");
+      setLocations(filtered);
+    }
+  }, [selectedSourceLocation]);
 
   const [type, setType] = useState("");
 
@@ -202,6 +217,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
           });
 
         setLocations(locationNames);
+        setLocations2(locationNames);
       } catch (error) {
         console.log(error);
       }
