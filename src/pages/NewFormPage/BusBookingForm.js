@@ -73,10 +73,10 @@ const BusBookingForm = ({ setHideButton }) => {
   const [selectedLocation, setLocation] = useState("");
   const [selectedBusType, setSelectedBusType] = useState("seats");
   const [noOfPassengers, setNoOfPassengers] = useState(1);
-  const [dateOfTraveling, setDateOfTraveling] = useState(dayjs());
+  const [dateOfTraveling, setDateOfTraveling] = useState(null);
   // const [departureTime, setDepartureTime] = useState("00:00");
-  // const [departureTime, setDepartureTime] = useState("");
-  const [departureTime, setDepartureTime] = useState(dayjs().set("hour", 12).set("minute", 0));
+  const [departureTime, setDepartureTime] = useState(null);
+  // const [departureTime, setDepartureTime] = useState(dayjs().set("hour", 12).set("minute", 0));
   const [fullName, setFullName] = useState();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState();
@@ -741,8 +741,9 @@ const BusBookingForm = ({ setHideButton }) => {
                             value={departureTime}
                             onChange={(value) => timeHandler(value)}
                             fullWidth
-                            label="Departure Time"
-                            xs={{ width: "100%" }}
+                            label="Select Time"
+                            sx={{ width: "100%" }}
+                            ampmInClock
                           />
                           {/* </DemoItem> */}
                         </DemoContainer>
@@ -1039,8 +1040,9 @@ const BusBookingForm = ({ setHideButton }) => {
                               value={departureTime}
                               onChange={(value) => timeHandler(value)}
                               fullWidth
-                              label="Departure Time"
-                              xs={{ width: "100%" }}
+                              label="Select Time"
+                              ampmInClock
+                              sx={{ width: "100%" }}
                             />
                             {/* </DemoItem> */}
                           </DemoContainer>
