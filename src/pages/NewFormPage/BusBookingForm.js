@@ -97,7 +97,7 @@ const BusBookingForm = ({ setHideButton }) => {
 
     LocationData.forEach((location) => {
       location?.list?.forEach((item) => {
-        if (item.source._id === newValue) {
+        if (item?.source?._id === newValue) {
           // Found a match! Do something with the item.
           console.log("Found a match:", item);
           newMatchedLocations.push(location);
@@ -118,7 +118,7 @@ const BusBookingForm = ({ setHideButton }) => {
       try {
         const responseData = await sendRequest(
           // eslint-disable-next-line no-undef
-          `${process.env.REACT_APP_BACKEND_URL}/admin/source`
+          `${process.env.REACT_APP_BACKEND_URL}/counter/bus-source`
         );
         setSourceLocationData(responseData.data);
 

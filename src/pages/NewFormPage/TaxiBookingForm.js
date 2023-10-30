@@ -296,20 +296,23 @@ const TaxiBookingForm = ({ setHideButton }) => {
   };
   const handlePassengerChange = (e) => {
     const newValue = parseInt(e.target.value, 10);
-    if (selectedTaxiType.typeName === "Innova") {
-      if (!isNaN(newValue) && newValue >= 0 && newValue <= 9) {
-        setNoOfPassengers(newValue);
-      }
-    } else if (selectedTaxiType.typeName === "3P + 1D car") {
-      if (!isNaN(newValue) && newValue >= 0 && newValue <= 4) {
-        setNoOfPassengers(newValue);
-      }
-    } else if (selectedTaxiType.typeName === "6P + 1D car") {
-      if (!isNaN(newValue) && newValue >= 0 && newValue <= 9) {
-        setNoOfPassengers(newValue);
-      }
-    } else {
-      setNoOfPassengers(newValue);
+    // if (selectedTaxiType.typeName === "Innova") {
+    //   if (!isNaN(newValue) && newValue >= 0 && newValue <= 9) {
+    //     setNoOfPassengers(newValue);
+    //   }
+    // } else if (selectedTaxiType.typeName === "3P + 1D car") {
+    //   if (!isNaN(newValue) && newValue >= 0 && newValue <= 4) {
+    //     setNoOfPassengers(newValue);
+    //   }
+    // } else if (selectedTaxiType.typeName === "6P + 1D car") {
+    //   if (!isNaN(newValue) && newValue >= 0 && newValue <= 9) {
+    //     setNoOfPassengers(newValue);
+    //   }
+    // } else {
+    //   setNoOfPassengers(newValue);
+    // }
+    if (!isNaN(noOfPassengers) && noOfPassengers >= selectedTaxiType?.capacity) {
+      return;
     }
   };
 
@@ -947,22 +950,28 @@ const TaxiBookingForm = ({ setHideButton }) => {
                               }}
                               // sx={{ borderRadius: "0 25px 25px 0" }}
                               onClick={() => {
-                                if (selectedTaxiType.typeName === "Innova") {
-                                  if (!isNaN(noOfPassengers) && noOfPassengers >= 9) {
-                                    return;
-                                  }
-                                } else if (selectedTaxiType.typeName === "3P + 1D car") {
-                                  if (!isNaN(noOfPassengers) && noOfPassengers >= 4) {
-                                    return;
-                                  }
-                                } else if (selectedTaxiType.typeName === "6P + 1D car") {
-                                  if (!isNaN(noOfPassengers) && noOfPassengers >= 9) {
-                                    return;
-                                  }
-                                } else {
-                                  if (!isNaN(noOfPassengers) && noOfPassengers >= 2) {
-                                    return;
-                                  }
+                                // if (selectedTaxiType.typeName === "Innova") {
+                                //   if (!isNaN(noOfPassengers) && noOfPassengers >= 9) {
+                                //     return;
+                                //   }
+                                // } else if (selectedTaxiType.typeName === "3P + 1D car") {
+                                //   if (!isNaN(noOfPassengers) && noOfPassengers >= 4) {
+                                //     return;
+                                //   }
+                                // } else if (selectedTaxiType.typeName === "6P + 1D car") {
+                                //   if (!isNaN(noOfPassengers) && noOfPassengers >= 9) {
+                                //     return;
+                                //   }
+                                // } else {
+                                //   if (!isNaN(noOfPassengers) && noOfPassengers >= 2) {
+                                //     return;
+                                //   }
+                                // }
+                                if (
+                                  !isNaN(noOfPassengers) &&
+                                  noOfPassengers >= selectedTaxiType?.capacity
+                                ) {
+                                  return;
                                 }
                                 setNoOfPassengers(noOfPassengers + 1);
                               }}
@@ -1548,22 +1557,28 @@ const TaxiBookingForm = ({ setHideButton }) => {
                         }}
                         // sx={{ borderRadius: "0 25px 25px 0" }}
                         onClick={() => {
-                          if (selectedTaxiType.typeName === "Innova") {
-                            if (!isNaN(noOfPassengers) && noOfPassengers >= 9) {
-                              return;
-                            }
-                          } else if (selectedTaxiType.typeName === "3P + 1D car") {
-                            if (!isNaN(noOfPassengers) && noOfPassengers >= 4) {
-                              return;
-                            }
-                          } else if (selectedTaxiType.typeName === "6P + 1D car") {
-                            if (!isNaN(noOfPassengers) && noOfPassengers >= 9) {
-                              return;
-                            }
-                          } else {
-                            if (!isNaN(noOfPassengers) && noOfPassengers >= 2) {
-                              return;
-                            }
+                          // if (selectedTaxiType.typeName === "Innova") {
+                          //   if (!isNaN(noOfPassengers) && noOfPassengers >= 9) {
+                          //     return;
+                          //   }
+                          // } else if (selectedTaxiType.typeName === "3P + 1D car") {
+                          //   if (!isNaN(noOfPassengers) && noOfPassengers >= 4) {
+                          //     return;
+                          //   }
+                          // } else if (selectedTaxiType.typeName === "6P + 1D car") {
+                          //   if (!isNaN(noOfPassengers) && noOfPassengers >= 9) {
+                          //     return;
+                          //   }
+                          // } else {
+                          //   if (!isNaN(noOfPassengers) && noOfPassengers >= 2) {
+                          //     return;
+                          //   }
+                          // }
+                          if (
+                            !isNaN(noOfPassengers) &&
+                            noOfPassengers >= selectedTaxiType?.capacity
+                          ) {
+                            return;
                           }
                           setNoOfPassengers(noOfPassengers + 1);
                         }}
