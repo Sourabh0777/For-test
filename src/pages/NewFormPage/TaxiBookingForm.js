@@ -56,6 +56,7 @@ import TextField from "assets/theme/components/form/textField";
 import MDBox from "components/MDBox";
 import TandC from "./TandC";
 import moment from "moment/moment";
+import toast from "react-hot-toast";
 const TaxiBookingForm = ({ setHideButton }) => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -499,10 +500,12 @@ const TaxiBookingForm = ({ setHideButton }) => {
         { "Content-Type": "application/json" }
       );
       if (responseData) {
+        toast.success("Booking request confirmed");
         navigate(`/booking/${responseData?.data?.token}`);
       }
     } catch (error) {
       console.log(error);
+      toast.error("Something went wrong!");
     }
   };
   const packageSubmitHandler = async () => {
@@ -538,10 +541,12 @@ const TaxiBookingForm = ({ setHideButton }) => {
         { "Content-Type": "application/json" }
       );
       if (responseData) {
+        toast.success("Booking request confirmed");
         navigate(`/booking/${responseData?.data?.token}`);
       }
     } catch (error) {
       console.log(error, "here");
+      toast.error("Something went wrong!");
     }
   };
 

@@ -40,6 +40,7 @@ import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import MDBox from "components/MDBox";
 import TandC from "./TandC";
+import toast from "react-hot-toast";
 
 const BusBookingForm = ({ setHideButton }) => {
   const [open, setOpen] = React.useState(false);
@@ -328,10 +329,12 @@ const BusBookingForm = ({ setHideButton }) => {
         { "Content-Type": "application/json" }
       );
       if (responseData) {
+        toast.success("Booking request confirmed");
         navigate(`/booking/${responseData?.data?.token}`);
       }
     } catch (error) {
       console.log(error);
+      toast.error("Something went wrong");
     }
   };
 

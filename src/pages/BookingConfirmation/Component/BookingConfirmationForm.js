@@ -14,6 +14,7 @@ import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import { AddBox, Person2Outlined } from "@mui/icons-material";
 import MDBox from "components/MDBox";
+import toast from "react-hot-toast";
 
 const BookingConfirmationForm = ({ bookingId }) => {
   const [todaysDate, setTodaysDate] = useState();
@@ -177,10 +178,12 @@ const BookingConfirmationForm = ({ bookingId }) => {
           { "Content-Type": "application/json" }
         );
         if (responseData) {
+          toast.success("Remarks updated");
           navigate(`/booking/${responseData?.data?.token}`);
           setSubmitted(!submitted);
         }
       } catch (error) {
+        toast.error("Failed to update remark");
         console.log(error, "here");
       }
       setFeedback("");

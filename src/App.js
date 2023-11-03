@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 // react-router components
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 // @mui material components
 import { ThemeProvider } from "@mui/material/styles";
@@ -35,6 +36,7 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
+      <Toaster position="bottom-left" reverseOrder={false} />
       <CssBaseline />
       {/* <Grid container spacing={9} alignItems="center" justifyContent="center"> */}
       {/* <Navbar changeTypeHandler={changeTypeHandler} /> */}
