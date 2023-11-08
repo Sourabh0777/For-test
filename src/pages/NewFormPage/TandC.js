@@ -39,7 +39,7 @@ const TandC = ({ open, handleClose }) => {
     >
       <Box sx={style}>
         <Typography id="modal-modal-title" variant="h6" component="h2">
-          No Terms & Conditions Added
+          Terms & Conditions
         </Typography>
         {content?.length ? (
           content?.map((c) => (

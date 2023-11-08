@@ -233,7 +233,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
                     return (
                       <Grid item xs={12} md={6} key={index}>
                         <MKBox
-                          mb={2}
+                          mb={1}
                           bgColor="white"
                           display="flex"
                           alignItems="center"
@@ -267,6 +267,115 @@ const BookingConfirmationForm = ({ bookingId }) => {
                       </Grid>
                     );
                   })}
+                <Grid
+                  item
+                  xs={12}
+                  md={12}
+                  sx={{ marginLeft: { xs: 0, md: 2 } }}
+                  // flexDirection={"column"}
+                  gap={1}
+                  mb={3}
+
+                  // alignItems={"center"}
+                >
+                  <MKBox display={"flex"} justifyContent={"center"}>
+                    <table
+                      style={{
+                        width: "75%",
+                        borderCollapse: "collapse",
+                        border: "1px solid black",
+                      }}
+                    >
+                      <tbody>
+                        <tr style={{ borderBottom: "1px solid black" }}>
+                          <td style={{ borderRight: "1px solid black", padding: "5px" }}>
+                            <MKBox display="flex" alignItems="center" gap={1}>
+                              <MKBox
+                                height="8px"
+                                width="8px"
+                                borderRadius="50%"
+                                bgColor="info"
+                              ></MKBox>
+                              <MKTypography variant="body2">Fare</MKTypography>
+                            </MKBox>
+                          </td>
+                          <td style={{ width: "50%" }}>
+                            <MDBox
+                              display="flex"
+                              alignItems="center"
+                              justifyContent="end"
+                              gap={1}
+                              pr={1}
+                            >
+                              <MKTypography variant="body2">&#8377; {booking?.fare}</MKTypography>
+                            </MDBox>
+                          </td>
+                        </tr>
+                        {booking?.toll ? (
+                          <tr style={{ borderBottom: "1px solid black" }}>
+                            <td style={{ borderRight: "1px solid black", padding: "5px" }}>
+                              <MKBox display="flex" alignItems="center" gap={1}>
+                                <MKBox
+                                  height="8px"
+                                  width="8px"
+                                  borderRadius="50%"
+                                  bgColor="warning"
+                                ></MKBox>
+                                <MKTypography variant="body2">Toll</MKTypography>
+                              </MKBox>
+                            </td>
+                            {booking?.toll ? (
+                              <td>
+                                <MDBox
+                                  display="flex"
+                                  alignItems="center"
+                                  justifyContent="end"
+                                  gap={1}
+                                  pr={1}
+                                >
+                                  <MKTypography variant="body2">
+                                    &#8377; {booking?.toll}
+                                  </MKTypography>
+                                </MDBox>
+                              </td>
+                            ) : null}
+                          </tr>
+                        ) : null}
+                        <tr style={{ borderBottom: "1px solid black" }}>
+                          <td style={{ borderRight: "1px solid black", padding: "5px" }}>
+                            <MKBox display="flex" alignItems="center" gap={1}>
+                              <MKBox
+                                height="8px"
+                                width="8px"
+                                borderRadius="50%"
+                                bgColor="success"
+                              ></MKBox>
+                              <MKTypography variant="body2" fontWeight="medium">
+                                Total
+                              </MKTypography>
+                            </MKBox>
+                          </td>
+                          <td>
+                            <MDBox
+                              display="flex"
+                              alignItems="center"
+                              justifyContent="end"
+                              gap={1}
+                              pr={1}
+                            >
+                              <MKTypography variant="body2" fontWeight="medium">
+                                &#8377; {booking?.fare + booking?.toll || 0}
+                              </MKTypography>
+                            </MDBox>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </MKBox>
+                  <MDBox display="flex" justifyContent="center" alignItems="center" mt={1}>
+                    <MKTypography variant="caption">Additional Charges may Apply *</MKTypography>
+                  </MDBox>
+                </Grid>
               </Grid>
             </MKBox>
             <MKBox mb={1}>

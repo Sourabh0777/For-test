@@ -73,7 +73,7 @@ const BusBookingForm = ({ setHideButton }) => {
   const [startingLocation, setStartingLocation] = useState("Delhi");
   const [selectedLocation, setLocation] = useState("");
   const [selectedBusType, setSelectedBusType] = useState("seats");
-  const [noOfPassengers, setNoOfPassengers] = useState(1);
+  const [noOfPassengers, setNoOfPassengers] = useState(0);
   const [dateOfTraveling, setDateOfTraveling] = useState(null);
   // const [departureTime, setDepartureTime] = useState("00:00");
   const [departureTime, setDepartureTime] = useState(null);
@@ -254,8 +254,7 @@ const BusBookingForm = ({ setHideButton }) => {
       departureTime &&
       fullName &&
       mobileNo &&
-      mobileNo.length > 9 &&
-      termsChecked
+      mobileNo.length > 9
     ) {
       setIsNextDisabled(false);
     }
@@ -271,7 +270,6 @@ const BusBookingForm = ({ setHideButton }) => {
     departureTime,
     firstName,
     mobileNo,
-    termsChecked,
   ]);
 
   useEffect(() => {
@@ -746,7 +744,7 @@ const BusBookingForm = ({ setHideButton }) => {
                             fullWidth
                             label="Select Time"
                             sx={{ width: "100%" }}
-                            ampmInClock
+                            // ampmInClock
                           />
                           {/* </DemoItem> */}
                         </DemoContainer>
@@ -816,7 +814,7 @@ const BusBookingForm = ({ setHideButton }) => {
                       </MKBox>
                     </MDBox>
                   </Grid>
-                  <Grid item xs={12} sm={12} md={6}>
+                  {/* <Grid item xs={12} sm={12} md={6}>
                     <MKBox>
                       <FormControlLabel
                         required
@@ -831,8 +829,8 @@ const BusBookingForm = ({ setHideButton }) => {
                         onChange={handleTermsChange}
                       />
                     </MKBox>
-                  </Grid>
-                  {activeStep === 1 && (
+                  </Grid> */}
+                  {/* {activeStep === 1 && (
                     <Grid
                       item
                       xs={12}
@@ -861,7 +859,7 @@ const BusBookingForm = ({ setHideButton }) => {
                         </MKBox>
                       </MKBox>
                     </Grid>
-                  )}
+                  )} */}
                 </Grid>
               ) : null}
               <Grid container mt={6} mb={3}>
@@ -870,7 +868,7 @@ const BusBookingForm = ({ setHideButton }) => {
                   <MKBox display="flex" justifyContent="end" alignItems="center" gap={1}>
                     <MKBox height="10px" width="10px" borderRadius="50%" bgColor="success"></MKBox>
                     {selectedLocation ? (
-                      <MKTypography variant="caption" fontWeight="medium">
+                      <MKTypography variant="body2" fontWeight="medium">
                         Fare: &#8377;{" "}
                         {selectedBusType !== "full_bus"
                           ? perSeatFare * noOfPassengers
@@ -883,11 +881,11 @@ const BusBookingForm = ({ setHideButton }) => {
                           : noOfPassengers === 50
                           ? fare50
                           : "NA"}{" "}
-                        + Additional Charges
+                        {/* + Additional Charges */}
                       </MKTypography>
                     ) : (
-                      <MKTypography variant="caption" fontWeight="medium">
-                        Fare: &#8377; NA (includes addtional charges)
+                      <MKTypography variant="bode2" fontWeight="medium">
+                        Fare: &#8377; NA
                       </MKTypography>
                     )}
                   </MKBox>

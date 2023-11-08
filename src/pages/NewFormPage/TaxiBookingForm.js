@@ -126,7 +126,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
   const [selectedLandingLocation, setSelectedLandingLocation] = useState("");
   const [tollCost, setTollCost] = useState(0);
   const [selectedTaxiType, setSelectedTaxiType] = useState({});
-  const [noOfPassengers, setNoOfPassengers] = useState(1);
+  const [noOfPassengers, setNoOfPassengers] = useState(0);
   //
   const handleSourceLocationChange = (event) => {
     const a = sourcseLocation.filter((item) => item.name == event.target.value);
@@ -197,7 +197,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
   const handleTaxiChange = (e) => {
     const value = e.target.value;
     setSelectedTaxiType(value);
-    setNoOfPassengers(1);
+    setNoOfPassengers(0);
   };
 
   console.log("selected Landing", selectedLandingLocation);
@@ -453,6 +453,9 @@ const TaxiBookingForm = ({ setHideButton }) => {
     if (!termsChecked) {
       setIsNextDisabled(true);
     }
+    if (noOfPassengers <= 0) {
+      setIsNextDisabled(true);
+    }
   }, [
     activeStep,
     tollCost,
@@ -465,6 +468,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
     selectedPackage,
     pickupLocation,
     termsChecked,
+    noOfPassengers,
   ]);
   //
   const submitHandler = async () => {
@@ -757,7 +761,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                           fullWidth
                           label="Select Time"
                           sx={{ width: "100%" }}
-                          ampmInClock
+                          // ampmInClock
                         />
                         {/* </DemoItem> */}
                       </DemoContainer>
@@ -1161,7 +1165,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                                 borderRadius="50%"
                                 bgColor="info"
                               ></MKBox>
-                              <MKTypography variant="caption">Fare</MKTypography>
+                              <MKTypography variant="body2">Fare</MKTypography>
                             </MKBox>
                           </td>
                           <td style={{ width: "50%" }}>
@@ -1172,7 +1176,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                               gap={1}
                               pr={1}
                             >
-                              <MKTypography variant="caption">
+                              <MKTypography variant="body2">
                                 &#8377; {selectedTaxiType?.fair || 0}
                               </MKTypography>
                             </MDBox>
@@ -1187,7 +1191,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                                 borderRadius="50%"
                                 bgColor="warning"
                               ></MKBox>
-                              <MKTypography variant="caption">Toll</MKTypography>
+                              <MKTypography variant="body2">Toll</MKTypography>
                             </MKBox>
                           </td>
                           <td>
@@ -1198,7 +1202,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                               gap={1}
                               pr={1}
                             >
-                              <MKTypography variant="caption">&#8377; {tollCost || 0}</MKTypography>
+                              <MKTypography variant="body2">&#8377; {tollCost || 0}</MKTypography>
                             </MDBox>
                           </td>
                         </tr>
@@ -1211,7 +1215,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                                 borderRadius="50%"
                                 bgColor="success"
                               ></MKBox>
-                              <MKTypography variant="caption" fontWeight="medium">
+                              <MKTypography variant="body2" fontWeight="medium">
                                 Total
                               </MKTypography>
                             </MKBox>
@@ -1224,7 +1228,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                               gap={1}
                               pr={1}
                             >
-                              <MKTypography variant="caption" fontWeight="medium">
+                              <MKTypography variant="body2" fontWeight="medium">
                                 &#8377; {selectedTaxiType?.fair + tollCost || 0}
                               </MKTypography>
                             </MDBox>
@@ -1469,7 +1473,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                           fullWidth
                           label="Select Time"
                           sx={{ width: "100%" }}
-                          ampmInClock
+                          // ampmInClock
                         />
                         {/* </DemoItem> */}
                       </DemoContainer>
@@ -1625,7 +1629,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                                 borderRadius="50%"
                                 bgColor="info"
                               ></MKBox>
-                              <MKTypography variant="caption">Fare</MKTypography>
+                              <MKTypography variant="body2">Fare</MKTypography>
                             </MKBox>
                           </td>
                           <td>
@@ -1636,7 +1640,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                               gap={1}
                               pr={1}
                             >
-                              <MKTypography variant="caption">
+                              <MKTypography variant="body2">
                                 &#8377; {selectedTaxiType?.fair || 0}
                               </MKTypography>
                             </MDBox>
@@ -1651,7 +1655,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                                 borderRadius="50%"
                                 bgColor="warning"
                               ></MKBox>
-                              <MKTypography variant="caption">Toll</MKTypography>
+                              <MKTypography variant="body2">Toll</MKTypography>
                             </MKBox>
                           </td>
                           <td>
@@ -1662,7 +1666,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                               gap={1}
                               pr={1}
                             >
-                              <MKTypography variant="caption">&#8377; {tollCost || 0}</MKTypography>
+                              <MKTypography variant="body2">&#8377; {tollCost || 0}</MKTypography>
                             </MDBox>
                           </td>
                         </tr>
@@ -1675,7 +1679,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                                 borderRadius="50%"
                                 bgColor="success"
                               ></MKBox>
-                              <MKTypography variant="caption" fontWeight="medium">
+                              <MKTypography variant="body2" fontWeight="medium">
                                 Total
                               </MKTypography>
                             </MKBox>
@@ -1688,7 +1692,7 @@ const TaxiBookingForm = ({ setHideButton }) => {
                               gap={1}
                               pr={1}
                             >
-                              <MKTypography variant="caption" fontWeight="medium">
+                              <MKTypography variant="body2" fontWeight="medium">
                                 &#8377; {selectedTaxiType?.fair + tollCost}
                               </MKTypography>
                             </MDBox>
