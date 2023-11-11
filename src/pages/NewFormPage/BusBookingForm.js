@@ -293,11 +293,21 @@ const BusBookingForm = ({ setHideButton }) => {
         : fare50
     );
     console.log("selectedBusType:", selectedBusType);
+    console.log("Date2", dateOfTraveling);
+    const dynamicDate = new Date(dateOfTraveling); // Replace this with your dynamically generated date
+
+    const year = dynamicDate.getFullYear();
+    const month = dynamicDate.getMonth() + 1; // Months are zero-based, so we add 1
+    const day = dynamicDate.getDate();
+
+    const adjustedDynamicDateISO = new Date(Date.UTC(year, month - 1, day, 0, 0, 0)).toISOString();
+
+    console.log("Adjusted Dynamic Date ISO", adjustedDynamicDateISO);
     const formData = {
       firstName: firstName,
       lastName: lastName || " ",
       phoneNumber: mobileNo,
-      travelDate: dateOfTraveling,
+      travelDate: adjustedDynamicDateISO,
       travelTime: selectedBusType === "full_bus" ? formattedTime : format12Hour(departureTime),
       // travelTime: formattedTime,
       startingLocation: selectedSourceLocation,
@@ -524,7 +534,7 @@ const BusBookingForm = ({ setHideButton }) => {
                               px={3}
                               // sx={{ borderRadius: "25px 0 0 25px " }}
                               onClick={() => {
-                                if (noOfPassengers === 1) {
+                                if (noOfPassengers <= 0) {
                                   return;
                                 }
                                 setNoOfPassengers(noOfPassengers - 1);
@@ -744,7 +754,7 @@ const BusBookingForm = ({ setHideButton }) => {
                             fullWidth
                             label="Select Time"
                             sx={{ width: "100%" }}
-                            // ampmInClock
+                            ampmInClock
                           />
                           {/* </DemoItem> */}
                         </DemoContainer>
@@ -1021,6 +1031,7 @@ const BusBookingForm = ({ setHideButton }) => {
                             name="dateOfTraveling"
                             value={dateOfTraveling}
                             onChange={handleDateChange}
+                            disablePast
                             required
                           />
                         </DemoContainer>
