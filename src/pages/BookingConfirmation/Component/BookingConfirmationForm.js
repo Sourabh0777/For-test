@@ -341,34 +341,36 @@ const BookingConfirmationForm = ({ bookingId }) => {
                             ) : null}
                           </tr>
                         ) : null}
-                        <tr style={{ borderBottom: "1px solid black" }}>
-                          <td style={{ borderRight: "1px solid black", padding: "5px" }}>
-                            <MKBox display="flex" alignItems="center" gap={1}>
-                              <MKBox
-                                height="8px"
-                                width="8px"
-                                borderRadius="50%"
-                                bgColor="success"
-                              ></MKBox>
-                              <MKTypography variant="body2" fontWeight="medium">
-                                Total
-                              </MKTypography>
-                            </MKBox>
-                          </td>
-                          <td>
-                            <MDBox
-                              display="flex"
-                              alignItems="center"
-                              justifyContent="end"
-                              gap={1}
-                              pr={1}
-                            >
-                              <MKTypography variant="body2" fontWeight="medium">
-                                &#8377; {booking?.fare + booking?.toll || 0}
-                              </MKTypography>
-                            </MDBox>
-                          </td>
-                        </tr>
+                        {!booking?.token?.startsWith("BS") ? (
+                          <tr style={{ borderBottom: "1px solid black" }}>
+                            <td style={{ borderRight: "1px solid black", padding: "5px" }}>
+                              <MKBox display="flex" alignItems="center" gap={1}>
+                                <MKBox
+                                  height="8px"
+                                  width="8px"
+                                  borderRadius="50%"
+                                  bgColor="success"
+                                ></MKBox>
+                                <MKTypography variant="body2" fontWeight="medium">
+                                  Total
+                                </MKTypography>
+                              </MKBox>
+                            </td>
+                            <td>
+                              <MDBox
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="end"
+                                gap={1}
+                                pr={1}
+                              >
+                                <MKTypography variant="body2" fontWeight="medium">
+                                  &#8377; {booking?.fare + booking?.toll || 0}
+                                </MKTypography>
+                              </MDBox>
+                            </td>
+                          </tr>
+                        ) : null}
                       </tbody>
                     </table>
                   </MKBox>
