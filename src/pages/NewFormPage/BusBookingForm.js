@@ -872,88 +872,7 @@ const BusBookingForm = ({ setHideButton }) => {
                   )} */}
                 </Grid>
               ) : null}
-              <Grid container mt={6} mb={3}>
-                <Grid item xs={12} md={12}>
-                  <MKBox display={"flex"} justifyContent={"center"}>
-                    <table
-                      style={{
-                        width: "50%",
-                        borderCollapse: "collapse",
-                        border: "1px solid black",
-                      }}
-                    >
-                      <tbody>
-                        <tr style={{ borderBottom: "1px solid black" }}>
-                          <td
-                            style={{ borderRight: "1px solid black", padding: "5px", width: "50%" }}
-                          >
-                            <MKBox display="flex" alignItems="center" gap={1}>
-                              <MKBox
-                                height="8px"
-                                width="8px"
-                                borderRadius="50%"
-                                bgColor="info"
-                              ></MKBox>
-                              <MKTypography variant="body2">Fare</MKTypography>
-                            </MKBox>
-                          </td>
-                          <td>
-                            <MDBox
-                              display="flex"
-                              alignItems="center"
-                              justifyContent="end"
-                              gap={1}
-                              pr={1}
-                            >
-                              <MKTypography variant="body2">
-                                &#8377;{" "}
-                                {selectedBusType !== "full_bus"
-                                  ? perSeatFare * noOfPassengers
-                                  : noOfPassengers === 35
-                                  ? fare35
-                                  : noOfPassengers === 40
-                                  ? fare40
-                                  : noOfPassengers === 45
-                                  ? fare45
-                                  : noOfPassengers === 50
-                                  ? fare50
-                                  : "NA"}{" "}
-                              </MKTypography>
-                            </MDBox>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </MKBox>
-                  <MDBox display="flex" justifyContent="center" alignItems="center">
-                    <MKTypography variant="caption">Additional Charges may Apply *</MKTypography>
-                  </MDBox>
-                  {/* <MKBox display="flex" justifyContent="end" alignItems="center" gap={1}>
-                    <MKBox height="10px" width="10px" borderRadius="50%" bgColor="success"></MKBox>
-                    {selectedLocation ? (
-                      <MKTypography variant="body2" fontWeight="medium">
-                        Fared: &#8377;{" "}
-                        {selectedBusType !== "full_bus"
-                          ? perSeatFare * noOfPassengers
-                          : noOfPassengers === 35
-                          ? fare35
-                          : noOfPassengers === 40
-                          ? fare40
-                          : noOfPassengers === 45
-                          ? fare45
-                          : noOfPassengers === 50
-                          ? fare50
-                          : "NA"}{" "}
-                      </MKTypography>
-                    ) : (
-                      <MKTypography variant="body2" fontWeight="medium">
-                        Fared: &#8377; NA
-                      </MKTypography>
-                    )}
-                  </MKBox> */}
-                  {/* </Grid> */}
-                </Grid>
-              </Grid>
+
               {activeStep == 2 && (
                 <Grid
                   container
@@ -1318,6 +1237,88 @@ const BusBookingForm = ({ setHideButton }) => {
                   )}
                 </Grid>
               )}
+              <Grid container mt={6} mb={3}>
+                <Grid item xs={12} md={12}>
+                  <MKBox display={"flex"} justifyContent={"center"}>
+                    <table
+                      style={{
+                        width: "50%",
+                        borderCollapse: "collapse",
+                        border: "1px solid black",
+                      }}
+                    >
+                      <tbody>
+                        <tr style={{ borderBottom: "1px solid black" }}>
+                          <td
+                            style={{ borderRight: "1px solid black", padding: "5px", width: "50%" }}
+                          >
+                            <MKBox display="flex" alignItems="center" gap={1}>
+                              <MKBox
+                                height="8px"
+                                width="8px"
+                                borderRadius="50%"
+                                bgColor="info"
+                              ></MKBox>
+                              <MKTypography variant="body2">Fare</MKTypography>
+                            </MKBox>
+                          </td>
+                          <td>
+                            <MDBox
+                              display="flex"
+                              alignItems="center"
+                              justifyContent="end"
+                              gap={1}
+                              pr={1}
+                            >
+                              <MKTypography variant="body2">
+                                &#8377;{" "}
+                                {selectedBusType !== "full_bus"
+                                  ? perSeatFare * noOfPassengers
+                                  : noOfPassengers === 35
+                                  ? fare35
+                                  : noOfPassengers === 40
+                                  ? fare40
+                                  : noOfPassengers === 45
+                                  ? fare45
+                                  : noOfPassengers === 50
+                                  ? fare50
+                                  : "NA"}{" "}
+                              </MKTypography>
+                            </MDBox>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </MKBox>
+                  <MDBox display="flex" justifyContent="center" alignItems="center">
+                    <MKTypography variant="caption">Additional Charges may Apply *</MKTypography>
+                  </MDBox>
+                  {/* <MKBox display="flex" justifyContent="end" alignItems="center" gap={1}>
+                    <MKBox height="10px" width="10px" borderRadius="50%" bgColor="success"></MKBox>
+                    {selectedLocation ? (
+                      <MKTypography variant="body2" fontWeight="medium">
+                        Fared: &#8377;{" "}
+                        {selectedBusType !== "full_bus"
+                          ? perSeatFare * noOfPassengers
+                          : noOfPassengers === 35
+                          ? fare35
+                          : noOfPassengers === 40
+                          ? fare40
+                          : noOfPassengers === 45
+                          ? fare45
+                          : noOfPassengers === 50
+                          ? fare50
+                          : "NA"}{" "}
+                      </MKTypography>
+                    ) : (
+                      <MKTypography variant="body2" fontWeight="medium">
+                        Fared: &#8377; NA
+                      </MKTypography>
+                    )}
+                  </MKBox> */}
+                  {/* </Grid> */}
+                </Grid>
+              </Grid>
               <Grid
                 container
                 item
