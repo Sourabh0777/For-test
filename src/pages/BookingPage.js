@@ -40,6 +40,7 @@ import { ButtonGroup, useMediaQuery } from "@mui/material";
 import GroupButton from "./Components/GroupButton";
 import TaxiBookingForm from "./NewFormPage/TaxiBookingForm";
 import BusBookingForm from "./NewFormPage/BusBookingForm";
+import NewTaxiBookingForm from "./NewFormPage/NewTaxiBookingForm";
 
 function BookingPage() {
   const [selectedButton, setSelectedButton] = useState();

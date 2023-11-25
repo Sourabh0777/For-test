@@ -120,7 +120,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
             { label: "Departure Time", key: responseData.data[0]?.travelTime },
             { label: "Pickup Location", key: responseData.data[0]?.source?.sourceName },
             { label: "Destination", key: responseData.data[0]?.destination?.locationName },
-            { label: "Drop Point", key: getLandingName(responseData?.data[0]) },
+            // { label: "Drop Point", key: getLandingName(responseData?.data[0]) },
             {
               label: "Vehicle",
               key: `${responseData.data[0]?.texiType?.typeName}(
