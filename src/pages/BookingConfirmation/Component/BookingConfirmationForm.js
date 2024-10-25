@@ -245,7 +245,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
                         >
                           <MKBox width="100%" pb={1} pt={2}>
                             <MKTypography
-                              style={{ position: "absolute", top: 5, left: 5 }}
+                              style={{ position: "absolute", top: 5, left: 5, fontSize: "10px" }}
                               // style={{ textAlign: "center" }}
                               variant="caption"
                               fontWeight="medium"
@@ -255,7 +255,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
                               {field.label}
                             </MKTypography>
                             <MKTypography
-                              style={{ textAlign: "center" }}
+                              style={{ textAlign: "center", fontSize: "12px" }}
                               variant="body2"
                               fontWeight="medium"
                               color="black"
@@ -296,7 +296,9 @@ const BookingConfirmationForm = ({ bookingId }) => {
                                 borderRadius="50%"
                                 bgColor="info"
                               ></MKBox>
-                              <MKTypography variant="body2">Fare</MKTypography>
+                              <MKTypography variant="body2" style={{ fontSize: "12px" }}>
+                                Fare
+                              </MKTypography>
                             </MKBox>
                           </td>
                           <td style={{ width: "50%" }}>
@@ -307,7 +309,9 @@ const BookingConfirmationForm = ({ bookingId }) => {
                               gap={1}
                               pr={1}
                             >
-                              <MKTypography variant="body2">&#8377; {booking?.fare}</MKTypography>
+                              <MKTypography variant="body2" style={{ fontSize: "12px" }}>
+                                &#8377; {booking?.fare}
+                              </MKTypography>
                             </MDBox>
                           </td>
                         </tr>
@@ -321,7 +325,9 @@ const BookingConfirmationForm = ({ bookingId }) => {
                                   borderRadius="50%"
                                   bgColor="warning"
                                 ></MKBox>
-                                <MKTypography variant="body2">Toll</MKTypography>
+                                <MKTypography variant="body2" style={{ fontSize: "12px" }}>
+                                  Toll
+                                </MKTypography>
                               </MKBox>
                             </td>
                             {booking?.toll ? (
@@ -333,7 +339,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
                                   gap={1}
                                   pr={1}
                                 >
-                                  <MKTypography variant="body2">
+                                  <MKTypography variant="body2" style={{ fontSize: "12px" }}>
                                     &#8377; {booking?.toll}
                                   </MKTypography>
                                 </MDBox>
@@ -349,9 +355,43 @@ const BookingConfirmationForm = ({ bookingId }) => {
                                   height="8px"
                                   width="8px"
                                   borderRadius="50%"
+                                  bgColor="red"
+                                ></MKBox>
+                                <MKTypography variant="body2" style={{ fontSize: "12px" }}>
+                                  Additional Charges
+                                </MKTypography>
+                              </MKBox>
+                            </td>
+                            <td>
+                              <MDBox
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="end"
+                                gap={1}
+                                pr={1}
+                              >
+                                <MKTypography variant="body2" style={{ fontSize: "12px" }}>
+                                  &#8377; {booking?.additionaalCharges || 0}
+                                </MKTypography>
+                              </MDBox>
+                            </td>
+                          </tr>
+                        ) : null}
+                        {!booking?.token?.startsWith("BS") ? (
+                          <tr style={{ borderBottom: "1px solid black" }}>
+                            <td style={{ borderRight: "1px solid black", padding: "5px" }}>
+                              <MKBox display="flex" alignItems="center" gap={1}>
+                                <MKBox
+                                  height="8px"
+                                  width="8px"
+                                  borderRadius="50%"
                                   bgColor="success"
                                 ></MKBox>
-                                <MKTypography variant="body2" fontWeight="medium">
+                                <MKTypography
+                                  variant="body2"
+                                  fontWeight="medium"
+                                  style={{ fontSize: "12px" }}
+                                >
                                   Total
                                 </MKTypography>
                               </MKBox>
@@ -364,8 +404,15 @@ const BookingConfirmationForm = ({ bookingId }) => {
                                 gap={1}
                                 pr={1}
                               >
-                                <MKTypography variant="body2" fontWeight="medium">
-                                  &#8377; {booking?.fare + booking?.toll || 0}
+                                <MKTypography
+                                  variant="body2"
+                                  fontWeight="medium"
+                                  style={{ fontSize: "12px" }}
+                                >
+                                  &#8377;{" "}
+                                  {booking?.fare + booking?.toll ||
+                                    0 + booking?.additionaalCharges ||
+                                    0}
                                 </MKTypography>
                               </MDBox>
                             </td>
@@ -375,17 +422,19 @@ const BookingConfirmationForm = ({ bookingId }) => {
                     </table>
                   </MKBox>
                   <MDBox display="flex" justifyContent="center" alignItems="center" mt={1}>
-                    <MKTypography variant="caption">Additional Charges may Apply *</MKTypography>
+                    <MKTypography variant="caption" style={{ fontSize: "10px" }}>
+                      Additional Charges may Apply *
+                    </MKTypography>
                   </MDBox>
                 </Grid>
               </Grid>
             </MKBox>
-            <MKBox mb={1}>
+            <MKBox>
               {message && (
                 <MKTypography
                   color="primary"
                   variant="body2"
-                  style={{ textAlign: "center", textDecoration: "underline" }}
+                  style={{ textAlign: "center", textDecoration: "underline", fontSize: "14px" }}
                   fontWeight="medium"
                 >
                   Note: **{message}
@@ -393,9 +442,9 @@ const BookingConfirmationForm = ({ bookingId }) => {
               )}
             </MKBox>
             {!booking?.remark ? (
-              <Grid container spacing={1} mt={1}>
+              <Grid container spacing={1}>
                 <Grid item xs={12} md={12}>
-                  <MKTypography variant="p">
+                  <MKTypography variant="p" style={{ fontSize: "12px" }}>
                     Do you have any special instruction for the ride?
                   </MKTypography>
                   <MKBox mb={1}>
@@ -422,7 +471,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
                   </MKBox>
                   <MKBox
                     mb={1}
-                    mt={2}
+                    mt={1}
                     display="flex"
                     justifyContent="center"
                     alignItems="center"
@@ -447,9 +496,9 @@ const BookingConfirmationForm = ({ bookingId }) => {
             </Grid> */}
               </Grid>
             ) : (
-              <Grid container spacing={1} mt={1}>
+              <Grid container spacing={1}>
                 <Grid item xs={12} md={12}>
-                  <MKTypography variant="body2" color="text" mb={1}>
+                  <MKTypography variant="body2" style={{ fontSize: "12px" }} color="text" mb={1}>
                     Special instruction for the ride
                   </MKTypography>
                   <MKBox mb={2}>
@@ -473,11 +522,11 @@ const BookingConfirmationForm = ({ bookingId }) => {
                       maxRows={8}
                       fullWidth
                     /> */}
-                    <MKTypography variant="caption" color="text">
+                    <MKTypography variant="caption" color="text" style={{ fontSize: "12px" }}>
                       {booking?.remark}
                     </MKTypography>
                   </MKBox>
-                  <MKBox mb={2} mt={2} display="flex" justifyContent="center">
+                  <MKBox mb={2} mt={1} display="flex" justifyContent="center">
                     {/* <MKButton variant="gradient" color="info" onClick={submitHandler}>
                       Change Remark
                     </MKButton> */}
@@ -506,7 +555,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
                 <MKTypography
                   variant="body2"
                   // component={"i"}
-                  style={{ textAlign: "center" }}
+                  style={{ textAlign: "center", fontSize: "12px" }}
                   fontWeight="medium"
                   display="block"
                   mb={1}
@@ -517,7 +566,7 @@ const BookingConfirmationForm = ({ bookingId }) => {
               <MKTypography
                 variant="body2"
                 component={"i"}
-                style={{ textAlign: "center" }}
+                style={{ textAlign: "center", fontSize: "12px" }}
                 fontWeight="medium"
               >
                 Please note that this is just a booking request, not confirmation. Booking will be

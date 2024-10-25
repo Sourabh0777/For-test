@@ -60,16 +60,17 @@ function BookingPage() {
         // width="100%"
         // minHeight="100vh"
         sx={{
-          backgroundImage: ({ functions: { linearGradient, rgba }, palette: { gradients } }) =>
-            `${linearGradient(
-              rgba(gradients.dark.main, 0.6),
-              rgba(gradients.dark.state, 0.6)
-            )}, url(${bgImage2})`,
+          // backgroundImage: ({ functions: { linearGradient, rgba }, palette: { gradients } }) =>
+          //   `${linearGradient(
+          //     rgba(gradients.dark.main, 0.6),
+          //     rgba(gradients.dark.state, 0.6)
+          //   )}, url(${bgImage2})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
           paddingTop: { xs: 5, md: 3 },
           paddingBottom: { xs: 8, md: 0 },
+          background: "purple",
         }}
         height="auto"
         minHeight="100vh"

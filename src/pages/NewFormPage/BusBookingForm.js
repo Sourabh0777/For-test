@@ -299,7 +299,10 @@ const BusBookingForm = ({ setHideButton }) => {
     const year = dynamicDate.getFullYear();
     const month = dynamicDate.getMonth() + 1; // Months are zero-based, so we add 1
     const day = dynamicDate.getDate();
-
+    if (!/^\d{10}$/.test(mobileNo)) {
+      toast.error("Phone number must be 10 digits");
+      return;
+    }
     const adjustedDynamicDateISO = new Date(Date.UTC(year, month - 1, day, 0, 0, 0)).toISOString();
 
     console.log("Adjusted Dynamic Date ISO", adjustedDynamicDateISO);
@@ -1259,7 +1262,9 @@ const BusBookingForm = ({ setHideButton }) => {
                                 borderRadius="50%"
                                 bgColor="info"
                               ></MKBox>
-                              <MKTypography variant="body2">Fare</MKTypography>
+                              <MKTypography variant="body2" style={{ fontSize: "13px" }}>
+                                Fare
+                              </MKTypography>
                             </MKBox>
                           </td>
                           <td>
@@ -1270,7 +1275,7 @@ const BusBookingForm = ({ setHideButton }) => {
                               gap={1}
                               pr={1}
                             >
-                              <MKTypography variant="body2">
+                              <MKTypography variant="body2" style={{ fontSize: "12px" }}>
                                 &#8377;{" "}
                                 {selectedBusType !== "full_bus"
                                   ? perSeatFare * noOfPassengers
@@ -1290,7 +1295,7 @@ const BusBookingForm = ({ setHideButton }) => {
                       </tbody>
                     </table>
                   </MKBox>
-                  <MDBox display="flex" justifyContent="center" alignItems="center">
+                  <MDBox display="flex" justifyContent="center" alignItems="center" mt={1}>
                     <MKTypography variant="caption">Additional Charges may Apply *</MKTypography>
                   </MDBox>
                   {/* <MKBox display="flex" justifyContent="end" alignItems="center" gap={1}>

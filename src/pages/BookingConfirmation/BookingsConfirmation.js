@@ -49,14 +49,15 @@ const BookingsConfirmation = () => {
       /> */}
       <MKBox
         sx={{
-          backgroundImage: ({ functions: { linearGradient, rgba }, palette: { gradients } }) =>
-            `${linearGradient(
-              rgba(gradients.dark.main, 0.6),
-              rgba(gradients.dark.state, 0.6)
-            )}, url(${bgImage2})`,
+          // backgroundImage: ({ functions: { linearGradient, rgba }, palette: { gradients } }) =>
+          //   `${linearGradient(
+          //     rgba(gradients.dark.main, 0.6),
+          //     rgba(gradients.dark.state, 0.6)
+          //   )}, url(${bgImage2})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
+          background: "purple",
         }}
         minHeight="100vh"
         width="100%"
