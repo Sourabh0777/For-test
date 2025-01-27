@@ -1,78 +1,81 @@
-{
-  "name": "material-kit-2-react",
-  "version": "2.1.0",
-  "private": true,
-  "author": "Creative Tim",
-  "description": "React version of Material Kit 2 by Creative Tim",
-  "homepage": ".",
-  "dependencies": {
-    "@emotion/cache": "11.10.7",
-    "@emotion/react": "11.10.6",
-    "@emotion/styled": "11.10.6",
-    "@mui/icons-material": "5.11.16",
-    "@mui/lab": "^5.0.0-alpha.142",
-    "@mui/material": "^5.14.7",
-    "@mui/styled-engine": "5.12.0",
-    "@mui/x-date-pickers": "^6.12.0",
-    "@testing-library/jest-dom": "5.16.5",
-    "@testing-library/react": "14.0.0",
-    "@testing-library/user-event": "14.4.3",
-    "axios": "^1.6.0",
-    "chroma-js": "2.4.2",
-    "date-fns": "^2.30.0",
-    "dayjs": "^1.11.9",
-    "dotenv": "^16.3.1",
-    "flatpickr": "4.6.13",
-    "formik": "^2.4.5",
-    "moment": "^2.29.4",
-    "prop-types": "15.8.1",
-    "react": "18.2.0",
-    "react-copy-to-clipboard": "5.1.0",
-    "react-countup": "6.4.2",
-    "react-dom": "18.2.0",
-    "react-flatpickr": "3.10.13",
-    "react-hot-toast": "^2.4.1",
-    "react-phone-input-2": "^2.15.1",
-    "react-router-dom": "6.10.0",
-    "react-scripts": "5.0.1",
-    "react-syntax-highlighter": "15.5.0",
-    "react-time-picker": "^6.5.0",
-    "web-vitals": "3.3.1"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "lint": "eslint ./src",
-    "prettify": "prettier --write ."
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "eslint": "8.38.0",
-    "eslint-config-prettier": "8.8.0",
-    "eslint-plugin-import": "2.27.5",
-    "eslint-plugin-jsx-a11y": "6.7.1",
-    "eslint-plugin-prettier": "4.2.1",
-    "eslint-plugin-react": "7.32.2",
-    "eslint-plugin-react-hooks": "4.6.0",
-    "prettier": "2.8.7"
-  }
-}
+
+# Overview
+
+This project is a **web-based application** designed to provide users with seamless functionality and an intuitive interface to book their rides. It has been developed using the latest technologies to ensure **reliability and performance**.
+
+---
+
+## Key Features
+
+- **User-Friendly Design and Navigation:** Simplified UI for better user experience.  
+- **Scalable Architecture:** Designed to handle increased loads effectively.  
+
+---
+
+## Technologies Used
+
+This project utilizes the following technologies:
+
+- **Frontend:**  
+  - React  
+  - Redux Toolkit  
+  - Tailwind CSS  
+  - Axios  
+  - FontAwesome  
+---
+
+## Deployment
+
+The application has been deployed on https://skd.naradh.in/ using a VPS server with **Nginx** as a reverse proxy.  
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+Ensure you have the following installed on your system:  
+
+- **Node.js** (v16.x or higher)  
+- **npm** or **yarn**  
+
+### Installation
+
+1. Clone the repository:  
+   ```bash
+   git clone <repository-url>
+   ```
+
+2. Navigate to the project directory:  
+   ```bash
+   cd project-name
+   ```
+
+3. Install dependencies:  
+   ```bash
+   npm install
+   ```
+
+### Running the Application
+
+1. Start the development server:  
+   ```bash
+   npm run dev
+   ```
+
+2. Open your browser and navigate to:  
+   [http://localhost:3000](http://localhost:3000)
+
+---
+
+## Building for Production
+
+1. Build the application:  
+   ```bash
+   npm run build
+   ```
+
+2. Start the production server:  
+   ```bash
+   npm start
+   ```
